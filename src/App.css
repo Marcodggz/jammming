@@ -33,14 +33,10 @@ html, body {
   font-size: 1rem;
   border: 1px solid #ccc;
   border-radius: 4px;
-  padding: 0.5rem;
-  font-size: 1rem;
-  border: 1px solid #b5b0b0;
-  border-radius: 4px;
   margin-left: 0.5rem;
 }
 
-.searchBar button {
+.searchBar .button {
   padding: 0.5rem 1rem;
   margin-left: 1.5rem;
   margin-right: 1.5rem;
@@ -48,6 +44,13 @@ html, body {
   border-radius: 4px;
   color: white;
   cursor: pointer;
+}
+
+.mainContainer {
+  display: flex;
+  justify-content: center;
+  gap: 60px;
+  width: 100%;
 }
 
 .results {
@@ -66,27 +69,21 @@ html, body {
 .playlist {
   padding: 10px;
   display: flex;
-  align-items: center;
   justify-content: center;
   border: 1px solid #817d7d;
   border-radius: 4px;
   background-color: #340c0c;
   width: 350px;
+  height: 600px;
+  overflow: scroll;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.app .saveContainer {
+  margin-top: 10px;
+  margin-left: 650px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
+
+
 
 
