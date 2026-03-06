@@ -1,8 +1,10 @@
-function SearchResults() {
+import TrackList from "../TrackList/TrackList";
+
+function SearchResults({ tracks }) {
   return (
     <div className="results">
-      <h2>Results</h2>
-      <p>poker face</p>
+      <h2>Search Results</h2>
+      <TrackList tracks={tracks} />
     </div>
   );
 }
