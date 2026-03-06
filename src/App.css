@@ -1,0 +1,95 @@
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+#root {
+  width: 100%;
+  height: 100vh;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  margin: 0 auto;
+  background-color: #3e1a1a;
+}
+
+.searchContainer {
+  margin-bottom: 20px;
+}
+
+.searchBar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+}
+.searchBar input {
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #b5b0b0;
+  border-radius: 4px;
+  margin-left: 0.5rem;
+}
+
+.searchBar button {
+  padding: 0.5rem 1rem;
+  margin-left: 1.5rem;
+  margin-right: 1.5rem;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  cursor: pointer;
+}
+
+.results {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #817d7d;
+  border-radius: 4px;
+  background-color: #340c0c;
+  width: 350px;
+  height: 200px;
+}
+
+.playlist {
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #817d7d;
+  border-radius: 4px;
+  background-color: #340c0c;
+  width: 350px;
+  height: 200px;
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+
