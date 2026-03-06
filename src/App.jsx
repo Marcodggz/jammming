@@ -11,6 +11,15 @@ function App() {
   { id: 3, name: "Just Dance", artist: "Lady Gaga", album: "The Fame" }
   ]
 
+  const playlistName = "My Playlist";
+  const playlistTracks = [
+    { id: 1, name: "Soy Peor", artist: "Bad Bunny", album: "X 100PRE" },
+    { id: 2, name: "DÁKITI", artist: "Bad Bunny", album: "El Último Tour Del Mundo" },
+    { id: 3, name: "La Canción", artist: "Bad Bunny", album: "YHLQMDLG" },
+    { id: 4, name: "Monaco", artist: "Bad Bunny", album: "El Último Tour Del Mundo" },
+    { id: 5, name: "Ella y Yo", artist: "Bad Bunny", album: "X 100PRE" }
+  ];
+
   return (
     <>
       <div className="app"> 
@@ -27,7 +36,7 @@ function App() {
         </div> 
         <div className="playlist">
           <div>
-            <Playlist />
+            <Playlist playlistName={playlistName} playlistTracks={playlistTracks} />
           </div>
         </div>
         <div>

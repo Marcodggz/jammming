@@ -1,12 +1,11 @@
 html, body {
-  height: 100%;
   margin: 0;
   padding: 0;
 }
 
 #root {
   width: 100%;
-  height: 100vh;
+  height: auto;
 }
 
 .app {
@@ -15,7 +14,6 @@ html, body {
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: 100%;
   margin: 0 auto;
   background-color: #3e1a1a;
 }
@@ -74,7 +72,6 @@ html, body {
   border-radius: 4px;
   background-color: #340c0c;
   width: 350px;
-  height: 200px;
 }
 
 @keyframes logo-spin {

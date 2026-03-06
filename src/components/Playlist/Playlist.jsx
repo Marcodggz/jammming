@@ -1,7 +1,10 @@
-function Playlist() {
+import TrackList from "../TrackList/TrackList";
+
+function Playlist({playlistName, playlistTracks}) {
   return (
-    <div className="playlist">
-      <h2>Playlist</h2>
+    <div id="playlist" className="playlistContainer">
+      <h2>{playlistName}</h2>
+      <TrackList tracks={playlistTracks} />
     </div>
   );
 }

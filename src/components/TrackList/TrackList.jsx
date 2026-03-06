@@ -6,7 +6,7 @@ function TrackList({ tracks }) {
       {tracks.map((track) => (
         <Track
           key={track.id}
-          title={track.name}
+          name={track.name}
           artist={track.artist}
           album={track.album}
         />
