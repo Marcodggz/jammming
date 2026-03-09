@@ -34,6 +34,10 @@ function App() {
    setPlaylistTracks(prevTracks => prevTracks.filter(savedTrack => savedTrack.id !== track.id));
  }
 
+ function playlistNameChange(event) {
+   setPlaylistName(event.target.value);
+ }
+
   return (
     <>
       <div className="app"> 
@@ -48,7 +52,7 @@ function App() {
           </div> 
           <div className="playlist">
             <div>
-              <Playlist playlistName={playlistName} playlistTracks={playlistTracks} removeTrack={removeTrack} />
+              <Playlist playlistName={playlistName} playlistTracks={playlistTracks} removeTrack={removeTrack} playlistNameChange={playlistNameChange} />
             </div>
             <div className='saveContainer'>
               <button>Save To Spotify</button>
