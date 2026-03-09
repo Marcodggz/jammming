@@ -7,10 +7,10 @@ import Playlist from './components/Playlist/Playlist';
 function App() {
 
   const [tracks, setTracks] = useState([
-  { id: 1, name: "Poker Face", artist: "Lady Gaga", album: "The Fame" },
-  { id: 2, name: "Bad Romance", artist: "Lady Gaga", album: "The Fame Monster" },
-  { id: 3, name: "Just Dance", artist: "Lady Gaga", album: "The Fame" }
-  
+  { id: 9, name: "Poker Face", artist: "Lady Gaga", album: "The Fame" },
+  { id: 10, name: "Bad Romance", artist: "Lady Gaga", album: "The Fame Monster" },
+  { id: 11, name: "Just Dance", artist: "Lady Gaga", album: "The Fame" }
+
   ]);
   const [playlistName, setPlaylistName] = useState("My Playlist"); 
   const [playlistTracks, setPlaylistTracks] = useState([
@@ -24,6 +24,16 @@ function App() {
     { id: 8, name: "Baticano", artist: "Bad Bunny", album: "El Último Tour Del Mundo" }
   ]);
 
+ function addTrack(track) { 
+   if (!playlistTracks.find(savedTrack => savedTrack.id === track.id)) {
+     setPlaylistTracks(prevTracks => [...prevTracks, track]);
+   }
+ }
+
+ function removeTrack(track) {
+   setPlaylistTracks(prevTracks => prevTracks.filter(savedTrack => savedTrack.id !== track.id));
+ }
+
   return (
     <>
       <div className="app"> 
@@ -33,12 +43,12 @@ function App() {
         <div className='mainContainer'>
           <div className="results">
             <div>
-              <SearchResults tracks={tracks} />
+              <SearchResults tracks={tracks} addTrack={addTrack} />
             </div>
           </div> 
           <div className="playlist">
             <div>
-              <Playlist playlistName={playlistName} playlistTracks={playlistTracks} />
+              <Playlist playlistName={playlistName} playlistTracks={playlistTracks} removeTrack={removeTrack} />
             </div>
             <div className='saveContainer'>
               <button>Save To Spotify</button>

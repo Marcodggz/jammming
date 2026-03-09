@@ -13,9 +13,16 @@ html, body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  min-height: 100vh;
   background-color: #3e1557;
   gap: 60px;
+}
+
+.mainContainer {
+  display: flex;
+  justify-content: center;
+  gap: 60px;
+  width: 100%;
 }
 
 .searchBarContainer {
@@ -26,49 +33,3 @@ html, body {
 }
 
 
-.mainContainer {
-  display: flex;
-  justify-content: center;
-  gap: 60px;
-  width: 100%;
-}
-
-.results {
-  padding: 10px;
-  padding-left: 20px;
-  display: flex;
-  flex-direction: column;
-  border: 1px solid #817d7d;
-  border-radius: 4px;
-  background-color: #20053281;
-  width: 650px;
-  height: 600px;
-  overflow: scroll;
-}
-
-.playlist {
-  padding: 10px;
-  padding-left: 20px;
-  display: flex;
-  flex-direction: column;
-  border: 1px solid #817d7d;
-  border-radius: 4px;
-  background-color: #20053281;
-  width: 500px;
-  height: 600px;
-  overflow: scroll;
-}
-
-.saveContainer {
-  margin-top: 15px;
-  display: flex;
-  justify-content: center;
-}
-
-.saveContainer button {
-  padding: 0.5rem 1rem;
-  border-radius: 15px;
-  background-color: #840fddd9;
-  color: white;
-  cursor: pointer;
-}
