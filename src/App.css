@@ -13,38 +13,18 @@ html, body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  margin: 0 auto;
-  background-color: #3e1a1a;
+  height: 100vh;
+  background-color: #3e1557;
+  gap: 60px;
 }
 
-.searchContainer {
-  margin-bottom: 20px;
-}
-
-.searchBar {
+.searchBarContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.2rem;
-}
-.searchBar input {
-  padding: 0.5rem;
-  font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  margin-left: 0.5rem;
+  gap: 40px;
 }
 
-.searchBar .button {
-  padding: 0.5rem 1rem;
-  margin-left: 1.5rem;
-  margin-right: 1.5rem;
-  border: none;
-  border-radius: 4px;
-  color: white;
-  cursor: pointer;
-}
 
 .mainContainer {
   display: flex;
@@ -55,35 +35,40 @@ html, body {
 
 .results {
   padding: 10px;
+  padding-left: 20px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
   border: 1px solid #817d7d;
   border-radius: 4px;
-  background-color: #340c0c;
-  width: 350px;
-  height: 600px;
-}
-
-.playlist {
-  padding: 10px;
-  display: flex;
-  justify-content: center;
-  border: 1px solid #817d7d;
-  border-radius: 4px;
-  background-color: #340c0c;
-  width: 350px;
+  background-color: #20053281;
+  width: 650px;
   height: 600px;
   overflow: scroll;
 }
 
-.app .saveContainer {
-  margin-top: 10px;
-  margin-left: 650px;
+.playlist {
+  padding: 10px;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #817d7d;
+  border-radius: 4px;
+  background-color: #20053281;
+  width: 500px;
+  height: 600px;
+  overflow: scroll;
 }
 
+.saveContainer {
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
+}
 
-
-
-
+.saveContainer button {
+  padding: 0.5rem 1rem;
+  border-radius: 15px;
+  background-color: #840fddd9;
+  color: white;
+  cursor: pointer;
+}

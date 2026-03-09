@@ -1,9 +1,12 @@
 import TrackList from "../TrackList/TrackList";
+import "./SearchResults.css";
 
 function SearchResults({ tracks }) {
   return (
-    <div className="results">
-      <h2>Search Results</h2>
+    <div className="SearchResults">
+      <div className="resultsHeader">
+        <h2>Results</h2>
+      </div>
       <TrackList tracks={tracks} />
     </div>
   );

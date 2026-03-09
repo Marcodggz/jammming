@@ -1,0 +1,19 @@
+.tracksContainer {
+display: flex;
+flex-direction: column;
+}
+
+.trackInfo {
+border-bottom: 1px solid #f6f3f3;
+}
+
+.trackInfo h3 {
+font-size: 18px;
+line-height: 1;
+}
+
+.trackInfo p {
+font-size: 16px;
+line-height: 1;
+color: #a5a1a1b3;
+}

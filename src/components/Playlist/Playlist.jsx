@@ -1,4 +1,5 @@
 import TrackList from "../TrackList/TrackList";
+import "./Playlist.css";
 
 function Playlist({playlistName, playlistTracks}) {
   return (

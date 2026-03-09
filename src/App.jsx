@@ -1,8 +1,8 @@
-import { useState } from 'react'
-import './App.css'
-import SearchBar from './components/SearchBar/SearchBar'
-import SearchResults from './components/SearchResults/SearchResults'
-import Playlist from './components/Playlist/Playlist'
+import { useState } from 'react';
+import './App.css';
+import SearchBar from './components/SearchBar/SearchBar';
+import SearchResults from './components/SearchResults/SearchResults';
+import Playlist from './components/Playlist/Playlist';
 
 function App() {
 
@@ -10,6 +10,7 @@ function App() {
   { id: 1, name: "Poker Face", artist: "Lady Gaga", album: "The Fame" },
   { id: 2, name: "Bad Romance", artist: "Lady Gaga", album: "The Fame Monster" },
   { id: 3, name: "Just Dance", artist: "Lady Gaga", album: "The Fame" }
+  
   ]);
   const [playlistName, setPlaylistName] = useState("My Playlist"); 
   const [playlistTracks, setPlaylistTracks] = useState([
@@ -17,32 +18,32 @@ function App() {
     { id: 2, name: "DÁKITI", artist: "Bad Bunny", album: "El Último Tour Del Mundo" },
     { id: 3, name: "La Canción", artist: "Bad Bunny", album: "YHLQMDLG" },
     { id: 4, name: "Monaco", artist: "Bad Bunny", album: "El Último Tour Del Mundo" },
-    { id: 5, name: "Ella y Yo", artist: "Bad Bunny", album: "X 100PRE" }
+    { id: 5, name: "Ella y Yo", artist: "Bad Bunny", album: "X 100PRE" },
+    { id: 6, name: "La Romana", artist: "Bad Bunny", album: "YHLQMDLG" },
+    { id: 7, name: "Vete", artist: "Bad Bunny", album: "YHLQMDLG" },
+    { id: 8, name: "Baticano", artist: "Bad Bunny", album: "El Último Tour Del Mundo" }
   ]);
 
   return (
     <>
       <div className="app"> 
-        <div className='searchContainer'>
-          <div className="searchBar">
+          <div className="searchBarContainer">
             <SearchBar />
-            <button>Search</button>
           </div>
-        </div>
         <div className='mainContainer'>
           <div className="results">
-            <div className="searchResults">
-              <SearchResults tracks={tracks} /> 
-            </div> 
+            <div>
+              <SearchResults tracks={tracks} />
+            </div>
           </div> 
           <div className="playlist">
             <div>
               <Playlist playlistName={playlistName} playlistTracks={playlistTracks} />
             </div>
+            <div className='saveContainer'>
+              <button>Save To Spotify</button>
+            </div>
           </div>
-        </div>
-        <div className='saveContainer'>
-          <button>Save To Spotify</button>
         </div>
       </div>
     </>

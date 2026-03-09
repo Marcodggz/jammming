@@ -1,9 +1,12 @@
+import "./Track.css";
+
 function Track({ name, artist, album }) {
   return (
     <div id="tracks" className="tracksContainer">
-      <h2>{name}</h2>
-      <h3>{artist}</h3>
-      <p>{album}</p>
+      <div className="trackInfo">
+        <h3>{name}</h3>
+        <p>{artist} • {album}</p>
+      </div>
     </div>
   );
 }
