@@ -125,7 +125,7 @@ async function search(term) {
   if (!token) return [];
 
   const response = await fetch(
-    `https://api.spotify.com/v1/search?type=track&q=${encodeURIComponent(term)}`,
+    `https://api.spotify.com/v1/search?type=track&q=${encodeURIComponent(term)}&limit=10`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
