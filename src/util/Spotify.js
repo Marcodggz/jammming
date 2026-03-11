@@ -53,6 +53,7 @@ async function redirectToSpotifyAuth() {
   authUrl.searchParams.set("scope", scopes);
   authUrl.searchParams.set("code_challenge_method", "S256");
   authUrl.searchParams.set("code_challenge", codeChallenge);
+  authUrl.searchParams.set("show_dialog", "true");
 
   window.location.href = authUrl.toString();
 }
@@ -181,7 +182,7 @@ async function savePlaylist(playlistName, trackUris) {
     throw new Error("Failed to retrieve Spotify user profile.");
   }
 
-  const userId = userData.id;
+  
 
   // Step 2: create a new playlist
   const createPlaylistResponse = await fetch(

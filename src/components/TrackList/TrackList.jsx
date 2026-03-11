@@ -9,6 +9,7 @@ function TrackList({ tracks, addTrack, showAddButton, removeTrack, showRemoveBut
           name={track.name}
           artist={track.artist}
           album={track.album}
+          uri={track.uri}
           addTrack={addTrack}
           showAddButton={showAddButton}
           removeTrack={removeTrack}

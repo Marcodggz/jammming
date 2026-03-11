@@ -7,14 +7,12 @@ import Spotify from './util/Spotify';
 
 function App() {
 
-  const [tracks, setTracks] = useState(['']);
+  const [tracks, setTracks] = useState([]);
   const [playlistName, setPlaylistName] = useState("My Playlist"); 
-  const [playlistTracks, setPlaylistTracks] = useState(['']);
+  const [playlistTracks, setPlaylistTracks] = useState([]);
 
-
-
- function addTrack(track) { 
-   if (!playlistTracks.find(savedTrack => savedTrack.id === track.id)) {
+  function addTrack(track) { 
+    if (!playlistTracks.find(savedTrack => savedTrack.id === track.id)) {
      setPlaylistTracks(prevTracks => [...prevTracks, track]);
      // Add the playlist tracks
    }
@@ -33,6 +31,9 @@ function App() {
  // Save the playlist to Spotify
 async function savePlaylist() {
   const trackURIs = playlistTracks.map((track) => track.uri);
+
+  console.log("playlistTracks:", playlistTracks);
+  console.log("trackURIs:", trackURIs);
 
   try {
     await Spotify.savePlaylist(playlistName, trackURIs);
