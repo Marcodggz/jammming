@@ -45,9 +45,12 @@ async function savePlaylist() {
 }
 
 async function searchTracks(searchTerm) {
-  if(searchTerm.trim()) {
+  if (searchTerm.trim()) {
     const tracks = await Spotify.search(searchTerm);
     setTracks(tracks);
+
+    // Scroll to the top of the list
+    document.querySelector('.results').scrollTo({ top: 0, behavior: 'smooth' });
   }
 }
 
