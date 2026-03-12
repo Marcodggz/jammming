@@ -2,7 +2,7 @@ import React from "react";
 import "./Track.css";
 
 
-function Track({ name, artist, artists, album, addTrack, id, showAddButton=true, removeTrack, showRemoveButton=false, uri, searchTracks}) { 
+function Track({ name, artist, artists, album, addTrack, id, showAddButton=true, removeTrack, showRemoveButton=false, uri, searchTracks, setSearchTerm }) { 
   const handleAddTrack = () => {
     addTrack({ name, artist, album, id, uri });
   }; // Handle adding a track to the playlist
@@ -13,6 +13,7 @@ function Track({ name, artist, artists, album, addTrack, id, showAddButton=true,
 
   const handleSearchTracks = (query) => {
     searchTracks(query);
+    setSearchTerm('');
   }; // Handle searching for tracks based on artist or album
 
   return (

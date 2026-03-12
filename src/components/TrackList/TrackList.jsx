@@ -1,6 +1,6 @@
 import Track from "../Track/Track";
 
-function TrackList({ tracks, addTrack, showAddButton, removeTrack, showRemoveButton, searchTracks }) {
+function TrackList({ tracks, addTrack, showAddButton, removeTrack, showRemoveButton, searchTracks, searchTerm, setSearchTerm }) {
   return (
     <div className="trackList">
       {tracks.map((track) => (
@@ -17,6 +17,8 @@ function TrackList({ tracks, addTrack, showAddButton, removeTrack, showRemoveBut
           removeTrack={removeTrack}
           showRemoveButton={showRemoveButton}
           searchTracks={searchTracks}
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
         />
       ))}
     </div>
