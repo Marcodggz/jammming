@@ -35,3 +35,11 @@ color: #a5a1a1b3;
     background-color: #724f8999;
   }
 }
+
+.clickable {
+  cursor: pointer;
+  &:hover {
+    text-decoration: underline;
+    color: #9782a6;
+  }
+}

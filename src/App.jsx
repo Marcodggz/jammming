@@ -63,7 +63,7 @@ async function searchTracks(searchTerm) {
         <div className='mainContainer'>
           <div className="results">
             <div>
-              <SearchResults tracks={tracks} addTrack={addTrack} />
+              <SearchResults tracks={tracks} addTrack={addTrack} searchTracks={searchTracks} />
             </div>
           </div> 
           <div className="playlist">

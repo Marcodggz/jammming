@@ -159,6 +159,7 @@ async function search(term) {
   return uniqueTracks.map((track) => ({
     id: track.id,
     name: track.name,
+    artists: track.artists.map((artist) => artist.name), 
     artist: track.artists.map((artist) => artist.name).join(", "),
     album: track.album.name,
     uri: track.uri,
