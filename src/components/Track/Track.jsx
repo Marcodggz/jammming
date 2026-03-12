@@ -13,7 +13,7 @@ function Track({ name, artist, artists, album, addTrack, id, showAddButton=true,
 
   const handleSearchTracks = (query) => {
     searchTracks(query);
-  };
+  }; // Handle searching for tracks based on artist or album
 
   return (
     <div className="tracksContainer">
@@ -23,13 +23,13 @@ function Track({ name, artist, artists, album, addTrack, id, showAddButton=true,
           <p>
             {artists.map((artist, index) => (
               <React.Fragment key={artist}>
-                <span onClick={() => handleSearchTracks(artist)} className="clickable">
+                <span onClick={() => handleSearchTracks(`artist:"${artist}"`)} className="clickable">
                   {artist}
                 </span>
                 {index < artists.length - 1 ? ', ' : ''}
               </React.Fragment>
             ))} •
-            <span onClick={() => handleSearchTracks(album)} className="clickable">{album}</span>
+            <span onClick={() => handleSearchTracks(`album:"${album}"`)} className="clickable">{album}</span>
           </p> 
         </div>
         <div className="trackActions">
