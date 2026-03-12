@@ -5,6 +5,7 @@ function TrackList({ tracks, addTrack, showAddButton, removeTrack, showRemoveBut
     <div className="trackList">
       {tracks.map((track) => (
         <Track
+          key={track.id}
           id={track.id}
           name={track.name}
           artist={track.artist}

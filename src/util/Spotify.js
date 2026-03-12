@@ -143,12 +143,20 @@ async function search(term) {
     throw new Error("Spotify search request failed.");
   }
 
-  const tracks = [
+  const combinedTracks = [
     ...json1.tracks.items,
     ...json2.tracks.items
   ];
 
-  return tracks.map((track) => ({
+  // delete duplicates by id
+  const uniqueTracks = combinedTracks.filter(
+    (track, index, self) =>
+      index === self.findIndex((t) => t.id === track.id)
+  );
+
+
+
+  return uniqueTracks.map((track) => ({
     id: track.id,
     name: track.name,
     artist: track.artists.map((artist) => artist.name).join(", "),
