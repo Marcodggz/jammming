@@ -4,7 +4,7 @@ import "./Track.css";
 
 function Track({ name, artist, artists, album, addTrack, id, showAddButton=true, removeTrack, showRemoveButton=false, uri, searchTracks, setSearchTerm }) { 
   const handleAddTrack = () => {
-    addTrack({ name, artist, album, id, uri });
+    addTrack({ name, artist, artists, album, id, uri });
   }; // Handle adding a track to the playlist
 
   const handleRemoveTrack = () => {
