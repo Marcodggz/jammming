@@ -10,6 +10,7 @@ function App() {
   const [tracks, setTracks] = useState([]);
   const [playlistName, setPlaylistName] = useState("My Playlist"); 
   const [playlistTracks, setPlaylistTracks] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   function addTrack(track) { 
     if (!playlistTracks.find(savedTrack => savedTrack.id === track.id)) {
@@ -44,21 +45,27 @@ async function savePlaylist() {
   }
 }
 
+// Search for tracks based on the search term
 async function searchTracks(searchTerm) {
-  const tracks = await Spotify.search(searchTerm);
-  setTracks(tracks);
+  if (searchTerm.trim()) { 
+    const tracks = await Spotify.search(searchTerm);
+    setTracks(tracks);
+
+    // Scroll to the top of the list
+    document.querySelector('.results').scrollTo({ top: 0, behavior: 'smooth' });
+  }
 }
 
   return (
     <>
       <div className="app"> 
           <div className="searchBarContainer">
-            <SearchBar searchTracks={searchTracks} />
+            <SearchBar searchTracks={searchTracks} searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
           </div>
         <div className='mainContainer'>
           <div className="results">
             <div>
-              <SearchResults tracks={tracks} addTrack={addTrack} />
+              <SearchResults tracks={tracks} addTrack={addTrack} searchTracks={searchTracks} searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
             </div>
           </div> 
           <div className="playlist">

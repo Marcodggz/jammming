@@ -8,7 +8,7 @@
   background-color: #20053281;
   width: 650px;
   height: 600px;
-  overflow: scroll;
+  overflow-y: auto;
 }
 
 .resultsHeader {
