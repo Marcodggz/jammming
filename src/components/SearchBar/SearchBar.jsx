@@ -5,6 +5,7 @@ import { useState } from "react";
 function SearchBar({ searchTracks }) {
 
   const [searchTerm, setSearchTerm] = useState("");
+ 
 
   return (
     <div className="searchBar">

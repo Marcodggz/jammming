@@ -125,27 +125,30 @@ async function search(term) {
   const token = await getAccessToken();
   if (!token) return [];
 
-  const response = await fetch(
-    `https://api.spotify.com/v1/search?type=track&q=${encodeURIComponent(term)}&limit=10`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+  const headers = {
+    Authorization: `Bearer ${token}`,
+  };
 
-  const jsonResponse = await response.json();
+  const url1 = `https://api.spotify.com/v1/search?type=track&q=${encodeURIComponent(term)}&limit=10&offset=0`;
+  const url2 = `https://api.spotify.com/v1/search?type=track&q=${encodeURIComponent(term)}&limit=10&offset=10`;
 
-  if (!response.ok) {
-    console.error("Search error:", jsonResponse);
+  const response1 = await fetch(url1, { headers });
+  const response2 = await fetch(url2, { headers });
+
+  const json1 = await response1.json();
+  const json2 = await response2.json();
+
+  if (!response1.ok || !response2.ok) {
+    console.error("Search error:", json1, json2);
     throw new Error("Spotify search request failed.");
   }
 
-  if (!jsonResponse.tracks) {
-    return [];
-  }
+  const tracks = [
+    ...json1.tracks.items,
+    ...json2.tracks.items
+  ];
 
-  return jsonResponse.tracks.items.map((track) => ({
+  return tracks.map((track) => ({
     id: track.id,
     name: track.name,
     artist: track.artists.map((artist) => artist.name).join(", "),

@@ -45,8 +45,10 @@ async function savePlaylist() {
 }
 
 async function searchTracks(searchTerm) {
-  const tracks = await Spotify.search(searchTerm);
-  setTracks(tracks);
+  if(searchTerm.trim()) {
+    const tracks = await Spotify.search(searchTerm);
+    setTracks(tracks);
+  }
 }
 
   return (
