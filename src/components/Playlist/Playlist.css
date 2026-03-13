@@ -1,15 +1,4 @@
-.playlist {
-  padding: 10px;
-  padding-left: 20px;
-  display: flex;
-  flex-direction: column;
-  border: 1px solid #817d7d;
-  border-radius: 4px;
-  background-color: #20053281;
-  width: 500px;
-  height: 600px;
-  overflow: scroll;
-}
+/* Playlist Styles */
 
 .playlistContainer {
   display: flex;
@@ -27,16 +16,23 @@
 }
 
 .saveContainer {
-  margin-top: 15px;
   display: flex;
   justify-content: center;
 }
 
-.saveContainer button {
-  padding: 0.5rem 1rem;
-  border-radius: 15px;
+.saveButton {
+  display: flex;
+  justify-content: center;
+  margin-top: 15px;
+  border-radius: 12px;
   background-color: #840fddd9;
   color: white;
   cursor: pointer;
+  border: none;
 }
 
+.saveButton:hover {
+  background-color:  rgba(185, 26, 229, 0.5)
+}
+
+/* Media Queries */
