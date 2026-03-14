@@ -2,14 +2,23 @@ import "./SearchBar.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 
-function SearchBar({ searchTracks, searchTerm, setSearchTerm }) { 
+function SearchBar({ searchTracks, searchTerm, setSearchTerm }) {
+  const handleSearch = () => {
+    if (searchTerm.trim() !== "") {
+      searchTracks(searchTerm);
+    }
+  };
 
   return (
     <div className="searchBarContainer">
       <div className="searchBar">
-        <nav className='searchNav'></nav>
+        <nav className="searchNav"></nav>
         <div className="searchInputWrapper">
-          <FontAwesomeIcon icon={faMagnifyingGlass} onClick={() => searchTracks(searchTerm)} className="searchIcon" />
+          <FontAwesomeIcon
+            icon={faMagnifyingGlass}
+            onClick={handleSearch}
+            className="searchIcon"
+          />
           <input
             type="text"
             placeholder="Search songs..."
@@ -17,14 +26,17 @@ function SearchBar({ searchTracks, searchTerm, setSearchTerm }) {
             onChange={(e) => setSearchTerm(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
-                searchTracks(searchTerm);
+                handleSearch();
               }
             }}
           />
         </div>
-        <button className="searchButton" onClick={() => searchTracks(searchTerm)}>Search</button>
+        <button className="searchButton" onClick={handleSearch}>
+          Search
+        </button>
       </div>
     </div>
   );
 }
+
 export default SearchBar;

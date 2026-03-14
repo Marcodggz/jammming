@@ -47,19 +47,37 @@ async function savePlaylist() {
 
 // Search for tracks based on the search term
 async function searchTracks(searchTerm) {
-  if (searchTerm.trim()) { 
+  if (searchTerm.trim()) {
     const tracks = await Spotify.search(searchTerm);
     setTracks(tracks);
 
-    // Scroll to the top of the list
-    document.querySelector('.results').scrollTo({ top: 0, behavior: 'smooth' });
+    // Scroll to the top of the results section
+    const resultsSection = document.querySelector(".results");
+
+    if (resultsSection) {
+      const isMobile = window.innerWidth <= 768;
+
+      if (isMobile) {
+        const y = resultsSection.getBoundingClientRect().top + window.scrollY - 90;
+
+        window.scrollTo({
+          top: y,
+          behavior: "smooth",
+        });
+      } else {
+        resultsSection.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        });
+      }
+    }
   }
 }
 
   return (
     <>
       <div className="app"> 
-          <div className="searchBarContainer">
+          <div className="searchBarMainContainer">
             <SearchBar searchTracks={searchTracks} searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
           </div>
         <div className='mainContainer'>
