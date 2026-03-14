@@ -3,7 +3,7 @@ import "./SearchResults.css";
 
 function SearchResults({ tracks, addTrack, showAddButton=true, showRemoveButton=false, searchTracks, searchTerm, setSearchTerm }) {
   return (
-    <div className="SearchResults">
+    <div className="searchResults">
       <div className="resultsHeader">
         <h2>Results</h2>
       </div>
