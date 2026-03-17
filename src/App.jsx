@@ -13,12 +13,34 @@ function App() {
   const [hasSearched, setHasSearched] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  // Filter out tracks that are already in the playlist
   const visibleTracks = tracks.filter(
     (track) =>
       !playlistTracks.some((playlistTrack) => playlistTrack.id === track.id),
   );
 
+  // Calculate the total duration of the playlist
+  const totalDurationMs = playlistTracks.reduce(
+    (total, track) => total + track.durationMs,
+    0,
+  );
+
+  const totalSeconds = Math.floor(totalDurationMs / 1000);
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  const formattedSeconds = seconds < 10 ? `0${seconds}` : seconds; 
+  const formattedDuration = 
+    hours > 0
+      ? `${hours}h ${minutes}m`
+      : minutes > 0
+        ? `${minutes}m ${formattedSeconds}s`
+        : `${formattedSeconds}s`;
+
+  
   function addTrack(track) {
+
     if (!playlistTracks.find((savedTrack) => savedTrack.id === track.id)) {
       setPlaylistTracks((prevTracks) => [...prevTracks, track]);
       // Add the playlist tracks
@@ -40,10 +62,7 @@ function App() {
   // Save the playlist to Spotify
   async function savePlaylist() {
     const trackURIs = playlistTracks.map((track) => track.uri);
-
-    console.log("playlistTracks:", playlistTracks);
-    console.log("trackURIs:", trackURIs);
-
+    
     try {
       await Spotify.savePlaylist(playlistName, trackURIs);
       setPlaylistTracks([]);
@@ -60,6 +79,7 @@ function App() {
       setIsLoading(true);
       try {
         const tracks = await Spotify.search(searchTerm);
+  
         setTracks(tracks);
 
         document
@@ -109,7 +129,8 @@ function App() {
                 removeTrack={removeTrack}
                 playlistNameChange={playlistNameChange}
                 savePlaylist={savePlaylist}
-              /> 
+                formattedDuration={formattedDuration}
+              />
             </div>
             <button onClick={Spotify.getAccessToken}>Get Access Token</button>
           </div>

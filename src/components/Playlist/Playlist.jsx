@@ -9,10 +9,14 @@ function Playlist({
   showRemoveButton = true,
   playlistNameChange,
   savePlaylist,
+  formattedDuration,
 }) {
   return (
     <div id="playlist" className="playlistContainer">
-      <input value={playlistName} onChange={playlistNameChange} />
+      <div className="playlistInfo">
+        <input value={playlistName} onChange={playlistNameChange} />
+        {playlistTracks.length > 0 && <span>{formattedDuration}</span>}
+      </div>
       <TrackList
         tracks={playlistTracks}
         showAddButton={showAddButton}

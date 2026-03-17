@@ -2,9 +2,9 @@ import React from "react";
 import "./Track.css";
 
 
-function Track({ name, artist, artists, album, addTrack, id, showAddButton=true, removeTrack, showRemoveButton=false, uri, searchTracks, setSearchTerm }) { 
+function Track({ name, artist, artists, album, addTrack, id, showAddButton=true, removeTrack, showRemoveButton=false, uri, searchTracks, setSearchTerm, durationMs }) { 
   const handleAddTrack = () => {
-    addTrack({ name, artist, artists, album, id, uri });
+    addTrack({ name, artist, artists, album, id, uri, durationMs });
   }; // Handle adding a track to the playlist
 
   const handleRemoveTrack = () => {

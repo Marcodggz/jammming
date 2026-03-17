@@ -167,6 +167,7 @@ async function search(term) {
     artist: track.artists.map((artist) => artist.name).join(", "),
     album: track.album.name,
     uri: track.uri,
+    durationMs: track.duration_ms,
   }));
 }
 

@@ -28,6 +28,7 @@ function TrackList({
           searchTracks={searchTracks}
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
+          durationMs={track.durationMs}
         />
       ))}
     </div>
