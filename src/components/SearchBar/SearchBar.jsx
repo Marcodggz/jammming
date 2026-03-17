@@ -1,10 +1,9 @@
-import "./SearchBar.css"; 
+import "./SearchBar.css";
 
 function SearchBar({ searchTracks, searchTerm, setSearchTerm }) {
-
   return (
     <div className="searchBar">
-      <nav className='searchNav'></nav>
+      <nav className="searchNav"></nav>
       <input
         type="text"
         placeholder="Search..."

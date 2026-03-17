@@ -113,7 +113,17 @@ async function getAccessToken() {
   const code = params.get("code");
 
   if (code) {
-    return await exchangeCodeForToken(code);
+    try {
+      return await exchangeCodeForToken(code);
+    } catch (error) {
+      console.error("Token exchange failed:", error);
+
+      window.history.replaceState({}, document.title, redirectUri);
+      sessionStorage.removeItem("spotify_code_verifier");
+
+      await redirectToSpotifyAuth();
+      return null;
+    }
   }
 
   await redirectToSpotifyAuth();
@@ -143,23 +153,17 @@ async function search(term) {
     throw new Error("Spotify search request failed.");
   }
 
-  const combinedTracks = [
-    ...json1.tracks.items,
-    ...json2.tracks.items
-  ];
+  const combinedTracks = [...json1.tracks.items, ...json2.tracks.items];
 
   // delete duplicates by id
   const uniqueTracks = combinedTracks.filter(
-    (track, index, self) =>
-      index === self.findIndex((t) => t.id === track.id)
+    (track, index, self) => index === self.findIndex((t) => t.id === track.id),
   );
-
-
 
   return uniqueTracks.map((track) => ({
     id: track.id,
     name: track.name,
-    artists: track.artists.map((artist) => artist.name), 
+    artists: track.artists.map((artist) => artist.name),
     artist: track.artists.map((artist) => artist.name).join(", "),
     album: track.album.name,
     uri: track.uri,
@@ -194,8 +198,6 @@ async function savePlaylist(playlistName, trackUris) {
     throw new Error("Failed to retrieve Spotify user profile.");
   }
 
-  
-
   // Step 2: create a new playlist
   const createPlaylistResponse = await fetch(
     `https://api.spotify.com/v1/me/playlists`,
@@ -207,7 +209,7 @@ async function savePlaylist(playlistName, trackUris) {
         public: false,
         description: " ",
       }),
-    }
+    },
   );
 
   const playlistData = await createPlaylistResponse.json();
@@ -228,7 +230,7 @@ async function savePlaylist(playlistName, trackUris) {
       body: JSON.stringify({
         uris: trackUris,
       }),
-    }
+    },
   );
 
   const addTracksData = await addTracksResponse.json();

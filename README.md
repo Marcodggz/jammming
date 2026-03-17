@@ -109,6 +109,7 @@ Potential next steps for Jammming include:
 - Allowing users to sort search results by criteria such as track name, artist, or album.
 - Implementing loading indicators while waiting for Spotify API responses.
 - Improving empty-state feedback when no search results are available.
+- Add a welcome state with a Spotify login prompt before the first search.
 
 ---
 
