@@ -149,7 +149,6 @@ function App() {
                 formattedDuration={formattedDuration}
               />
             </div>
-            <button onClick={Spotify.getAccessToken}>Get Access Token</button>
           </div>
         </div>
       </div>
