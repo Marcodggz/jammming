@@ -42,17 +42,40 @@ The application uses Spotify authentication and API requests to retrieve and man
 
 ## Features
 
-### Spotify Search
-Users can search for songs using the Spotify API. The application sends a request to the `/v1/search` endpoint and displays the results dynamically.
+### Spotify Authentication
+The application integrates with Spotify’s OAuth flow, allowing users to securely connect their account and interact with their personal library.
+
+### Smart Search System
+Users can search for tracks using the Spotify API. Results are dynamically fetched and updated based on the search term.
+
+### Interactive Navigation
+Clicking on an artist or album triggers a new search, enabling quick exploration of related music directly from the results list.
 
 ### Playlist Creation
 Users can build a custom playlist by adding songs from the search results.
 
-### Track Management
-Tracks can be added or removed from the playlist, and duplicate tracks are prevented.
+### Duplicate Prevention
+Tracks already added to the playlist are automatically filtered out from the search results, ensuring a clean and intuitive experience.
+
+### Playlist Management
+Tracks can be added or removed from the playlist, and duplicate entries are prevented.
 
 ### Playlist Renaming
 Users can rename their playlist directly in the interface.
+
+### Playlist Duration
+The total duration of the playlist is calculated in real time and displayed in a user-friendly format.
+
+### Loading and Empty States
+The UI handles loading states and empty results gracefully, improving the overall user experience.
+
+### Conditional UI Flow
+The interface adapts based on the application state:
+- Not authenticated → connection screen
+- Authenticated without search → onboarding message
+- Searching → loading state
+- Results → track list
+- No results → empty state message
 
 ### Spotify Integration
 Playlists can be saved directly to the user's Spotify account using the Spotify Web API.
@@ -102,14 +125,12 @@ All major features were tested and verified before completing the project.
 
 ## Future Improvements
 
-Potential next steps for Jammming include:
-
-- Excluding tracks that are already present in the playlist from the search results to improve clarity and prevent redundant actions.
-- Displaying the total duration of the playlist by calculating the combined duration of all selected tracks.
-- Allowing users to sort search results by criteria such as track name, artist, or album.
-- Implementing loading indicators while waiting for Spotify API responses.
-- Improving empty-state feedback when no search results are available.
-- Add a welcome state with a Spotify login prompt before the first search.
+- Improve visual design and polish the overall UI/UX
+- Add drag-and-drop functionality to reorder playlist tracks
+- Implement debounced search to reduce unnecessary API calls
+- Persist authentication state across sessions
+- Add user feedback for actions such as playlist saves or errors
+- Introduce more refined transitions and interaction states
 
 ---
 
