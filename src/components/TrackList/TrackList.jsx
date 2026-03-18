@@ -1,6 +1,15 @@
 import Track from "../Track/Track";
 
-function TrackList({ tracks, addTrack, showAddButton, removeTrack, showRemoveButton, searchTracks, searchTerm, setSearchTerm }) {
+function TrackList({
+  tracks,
+  addTrack,
+  showAddButton,
+  removeTrack,
+  showRemoveButton,
+  searchTracks,
+  searchTerm,
+  setSearchTerm,
+}) {
   return (
     <div className="trackList">
       {tracks.map((track) => (
@@ -19,6 +28,7 @@ function TrackList({ tracks, addTrack, showAddButton, removeTrack, showRemoveBut
           searchTracks={searchTracks}
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
+          durationMs={track.durationMs}
         />
       ))}
     </div>
@@ -26,4 +36,3 @@ function TrackList({ tracks, addTrack, showAddButton, removeTrack, showRemoveBut
 }
 
 export default TrackList;
-

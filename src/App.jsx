@@ -1,101 +1,160 @@
-import { useState } from 'react';
-import './App.css';
-import SearchBar from './components/SearchBar/SearchBar';
-import SearchResults from './components/SearchResults/SearchResults';
-import Playlist from './components/Playlist/Playlist';
-import Spotify from './util/Spotify';
+import { useState } from "react";
+import { useEffect } from "react";
+import "./App.css";
+import SearchBar from "./components/SearchBar/SearchBar";
+import SearchResults from "./components/SearchResults/SearchResults";
+import Playlist from "./components/Playlist/Playlist";
+import Spotify from "./util/Spotify";
+
 
 function App() {
-
   const [tracks, setTracks] = useState([]);
-  const [playlistName, setPlaylistName] = useState("My Playlist"); 
+  const [playlistName, setPlaylistName] = useState("My Playlist");
   const [playlistTracks, setPlaylistTracks] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [hasSearched, setHasSearched] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  function addTrack(track) { 
-    if (!playlistTracks.find(savedTrack => savedTrack.id === track.id)) {
-     setPlaylistTracks(prevTracks => [...prevTracks, track]);
-     // Add the playlist tracks
-   }
- }
+  const checkAuthentication = () => {
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get("code");
 
- function removeTrack(track) {
-   setPlaylistTracks(prevTracks => prevTracks.filter(savedTrack => savedTrack.id !== track.id));
-   // Remove the playlist tracks
- }
+    setIsAuthenticated(!!code);
+  };
 
- function playlistNameChange(event) {
-   setPlaylistName(event.target.value);
-   // Update the playlist name
- }
+  useEffect(() => {
+    checkAuthentication();
+  }, []);
 
- // Save the playlist to Spotify
-async function savePlaylist() {
-  const trackURIs = playlistTracks.map((track) => track.uri);
+  // Filter out tracks that are already in the playlist
+  const visibleTracks = tracks.filter(
+    (track) =>
+      !playlistTracks.some((playlistTrack) => playlistTrack.id === track.id),
+  );
 
-  console.log("playlistTracks:", playlistTracks);
-  console.log("trackURIs:", trackURIs);
+  // Calculate the total duration of the playlist
+  const totalDurationMs = playlistTracks.reduce(
+    (total, track) => total + track.durationMs,
+    0,
+  );
 
-  try {
-    await Spotify.savePlaylist(playlistName, trackURIs);
-    setPlaylistTracks([]);
-    setPlaylistName("My Playlist");
-  } catch (error) {
-    console.error(error);
-  }
-}
+  const totalSeconds = Math.floor(totalDurationMs / 1000);
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
 
-// Search for tracks based on the search term
-async function searchTracks(searchTerm) {
-  if (searchTerm.trim()) {
-    const tracks = await Spotify.search(searchTerm);
-    setTracks(tracks);
+  const formattedSeconds = seconds < 10 ? `0${seconds}` : seconds; 
+  const formattedDuration = 
+    hours > 0
+      ? `${hours}h ${minutes}m`
+      : minutes > 0
+        ? `${minutes}m ${formattedSeconds}s`
+        : `${formattedSeconds}s`;
 
-    // Scroll to the top of the results section
-    const resultsSection = document.querySelector(".results");
+  
+  function addTrack(track) {
 
-    if (resultsSection) {
-      const isMobile = window.innerWidth <= 768;
-
-      if (isMobile) {
-        const y = resultsSection.getBoundingClientRect().top + window.scrollY - 90;
-
-        window.scrollTo({
-          top: y,
-          behavior: "smooth",
-        });
-      } else {
-        resultsSection.scrollTo({
-          top: 0,
-          behavior: "smooth",
-        });
-      }
+    if (!playlistTracks.find((savedTrack) => savedTrack.id === track.id)) {
+      setPlaylistTracks((prevTracks) => [...prevTracks, track]);
+      // Add the playlist tracks
     }
   }
-}
+
+  function removeTrack(track) {
+    setPlaylistTracks((prevTracks) =>
+      prevTracks.filter((savedTrack) => savedTrack.id !== track.id),
+    );
+    // Remove the playlist tracks
+  }
+
+  function playlistNameChange(event) {
+    setPlaylistName(event.target.value);
+    // Update the playlist name
+  }
+
+  // Save the playlist to Spotify
+  async function savePlaylist() {
+    const trackURIs = playlistTracks.map((track) => track.uri);
+    
+    try {
+      await Spotify.savePlaylist(playlistName, trackURIs);
+      setPlaylistTracks([]);
+      setPlaylistName("My Playlist");
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  // Search for tracks based on the search term
+  async function searchTracks(searchTerm) {
+
+    if (searchTerm.trim()) {
+      setHasSearched(true);
+      setIsLoading(true);
+      try {
+        const tracks = await Spotify.search(searchTerm);
+  
+        setTracks(tracks);
+        setIsAuthenticated(true);
+        document
+          .querySelector(".results")
+          .scrollTo({ top: 0, behavior: "smooth" }); // Scroll to the top of the list
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
+    } else {
+      setTracks([]);
+      setHasSearched(false);
+      setIsLoading(false);
+    }
+  }
 
   return (
     <>
-      <div className="app"> 
-          <div className="searchBarMainContainer">
-            <SearchBar searchTracks={searchTracks} searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-          </div>
-        <div className='mainContainer'>
+      <div className="app">
+        <div className="searchBarContainer">
+          <SearchBar
+            searchTracks={searchTracks}
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+          />
+        </div>
+        <div className="mainContainer">
           <div className="results">
             <div>
-              <SearchResults tracks={tracks} addTrack={addTrack} searchTracks={searchTracks} searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+              <SearchResults
+                tracks={visibleTracks}
+                addTrack={addTrack}
+                searchTracks={searchTracks}
+                searchTerm={searchTerm}
+                setSearchTerm={setSearchTerm}
+                isAuthenticated={isAuthenticated}
+                hasSearched={hasSearched}
+                isLoading={isLoading}
+                onConnectSpotify={Spotify.getAccessToken}
+              />
             </div>
-          </div> 
+          </div>
           <div className="playlist">
             <div>
-              <Playlist playlistName={playlistName} playlistTracks={playlistTracks} removeTrack={removeTrack} playlistNameChange={playlistNameChange} savePlaylist={savePlaylist} />
+              <Playlist
+                playlistName={playlistName}
+                playlistTracks={playlistTracks}
+                removeTrack={removeTrack}
+                playlistNameChange={playlistNameChange}
+                savePlaylist={savePlaylist}
+                formattedDuration={formattedDuration}
+              />
             </div>
             <button onClick={Spotify.getAccessToken}>Get Access Token</button>
           </div>
         </div>
       </div>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
