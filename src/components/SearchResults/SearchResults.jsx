@@ -11,13 +11,34 @@ function SearchResults({
   setSearchTerm,
   hasSearched,
   isLoading,
+  onConnectSpotify,
+  isAuthenticated,
 }) {
   return (
     <div className="SearchResults">
-      <div className="resultsHeader">
-        <h2>Results</h2>
-      </div>
-      {isLoading ? (
+      {isAuthenticated && hasSearched && (
+        <div className="resultsHeader">
+          <h2>Results</h2>
+        </div>
+      )}
+      {!isAuthenticated ? (
+        <div className="welcome">
+          <h2>Ready to build your playlist?</h2>
+          <p>
+            Connect your Spotify account to start searching and building
+            playlists.
+          </p>
+          <button onClick={onConnectSpotify}>Connect to Spotify</button>
+        </div>
+      ) : !hasSearched ? (
+        <div className="welcome">
+          <h2>Search for tracks</h2>
+          <p>
+            Start building your playlist by searching for songs, artists, or
+            albums.
+          </p>
+        </div>
+      ) : isLoading ? (
         <p>Loading...</p>
       ) : tracks.length > 0 ? (
         <TrackList
@@ -29,12 +50,12 @@ function SearchResults({
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
         />
-      ) : hasSearched ? (
+      ) : (
         <p>
-          No additional tracks available for this search. <br></br> All matching
-          tracks are already in the playlist.
+          No additional tracks available for this search. <br />
+          All matching tracks are already in the playlist.
         </p>
-      ) : null}
+      )}
     </div>
   );
 }

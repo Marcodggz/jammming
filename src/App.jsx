@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { useEffect } from "react";
 import "./App.css";
 import SearchBar from "./components/SearchBar/SearchBar";
 import SearchResults from "./components/SearchResults/SearchResults";
 import Playlist from "./components/Playlist/Playlist";
 import Spotify from "./util/Spotify";
+
 
 function App() {
   const [tracks, setTracks] = useState([]);
@@ -12,6 +14,18 @@ function App() {
   const [searchTerm, setSearchTerm] = useState("");
   const [hasSearched, setHasSearched] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const checkAuthentication = () => {
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get("code");
+
+    setIsAuthenticated(!!code);
+  };
+
+  useEffect(() => {
+    checkAuthentication();
+  }, []);
 
   // Filter out tracks that are already in the playlist
   const visibleTracks = tracks.filter(
@@ -74,6 +88,7 @@ function App() {
 
   // Search for tracks based on the search term
   async function searchTracks(searchTerm) {
+
     if (searchTerm.trim()) {
       setHasSearched(true);
       setIsLoading(true);
@@ -81,7 +96,7 @@ function App() {
         const tracks = await Spotify.search(searchTerm);
   
         setTracks(tracks);
-
+        setIsAuthenticated(true);
         document
           .querySelector(".results")
           .scrollTo({ top: 0, behavior: "smooth" }); // Scroll to the top of the list
@@ -116,8 +131,10 @@ function App() {
                 searchTracks={searchTracks}
                 searchTerm={searchTerm}
                 setSearchTerm={setSearchTerm}
+                isAuthenticated={isAuthenticated}
                 hasSearched={hasSearched}
                 isLoading={isLoading}
+                onConnectSpotify={Spotify.getAccessToken}
               />
             </div>
           </div>
