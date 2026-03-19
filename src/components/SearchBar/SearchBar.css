@@ -12,7 +12,7 @@
   align-items: center;
   width: 100%;
   max-width: 500px;
-  background-color: #262228;
+  background-color: #151821;
   border: 1px solid #302c31;
   border-radius: 12px;
   transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
@@ -35,7 +35,8 @@
   border: none;
   outline: none;
   background: transparent;
-  color: white;
+  font-family: "Roboto", sans-serif;
+  color: #F3F5F3;
   cursor: text;
   transition: color 0.2s ease;
 }

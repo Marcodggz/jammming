@@ -28,7 +28,7 @@ function SearchResults({
             Connect your Spotify account to start searching and building
             playlists.
           </p>
-          <button onClick={onConnectSpotify}>Connect to Spotify</button>
+          <div className="connectButton" onClick={onConnectSpotify}>Connect to Spotify</div>
         </div>
       ) : !hasSearched ? (
         <div className="welcome">

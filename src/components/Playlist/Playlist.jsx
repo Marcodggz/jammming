@@ -23,7 +23,7 @@ function Playlist({
         removeTrack={removeTrack}
         showRemoveButton={showRemoveButton}
       />
-      <button onClick={savePlaylist}>Save To Spotify</button>
+      <div className="saveButton" onClick={savePlaylist}>Save To Spotify</div>
     </div>
   );
 }
