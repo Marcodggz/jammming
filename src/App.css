@@ -1,13 +1,26 @@
-html, body {
+html,
+body {
   margin: 0;
   padding: 0;
+  min-height: 100%;
+}
+
+body {
+  min-height: 100vh;
   font-family: "Roboto", sans-serif;
+  background-color: #050605;
+  background: linear-gradient(rgba(5, 6, 5, 0.75), rgba(5, 6, 5, 0.95)), url("/fondo.jpg");
+  background-size: 100%;
+  background-position: 60% center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
 
 #root {
   width: 100%;
-  height: auto;
+  min-height: auto;
+  z-index: 0;
 }
 
 .app {
@@ -28,13 +41,12 @@ html, body {
   padding: 10px 10px 10px 20px;
   display: flex;
   flex-direction: column;
-  background:
-    linear-gradient(
-      to bottom,
-      rgba(34, 197, 94, 0.16) 0%,
-      rgba(17, 24, 17, 0.92) 35%,
-      rgba(8, 9, 8, 0.98) 100%
-    );
+  background: linear-gradient(
+    to bottom,
+    rgba(34, 197, 94, 0.16) 0%,
+    rgba(17, 24, 17, 0.6) 35%,
+    rgba(8, 9, 8, 0.7) 100%
+  );
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 12px;
   box-shadow:
@@ -52,13 +64,12 @@ html, body {
   padding-left: 20px;
   display: flex;
   flex-direction: column;
-  background:
-    linear-gradient(
-      to bottom,
-      rgba(34, 197, 94, 0.16) 0%,
-      rgba(17, 24, 17, 0.92) 35%,
-      rgba(8, 9, 8, 0.98) 100%
-    );
+  background: linear-gradient(
+    to bottom,
+    rgba(34, 197, 94, 0.16) 0%,
+    rgba(17, 24, 17, 0.6) 35%,
+    rgba(8, 9, 8, 0.7) 100%
+  );
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 12px;
   box-shadow:
@@ -71,7 +82,6 @@ html, body {
   overflow-y: auto;
 }
 
-
 .results:hover {
   box-shadow: inset 0 0 14px rgba(34, 197, 94, 0.18);
 }
@@ -79,9 +89,6 @@ html, body {
 .playlist:hover {
   box-shadow: inset 0 0 16px rgba(34, 197, 94, 0.18);
 }
-
-
-
 
 /* tablet */
 @media (max-width: 1024px) {
@@ -117,13 +124,13 @@ html, body {
     overflow-y: visible;
     box-shadow: inset 0 0 10px rgba(34, 197, 94, 0.18);
     scroll-margin-top: 90px;
-   }
+  }
   .playlist {
     height: auto;
     overflow-y: visible;
     margin-top: 20px;
     box-shadow: inset 0 0 10px rgba(34, 197, 94, 0.18);
-   }
+  }
   .mainContainer {
     width: 100%;
     gap: 48px;
