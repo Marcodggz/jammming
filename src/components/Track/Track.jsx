@@ -35,7 +35,7 @@ function Track({ name, artist, artists, album, addTrack, id, showAddButton=true,
         </div>
         <div className="trackActions">
           {showAddButton && <button onClick={handleAddTrack}> <span>+</span></button>}
-          {showRemoveButton && <button onClick={handleRemoveTrack}> <span>-</span></button>} 
+          {showRemoveButton && <button onClick={handleRemoveTrack}> <span className="minus">-</span></button>} 
         </div>
       </div>
     </div>
