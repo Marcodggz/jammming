@@ -9,13 +9,13 @@ body {
   min-height: 100vh;
   font-family: "Roboto", sans-serif;
   background-color: #050605;
-  background: linear-gradient(rgba(5, 6, 5, 0.75), rgba(5, 6, 5, 0.95)), url("/fondo.jpg");
+  background:
+    linear-gradient(rgba(5, 6, 5, 0.75), rgba(5, 6, 5, 0.95)), url("/fondo.jpg");
   background-size: 100%;
   background-position: 60% center;
   background-repeat: no-repeat;
   background-attachment: fixed;
 }
-
 
 #root {
   width: 100%;
@@ -37,6 +37,88 @@ body {
   gap: 60px;
 }
 
+.welcomeHome {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.welcomeHome h2 {
+  font-size: 24px;
+  margin-bottom: 12px;
+}
+
+.welcomeHome p {
+  font-size: 16px;
+  line-height: 1;
+  margin-bottom: 25px;
+}
+
+.connectButton {
+  border: none;
+  padding: 12px 18px;
+  margin-top: 20px;
+  border-radius: 14px;
+  cursor: pointer;
+
+  background: linear-gradient(
+    to bottom,
+    rgba(100, 230, 160, 0.35) 0%,
+    rgba(70, 160, 110, 0.22) 50%,
+    rgba(30, 60, 45, 0.4) 100%
+  );
+
+  border: 1px solid rgba(160, 255, 210, 0.22);
+
+  box-shadow:
+    inset 0 0.8px 0 rgba(200, 255, 220, 0.6),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.25),
+    0 6px 14px rgba(0, 0, 0, 0.22);
+
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+
+  transition:
+    transform 140ms ease,
+    box-shadow 140ms ease,
+    border-color 140ms ease;
+}
+
+.connectButton:hover {
+  transform: translateY(-2px) scale(1.02);
+
+  border-color: rgba(200, 255, 220, 0.4);
+
+  box-shadow:
+    inset 0 1px 0 rgba(220, 255, 230, 0.7),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.3),
+    0 10px 20px rgba(0, 0, 0, 0.28),
+    0 0 10px rgba(94, 255, 149, 0.25);
+}
+
+.connectButtonInner {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.spotifyIcon {
+  font-size: 28px;
+  color: #eeeaea;
+  flex-shrink: 0;
+}
+
+.connectText {
+  display: block;
+  white-space: nowrap;
+  color: #eeeaea;
+  font-size: 16px;
+}
+
 .results,
 .playlist {
   padding: 15px 10px 10px 20px;
@@ -44,7 +126,7 @@ body {
   flex-direction: column;
   background: linear-gradient(
     to bottom,
-    rgba(34, 197, 94, 0.20) 0%,
+    rgba(34, 197, 94, 0.2) 0%,
     rgba(17, 24, 17, 0.6) 35%,
     rgba(8, 9, 8, 0.9) 100%
   );
@@ -60,8 +142,6 @@ body {
   overflow-y: auto;
   box-sizing: border-box;
 }
-
-
 
 /* tablet */
 @media (max-width: 1024px) {
