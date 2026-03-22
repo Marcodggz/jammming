@@ -1,38 +1,76 @@
-/* Playlist Styles */
-
 .playlistContainer {
   display: flex;
   flex-direction: column;
 }
 
-.playlistContainer input {
+.playlistHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 48px;
+  color: #F3F5F3;
+}
+
+.playlistTitleWrapper {
+  display: flex;
+  align-items: center;
+  width: fit-content;
+  gap: 2px;
+}
+
+.playlistTitle {
   border: none;
   background: transparent;
-  color: #f1f5f9;
-  font-size: 26px;
-  font-weight: bold;
-  margin-bottom: 15px;
-  margin-top: 10px;
-  font-family: "Roboto", sans-serif;
+  color: #F3F5F3;
+  font-size: 24px;
+  font-weight: 700;
+  outline: none;
+  padding: 0;
+  margin: 0;
+
+  field-sizing: content;
+  min-width: 1ch;
+}
+
+.editIcon {
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.65);
+  flex-shrink: 0;
+  margin-left: 0;
+}
+
+.playlistDuration {
+  font-size: 18px;
+  line-height: 1;
+  margin-left: 16px;
+  flex-shrink: 0;
+  color: #F3F5F3;
+}
+
+.playlistContent {
+  display: flex;
+  flex-direction: column;
 }
 
 .saveContainer {
   display: flex;
   justify-content: center;
+  margin-top: 16px;
 }
 
 .saveButton {
   display: flex;
   justify-content: center;
-  margin-top: 15px;
+  align-items: center;
+  width: 100%;
   border-radius: 12px;
   background-color: #4c5550cd;
   color: #f1f5f9;
   cursor: pointer;
   border: none;
+  padding: 10px 16px;
 }
 
 .saveButton:hover {
-  background-color:  rgba(34, 197, 94, 0.18);
+  background-color: rgba(34, 197, 94, 0.18);
 }
-

@@ -1,5 +1,7 @@
 import TrackList from "../TrackList/TrackList";
 import "./Playlist.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
 
 function Playlist({
   playlistName,
@@ -13,17 +15,35 @@ function Playlist({
 }) {
   return (
     <div id="playlist" className="playlistContainer">
-      <div className="playlistInfo">
-        <input value={playlistName} onChange={playlistNameChange} />
-        {playlistTracks.length > 0 && <span>{formattedDuration}</span>}
+      <div className="playlistHeader">
+        <div className="playlistTitleWrapper">
+          <input
+            className="playlistTitle"
+            value={playlistName}
+            onChange={playlistNameChange}
+          />
+          <FontAwesomeIcon icon={faPenToSquare} className="editIcon" />
+        </div>
+
+        {playlistTracks.length > 0 && (
+          <span className="playlistDuration">{formattedDuration}</span>
+        )}
       </div>
-      <TrackList
-        tracks={playlistTracks}
-        showAddButton={showAddButton}
-        removeTrack={removeTrack}
-        showRemoveButton={showRemoveButton}
-      />
-      <div className="saveButton" onClick={savePlaylist}>Save To Spotify</div>
+
+      <div className="playlistContent">
+        <TrackList
+          tracks={playlistTracks}
+          showAddButton={showAddButton}
+          removeTrack={removeTrack}
+          showRemoveButton={showRemoveButton}
+        />
+      </div>
+
+      <div className="saveContainer">
+        <div className="saveButton" onClick={savePlaylist}>
+          Save To Spotify
+        </div>
+      </div>
     </div>
   );
 }
