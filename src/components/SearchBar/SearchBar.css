@@ -12,14 +12,14 @@
   align-items: center;
   width: 100%;
   max-width: 500px;
-  background-color: #151821;
-  border: 1px solid #302c31;
+  background-color: #27292d;
+  border: 1px solid rgb(53, 50, 54);
   border-radius: 12px;
   transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
 }
 
 .searchInputWrapper:hover {
-  border-color: #5a5360;
+  border-color: #58535c;
 }
 
 .searchInputWrapper:focus-within {

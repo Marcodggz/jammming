@@ -8,7 +8,7 @@
   align-items: center;
   justify-content: space-between;
   height: 48px;
-  color: #F3F5F3;
+  color: #f3f5f3;
 }
 
 .playlistTitleWrapper {
@@ -21,7 +21,7 @@
 .playlistTitle {
   border: none;
   background: transparent;
-  color: #F3F5F3;
+  color: #f3f5f3;
   font-size: 24px;
   font-weight: 700;
   outline: none;
@@ -44,7 +44,7 @@
   line-height: 1;
   margin-left: 16px;
   flex-shrink: 0;
-  color: #F3F5F3;
+  color: #f3f5f3;
 }
 
 .playlistContent {
@@ -60,17 +60,55 @@
 
 .saveButton {
   display: flex;
-  justify-content: center;
   align-items: center;
-  width: 100%;
-  border-radius: 12px;
-  background-color: #4c5550cd;
-  color: #f1f5f9;
+  justify-content: center;
+  width: 45%;
+  height: 38px;
+  padding: 0 14px;
+  border-radius: 14px;
   cursor: pointer;
-  border: none;
-  padding: 10px 16px;
+  color: #f3f5f3;
+  font-size: 14px;
+  font-weight: 500;
+
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.4) 0%,
+    rgba(255, 255, 255, 0.22) 16%,
+    rgba(140, 145, 140, 0.18) 38%,
+    rgba(50, 55, 50, 0.28) 65%,
+    rgba(22, 25, 22, 0.4) 100%
+  );
+
+  border: 1px solid rgba(255, 255, 255, 0.28);
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.22),
+    0 3px 8px rgba(0, 0, 0, 0.1);
+
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 .saveButton:hover {
-  background-color: rgba(34, 197, 94, 0.18);
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.48) 0%,
+    rgba(255, 255, 255, 0.28) 16%,
+    rgba(150, 155, 150, 0.2) 38%,
+    rgba(60, 65, 60, 0.3) 65%,
+    rgba(24, 28, 24, 0.44) 100%
+  );
+  border-color: rgba(255, 255, 255, 0.34);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.65),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.28),
+    0 4px 10px rgba(0, 0, 0, 0.12);
+}
+
+.saveButton h3 {
+  color: #f3f5f3f0;
+  font-size: 16px;
+  font-weight: 500;
 }

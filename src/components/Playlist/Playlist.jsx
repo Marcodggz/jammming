@@ -41,7 +41,7 @@ function Playlist({
 
       <div className="saveContainer">
         <div className="saveButton" onClick={savePlaylist}>
-          Save To Spotify
+          <h3>Save To Spotify</h3>
         </div>
       </div>
     </div>
