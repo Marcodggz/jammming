@@ -114,45 +114,55 @@ function App() {
 
   return (
     <>
-      <div className="app">
-        <div className="searchBarContainer">
-          <SearchBar
-            searchTracks={searchTracks}
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
-          />
-        </div>
-        <div className="mainContainer">
-          <div className="results">
-            <div>
-              <SearchResults
-                tracks={visibleTracks}
-                addTrack={addTrack}
-                searchTracks={searchTracks}
-                searchTerm={searchTerm}
-                setSearchTerm={setSearchTerm}
-                isAuthenticated={isAuthenticated}
-                hasSearched={hasSearched}
-                isLoading={isLoading}
-                onConnectSpotify={Spotify.getAccessToken}
-              />
-            </div>
-          </div>
-          <div className="playlist">
-            <div>
-              <Playlist
-                playlistName={playlistName}
-                playlistTracks={playlistTracks}
-                removeTrack={removeTrack}
-                playlistNameChange={playlistNameChange}
-                savePlaylist={savePlaylist}
-                formattedDuration={formattedDuration}
-              />
-            </div>
-            <button onClick={Spotify.getAccessToken}>Get Access Token</button>
+      {!isAuthenticated ? (
+        <div className="app">
+          <div className="welcome">
+            <h2>Ready to build your playlist?</h2>
+            <p>
+              Connect your Spotify account to start searching and building
+              playlists.
+            </p>
+            <button onClick={Spotify.getAccessToken}>Connect to Spotify</button>
           </div>
         </div>
-      </div>
+      ) : (
+        <div className="app">
+          <div className="searchBarContainer">
+            <SearchBar
+              searchTracks={searchTracks}
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
+            />
+          </div>
+          <div className="mainContainer">
+            <div className="results">
+              <div>
+                <SearchResults
+                  tracks={visibleTracks}
+                  addTrack={addTrack}
+                  searchTracks={searchTracks}
+                  searchTerm={searchTerm}
+                  setSearchTerm={setSearchTerm}
+                  hasSearched={hasSearched}
+                  isLoading={isLoading}
+                />
+              </div>
+            </div>
+            <div className="playlist">
+              <div>
+                <Playlist
+                  playlistName={playlistName}
+                  playlistTracks={playlistTracks}
+                  removeTrack={removeTrack}
+                  playlistNameChange={playlistNameChange}
+                  savePlaylist={savePlaylist}
+                  formattedDuration={formattedDuration}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
