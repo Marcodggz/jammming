@@ -97,10 +97,6 @@
   letter-spacing: -1px;
   font-weight: 300;
 }
-.trackActions button {
-  outline: none;
-  -webkit-tap-highlight-color: transparent;
-}
 
 .trackActions button:focus,
 .trackActions button:focus-visible,
@@ -112,6 +108,6 @@
   cursor: pointer;
   &:hover {
     text-decoration: underline;
-    color: #ebe6ee;
+    color: #ebe6eeb7;
   }
 }

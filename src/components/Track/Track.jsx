@@ -29,7 +29,7 @@ function Track({ name, artist, artists, album, addTrack, id, showAddButton=true,
                 </span>
                 {index < artists.length - 1 ? ', ' : ''}
               </React.Fragment>
-            ))} •
+            ))} • {''}
             <span onClick={() => handleSearchTracks(`album:"${album}"`)} className="clickable">{album}</span>
           </p> 
         </div>

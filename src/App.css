@@ -5,9 +5,10 @@ body {
   min-height: 100%;
 }
 
+
 body {
   min-height: 100vh;
-  font-family: "Roboto", sans-serif;
+  font-family: "inter", sans-serif;
   background-color: #050605;
   background:
     linear-gradient(rgba(5, 6, 5, 0.75), rgba(5, 6, 5, 0.95)), url("/fondo.jpg");
@@ -104,6 +105,11 @@ body {
   justify-content: center;
   gap: 8px;
   white-space: nowrap;
+}
+.connectButton:focus,
+.connectButton:focus-visible,
+.connectButton:active {
+  outline: none;
 }
 
 .spotifyIcon {
