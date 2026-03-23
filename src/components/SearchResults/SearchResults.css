@@ -38,3 +38,11 @@
     color:  #A6B1A7;
 }
 
+.searchResults .noResults {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #A6B1A7;
+  text-align: center;
+  margin: 100px 0;
+}

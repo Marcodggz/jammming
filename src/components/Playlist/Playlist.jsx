@@ -2,6 +2,7 @@ import TrackList from "../TrackList/TrackList";
 import "./Playlist.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
+import { useRef } from "react";
 
 function Playlist({
   playlistName,
@@ -13,16 +14,34 @@ function Playlist({
   savePlaylist,
   formattedDuration,
 }) {
+  const playlistInputRef = useRef(null);
+
   return (
     <div id="playlist" className="playlistContainer">
       <div className="playlistHeader">
         <div className="playlistTitleWrapper">
           <input
+            ref={playlistInputRef}
             className="playlistTitle"
             value={playlistName}
             onChange={playlistNameChange}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.target.blur();
+              }
+            }}
           />
-          <FontAwesomeIcon icon={faPenToSquare} className="editIcon" />
+          <FontAwesomeIcon
+            icon={faPenToSquare}
+            className="editIcon"
+            onClick={() => {
+              if (playlistInputRef.current) {
+                playlistInputRef.current.focus();
+                const length = playlistInputRef.current.value.length;
+                playlistInputRef.current.setSelectionRange(length, length);
+              }
+            }}
+          />
         </div>
 
         {playlistTracks.length > 0 && (

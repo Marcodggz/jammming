@@ -35,7 +35,7 @@ function SearchResults({
           setSearchTerm={setSearchTerm}
         />
       ) : (
-        <p>
+        <p className="noResults">
           No additional tracks available for this search. <br />
           All matching tracks are already in the playlist.
         </p>
