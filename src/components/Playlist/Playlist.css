@@ -23,7 +23,7 @@
   background: transparent;
   color: #f3f5f3;
   font-size: 24px;
-  font-weight: 600;
+  font-weight: 500;
   font-family: 'inter', sans-serif;
   padding: 0;
   margin: 0;
@@ -67,50 +67,85 @@
   justify-content: center;
   margin-top: 16px;
 }
-
 .saveButton {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 45%;
-  height: 38px;
-  padding: 0 14px;
+  position: relative;
+  overflow: hidden;
+  padding: 0 30px;
+  height: 40px;
   border-radius: 14px;
-  cursor: pointer;
-  color: #f3f5f3;
-  font-size: 14px;
-  font-weight: 500;
+
   background: linear-gradient(
     to bottom,
-    rgba(255, 255, 255, 0.4) 0%,
-    rgba(255, 255, 255, 0.22) 16%,
-    rgba(140, 145, 140, 0.18) 38%,
-    rgba(50, 55, 50, 0.28) 65%,
-    rgba(22, 25, 22, 0.4) 100%
+    #565b56 0%,
+    #3b403b 18%,
+    #2a2e2a 52%,
+    #1c1f1c 100%
   );
-  border: 1px solid rgba(255, 255, 255, 0.28);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.5),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.22),
-    0 3px 8px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-}
 
+  border: 1px solid rgba(255, 255, 255, 0.09);
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.45),
+    0 2px 5px rgba(0, 0, 0, 0.10);
+
+  color: #f3f5f3;
+  cursor: pointer;
+}
 .saveButton:hover {
   background: linear-gradient(
     to bottom,
-    rgba(255, 255, 255, 0.48) 0%,
-    rgba(255, 255, 255, 0.28) 16%,
-    rgba(150, 155, 150, 0.2) 38%,
-    rgba(60, 65, 60, 0.3) 65%,
-    rgba(24, 28, 24, 0.44) 100%
+    #6b706b 0%,    
+    #565b56 12%,   
+    #3f443f 28%,
+    #2f332f 55%,
+    #1f231f 100%
   );
-  border-color: rgba(255, 255, 255, 0.34);
+
+  border: 1px solid rgba(255, 255, 255, 0.14);
+
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.65),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.28),
-    0 4px 10px rgba(0, 0, 0, 0.12);
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),  
+    inset 0 2px 4px rgba(255, 255, 255, 0.08),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.55),
+    0 4px 12px rgba(0, 0, 0, 0.22);
+
+}
+.saveButton:active {
+  transform: translateY(0);
+  box-shadow:
+    inset 0 2px 4px rgba(0,0,0,0.5);
+}
+.saveButton::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -30%;
+  width: 18%;
+  height: 100%;
+
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.22) 45%,
+    rgba(255, 255, 255, 0.10) 50%,
+    transparent 60%
+  );
+
+  pointer-events: none;
+  transform: translateX(-120%);
+  transition: transform 0.75s ease;
+}
+
+.saveButton:hover::after {
+  transform: translateX(150%);
+}
+.saveButton:hover::after {
+  transform: translateX(800%);
+  transition: transform 0.7s ease;
 }
 
 .saveButton h3 {

@@ -24,6 +24,9 @@
 }
 
 .trackActions button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 30px;
   height: 30px;
   aspect-ratio: 1 / 1;
@@ -35,7 +38,7 @@
   cursor: pointer;
   background: linear-gradient(
     to bottom,
-    rgba(34, 197, 94, 0.1) 0%,
+    rgba(34, 197, 94, 0.29) 0%,
     rgba(17, 24, 17, 0.7) 35%,
     rgba(8, 9, 8, 0.85) 100%
   );
@@ -87,13 +90,12 @@
 }
 
 .trackActions button span {
-  font-size: 17px;
+  font-size: 19px;
   font-weight: 300;
   color: #dbdedc;
 }
 .trackActions button span.minus {
   font-size: 26px;
-  transform: translateY(-1px);
   letter-spacing: -1px;
   font-weight: 300;
 }

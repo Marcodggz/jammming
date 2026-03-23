@@ -115,11 +115,11 @@ function App() {
       {!isAuthenticated ? (
         <div className="app">
           <div className="welcomeHome">
-            <h2>Ready to build your playlist?</h2>
-            <p>
+            <h1>Ready to build your playlist?</h1>
+            <h4>
               Connect your Spotify account to start searching and building
               playlists.
-            </p>
+            </h4>
             <button className="connectButton" onClick={Spotify.getAccessToken}>
               <span className="connectButtonInner">
                 <FontAwesomeIcon icon={faSpotify} className="spotifyIcon" />
