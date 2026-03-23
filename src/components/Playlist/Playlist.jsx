@@ -59,9 +59,11 @@ function Playlist({
       </div>
 
       <div className="saveContainer">
-        <div className="saveButton" onClick={savePlaylist}>
-          <h3>Save To Spotify</h3>
-        </div>
+        {playlistTracks.length > 0 && (
+          <div className="saveButton" onClick={savePlaylist}>
+            <h3>Save To Spotify</h3>
+          </div>
+        )}
       </div>
     </div>
   );
