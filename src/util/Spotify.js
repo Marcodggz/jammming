@@ -1,5 +1,5 @@
 const clientId = "40e1ad3d60c947c9b9333035a1d2f6cf";
-const redirectUri = "http://127.0.0.1:5173/";
+const redirectUri = `${window.location.origin}/`;
 
 // Required scopes:
 // - user-read-private: needed for GET /me
