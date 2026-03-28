@@ -109,7 +109,7 @@ function App() {
       setIsLoading(false);
     }
   }
-  //DELETE THIS AFTER
+  //DELETE THIS AFTER PRODUCTION TESTS
   const isDeployPreview = window.location.hostname.includes("deploy-preview"); // Check if in deploy preview
   return (
     <>
