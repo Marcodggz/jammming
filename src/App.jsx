@@ -109,10 +109,11 @@ function App() {
       setIsLoading(false);
     }
   }
-
+  //DELETE THIS AFTER PRODUCTION TESTS
+  const isDeployPreview = window.location.hostname.includes("deploy-preview"); // Check if in deploy preview
   return (
     <>
-      {!isAuthenticated ? (
+      {!isAuthenticated && !isDeployPreview ? ( //DELETE && !isDeployPreview
         <div className="app">
           <div className="welcomeHome">
             <h1>Ready to build your playlist?</h1>

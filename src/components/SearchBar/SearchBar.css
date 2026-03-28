@@ -128,3 +128,9 @@
     width: 300px;
   }
 }
+
+@media (max-width: 768px) {
+  .searchInputWrapper input {
+    width: 100%;
+  }
+}
