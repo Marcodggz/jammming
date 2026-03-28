@@ -46,6 +46,7 @@
   box-shadow:
     inset 0 0 0 1px rgba(94, 255, 149, 0.14),
     0 4px 10px rgba(0, 0, 0, 0.25);
+  transition: box-shadow 120ms ease, border-color 120ms ease;
 }
 .trackActions button::before {
   content: "";
@@ -80,7 +81,8 @@
   );
   mask: radial-gradient(circle at 50% 100%, black 10px, transparent 45%);
 }
-.trackActions button:hover {
+.trackActions button:hover,
+.trackActions button:active {
   border-color: rgba(180, 255, 205, 0.4);
 
   box-shadow:
@@ -113,3 +115,6 @@
     color: #ebe6eeb7;
   }
 }
+
+
+
