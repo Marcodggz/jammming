@@ -138,30 +138,38 @@ function App() {
             />
           </div>
           <div className="mainContainer">
-            <div className="results">
-              <div>
-                <SearchResults
-                  tracks={visibleTracks}
-                  addTrack={addTrack}
-                  searchTracks={searchTracks}
-                  searchTerm={searchTerm}
-                  setSearchTerm={setSearchTerm}
-                  hasSearched={hasSearched}
-                  isLoading={isLoading}
-                />
-              </div>
+            <div
+              className={`results ${
+                !hasSearched
+                  ? "isWelcome"
+                  : visibleTracks.length === 0 && !isLoading
+                    ? "isNoResults"
+                    : ""
+              }`}
+            >
+              <SearchResults
+                tracks={visibleTracks}
+                addTrack={addTrack}
+                searchTracks={searchTracks}
+                searchTerm={searchTerm}
+                setSearchTerm={setSearchTerm}
+                hasSearched={hasSearched}
+                isLoading={isLoading}
+              />
             </div>
-            <div className="playlist">
-              <div>
-                <Playlist
-                  playlistName={playlistName}
-                  playlistTracks={playlistTracks}
-                  removeTrack={removeTrack}
-                  playlistNameChange={playlistNameChange}
-                  savePlaylist={savePlaylist}
-                  formattedDuration={formattedDuration}
-                />
-              </div>
+            <div
+              className={`playlist ${
+                playlistTracks.length === 0 ? "isEmpty" : ""
+              }`}
+            >
+              <Playlist
+                playlistName={playlistName}
+                playlistTracks={playlistTracks}
+                removeTrack={removeTrack}
+                playlistNameChange={playlistNameChange}
+                savePlaylist={savePlaylist}
+                formattedDuration={formattedDuration}
+              />
             </div>
           </div>
         </div>

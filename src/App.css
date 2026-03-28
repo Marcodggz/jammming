@@ -156,49 +156,79 @@ body {
 }
 
 /* tablet */
+
 @media (max-width: 1024px) {
   .app {
     gap: 20px;
-    width: 100%;
-    box-sizing: border-box;
   }
-
   .mainContainer {
     flex-direction: column;
     align-items: center;
-    width: 100%;
+    margin-bottom: 70px;
   }
 
+  .welcomeHome {
+    margin-bottom: 50px;
+  }
   .searchBarContainer {
+    display: flex;
+    justify-content: center;
     margin-bottom: 20px;
     margin-top: 20px;
-    width: 100%;
+  }
+  .results,
+  .playlist {
+    background: linear-gradient(
+    to bottom,
+    rgba(34, 197, 94, 0.2) 0%,
+    rgba(17, 24, 17, 0.6) 75%,
+    rgba(8, 9, 8, 0.9) 100%
+  );
+  }
+  .results.isWelcome,
+  .results.isNoResults {
+    min-height: 300px;
+    height: auto;
+  }
+  .playlist.isEmpty {
+    min-height: 300px;
+    height: auto;
   }
 }
 
+
 /* mobile */
+
 @media (max-width: 768px) {
-  .app {
-    gap: 10px;
-    width: 100%;
-    padding: 0 20px;
-    box-sizing: border-box;
-  }
-  .results {
-    height: auto;
-    overflow-y: visible;
-    box-shadow: inset 0 0 10px rgba(34, 197, 94, 0.18);
-    scroll-margin-top: 90px;
-  }
-  .playlist {
-    height: auto;
-    overflow-y: visible;
-    margin-top: 20px;
-    box-shadow: inset 0 0 10px rgba(34, 197, 94, 0.18);
-  }
   .mainContainer {
     width: 100%;
     gap: 48px;
     margin-top: 110px;
   }
+  .app {
+    gap: 10px;
+    width: 100%;
+    padding: 0 20px;
+  }
+  .results,
+  .playlist {
+    height: auto;
+    overflow-y: visible;
+    background: linear-gradient(
+    to bottom,
+    rgba(34, 197, 94, 0.2) 0%,
+    rgba(17, 24, 17, 0.6) 75%,
+    rgba(8, 9, 8, 0.9) 100%
+    );
+  }
+  .results.isWelcome,
+  .results.isNoResults {
+    min-height: 300px;
+    height: auto;
+  }
+  .playlist.isEmpty {
+    min-height: 300px;
+    height: auto;
+  }
+
 }
