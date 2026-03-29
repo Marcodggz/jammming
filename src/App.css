@@ -1,35 +1,39 @@
 html,
-body {
+body,
+#root {
   margin: 0;
   padding: 0;
+  width: 100%;
   min-height: 100%;
 }
-
-
 body {
   min-height: 100vh;
   font-family: "inter", sans-serif;
   background-color: #050605;
-  background:
-    linear-gradient(rgba(5, 6, 5, 0.75), rgba(5, 6, 5, 0.95)), url("/fondo.jpg");
-  background-size: 100%;
-  background-position: 60% center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-}
-
-#root {
-  width: 100%;
-  min-height: auto;
-  z-index: 0;
 }
 
 .app {
+  position: relative;
+  z-index: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 60px;
+}
+
+.app::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(rgba(5, 6, 5, 0.75), rgba(5, 6, 5, 0.95)),
+    url("/fondo.jpg");
+  background-size: 100%;
+  background-position: 60% center;
+  background-repeat: no-repeat;
+  pointer-events: none;
 }
 
 .mainContainer {
@@ -232,6 +236,13 @@ body {
     gap: 48px;
     margin-top: 110px;
   }
+   body {
+    background-size: cover;
+    background-position: center top;
+    background-attachment: scroll;
+  }
+
+
 
   .results,
   .playlist {
