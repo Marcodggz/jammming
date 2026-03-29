@@ -18,8 +18,9 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 60px;
+  min-height: 100vh;
 }
 
 .app::before {
@@ -159,7 +160,7 @@ body {
   box-sizing: border-box;
 }
 
-/* tablet + mobile: una columna por defecto */
+/* tablet + mobile: column default */
 
 @media (max-width: 1024px) {
   .app {
@@ -206,23 +207,27 @@ body {
   }
 }
 
-/* tablet horizontal: dos columnas */
+/* tablet horizontal: row */
 
 @media (min-width: 769px) and (max-width: 1024px) and (orientation: landscape) {
   .mainContainer {
     flex-direction: row;
     justify-content: center;
     align-items: flex-start;
-    gap: 24px;
+    gap: 20px;
     width: 100%;
-    padding: 0 24px;
+    max-width: 100%;
+    padding: 0 16px;
     box-sizing: border-box;
   }
 
   .results,
   .playlist {
-    width: 100%;
-    max-width: 480px;
+    width: calc((100% - 20px) / 2);
+    max-width: none;
+    min-width: 0;
+    height: 600px;
+    overflow-y: auto;
   }
 }
 
