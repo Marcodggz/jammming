@@ -110,11 +110,26 @@
 
 .clickable {
   cursor: pointer;
-  &:hover {
+}
+
+.clickable:hover {
+  text-decoration: underline;
+  color: #ebe6eeb7;
+}
+
+/* tablet + mobile */
+@media (max-width: 1024px) {
+  .clickable {
     text-decoration: underline;
-    color: #ebe6eeb7;
+    color: #ebe6ee9c;
   }
 }
 
+@media (min-width: 769px) and (max-width: 1200px) and (orientation: landscape) {
+  .clickable {
+    text-decoration: underline;
+    color: #ebe6ee9c;
+  }
+}
 
 
