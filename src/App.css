@@ -5,6 +5,7 @@ body,
   padding: 0;
   width: 100%;
   min-height: 100%;
+  overflow-x: hidden;
 }
 body {
   min-height: 100vh;
@@ -18,9 +19,11 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   gap: 60px;
+  width: 100%;
   min-height: 100vh;
+  box-sizing: border-box;
 }
 
 .app::before {
@@ -29,9 +32,8 @@ body {
   inset: 0;
   z-index: -1;
   background:
-    linear-gradient(rgba(5, 6, 5, 0.75), rgba(5, 6, 5, 0.95)),
-    url("/fondo.jpg");
-  background-size: 100%;
+    linear-gradient(rgba(5, 6, 5, 0.75), rgba(5, 6, 5, 0.95)), url("/fondo.jpg");
+  background-size: cover;
   background-position: 60% center;
   background-repeat: no-repeat;
   pointer-events: none;
@@ -163,15 +165,12 @@ body {
 /* tablet + mobile: column default */
 
 @media (max-width: 1024px) {
-  .app {
-    gap: 20px;
-  }
-
+  
   .mainContainer {
     flex-direction: column;
     align-items: center;
     gap: 40px;
-    margin-bottom: 70px;
+    margin-bottom: 90px;
   }
 
   .welcomeHome {
@@ -209,25 +208,39 @@ body {
 
 /* tablet horizontal: row */
 
-@media (min-width: 769px) and (max-width: 1024px) and (orientation: landscape) {
+@media (min-width: 769px) and (max-width: 1200px) and (orientation: landscape) {
   .mainContainer {
+    display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: flex-start;
     gap: 20px;
     width: 100%;
-    max-width: 100%;
-    padding: 0 16px;
+    max-width: 1100px;
+    padding: 10px 16px;
+    margin: 0 auto 70px;
     box-sizing: border-box;
   }
 
   .results,
   .playlist {
-    width: calc((100% - 20px) / 2);
+    flex: 1 1 0;
+    width: 0;
     max-width: none;
     min-width: 0;
     height: 600px;
     overflow-y: auto;
+  }
+
+  .results.isWelcome,
+  .results.isNoResults {
+    min-height: 300px;
+    height: auto;
+  }
+
+  .playlist.isEmpty {
+    min-height: 300px;
+    height: auto;
   }
 }
 
@@ -241,13 +254,14 @@ body {
     gap: 48px;
     margin-top: 110px;
   }
-   body {
+  body {
     background-size: cover;
     background-position: center top;
     background-attachment: scroll;
   }
-
-
+  .app {
+  padding-top: 0;
+}
 
   .results,
   .playlist {
