@@ -15,27 +15,51 @@ function Track({ name, artist, artists, album, addTrack, id, showAddButton=true,
     searchTracks(query);
     setSearchTerm('');
   }; // Handle searching for tracks based on artist or album
-
   return (
     <div className="tracksContainer">
       <div className="trackInfo">
-        <div className="trackDetails"> 
+        <div className="trackDetails">
           <h3>{name}</h3>
           <p>
             {artists.map((artist, index) => (
               <React.Fragment key={artist}>
-                <span onClick={() => handleSearchTracks(`artist:"${artist}"`)} className="clickable">
-                  {artist}
-                </span>
-                {index < artists.length - 1 ? ', ' : ''}
+                {showAddButton ? (
+                  <span
+                    onClick={() => handleSearchTracks(`artist:"${artist}"`)}
+                    className="clickable"
+                  >
+                    {artist}
+                  </span>
+                ) : (
+                  <span>{artist}</span>
+                )}
+                {index < artists.length - 1 ? ", " : ""}
               </React.Fragment>
-            ))} • {''}
-            <span onClick={() => handleSearchTracks(`album:"${album}"`)} className="clickable">{album}</span>
-          </p> 
+            ))}{" "}
+            •{" "}
+            {showAddButton ? (
+              <span
+                onClick={() => handleSearchTracks(`album:"${album}"`)}
+                className="clickable"
+              >
+                {album}
+              </span>
+            ) : (
+              <span>{album}</span>
+            )}
+          </p>
         </div>
         <div className="trackActions">
-          {showAddButton && <button onClick={handleAddTrack}> <span>+</span></button>}
-          {showRemoveButton && <button onClick={handleRemoveTrack}> <span className="minus">-</span></button>} 
+          {showAddButton && (
+            <button onClick={handleAddTrack}>
+              <span>+</span>
+            </button>
+          )}
+          {showRemoveButton && (
+            <button onClick={handleRemoveTrack}>
+              <span className="minus">-</span>
+            </button>
+          )}
         </div>
       </div>
     </div>
