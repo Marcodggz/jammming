@@ -95,9 +95,6 @@ function App() {
 
         setTracks(tracks);
         setIsAuthenticated(true);
-        document
-          .querySelector(".results")
-          .scrollTo({ top: 0, behavior: "smooth" }); // Scroll to the top of the list
       } catch (error) {
         console.error(error);
       } finally {
