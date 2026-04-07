@@ -1,4 +1,4 @@
-import "./SearchBar.css"; 
+import "./SearchBar.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 
@@ -12,12 +12,11 @@ function SearchBar({ searchTracks, searchTerm, setSearchTerm }) {
   return (
     <div className="searchBarContainer">
       <div className="searchBar">
-        <nav className="searchNav"></nav>
         <div className="searchInputWrapper">
           <FontAwesomeIcon
             icon={faMagnifyingGlass}
-            onClick={handleSearch}
             className="searchIcon"
+            aria-hidden="true"
           />
           <input
             type="text"
@@ -31,7 +30,7 @@ function SearchBar({ searchTracks, searchTerm, setSearchTerm }) {
             }}
           />
         </div>
-        <button className="searchButton" onClick={handleSearch}>
+        <button type="button" className="searchButton" onClick={handleSearch}>
           Search
         </button>
       </div>

@@ -1,3 +1,5 @@
+/* Main layout */
+
 .searchBar {
   display: flex;
   align-items: center;
@@ -5,6 +7,8 @@
   flex-direction: column;
   gap: 20px;
 }
+
+/* Input wrapper */
 
 .searchInputWrapper {
   position: relative;
@@ -15,24 +19,10 @@
   background-color: #27292d;
   border: 1px solid rgb(53, 50, 54);
   border-radius: 14px;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
-}
-
-.searchInputWrapper input {
-  width: 100%;
-  padding: 12px 12px 12px 46px;
-  font-size: 1.1rem;
-  border: none;
-  outline: none;
-  background: transparent;
-  font-family: "inter", sans-serif;
-  color: #F3F5F3;
-  cursor: text;
-  transition: color 0.2s ease;
-}
-
-.searchInputWrapper input::placeholder {
-  color: rgba(255, 255, 255, 0.65);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
 }
 
 .searchInputWrapper:hover {
@@ -45,13 +35,26 @@
   box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.06);
 }
 
-.searchInputWrapper:hover .searchIcon {
-  color: rgba(255, 255, 255, 0.85);
+/* Input */
+
+.searchInputWrapper input {
+  width: 100%;
+  padding: 12px 12px 12px 46px;
+  font-size: 1.1rem;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: "inter", sans-serif;
+  color: #f3f5f3;
+  cursor: text;
+  transition: color 0.2s ease;
 }
 
-.searchInputWrapper:focus-within .searchIcon {
-  color: rgba(255, 255, 255, 0.85);
+.searchInputWrapper input::placeholder {
+  color: rgba(255, 255, 255, 0.65);
 }
+
+/* Icon */
 
 .searchIcon {
   position: absolute;
@@ -60,85 +63,57 @@
   transform: translateY(-50%);
   cursor: pointer;
   color: rgba(255, 255, 255, 0.6);
-  transition: color 0.2s ease, filter 0.2s ease;
+  transition:
+    color 0.2s ease,
+    filter 0.2s ease;
 }
+
+.searchInputWrapper:hover .searchIcon,
+.searchInputWrapper:focus-within .searchIcon {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* Button */
 
 .searchButton {
   display: none;
 }
 
-/* mobile */
+/* Mobile */
+
 @media (max-width: 768px) {
-   .searchBarContainer {
+  .searchBarContainer {
     position: fixed;
     top: 12px;
     width: 100%;
   }
-  .searchInputWrapper input {
-    width: 100%;
-  }
 
   .searchBar {
-    display: flex;
     flex-direction: row;
     gap: 5px;
   }
+
   .searchInputWrapper {
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.18);
     backdrop-filter: blur(2px);
     -webkit-backdrop-filter: blur(5px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.35);
-}
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+  }
+
   .searchInputWrapper:focus-within {
-    background: rgba(255, 255, 255, 0.183); 
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.35);
-}
-  .searchButton:active {
-    transform: scale(0.96);
     background: rgba(255, 255, 255, 0.183);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
   }
 }
 
-/* tablet vertical */
+/* Tablet */
 
-@media (min-width: 769px) and (max-width: 1024px) and (orientation: portrait) {
+@media (min-width: 769px) and (max-width: 1200px) {
   .searchBar {
     flex-direction: row;
-    gap: 0;
-  }
-
-  .searchInputWrapper {
-    width: 100%;
-    max-width: 500px;
-  }
-
-  .searchInputWrapper input {
-    width: 100%;
-  }
-
-  .searchButton {
-    display: none;
-  }
-}
-
-/* tablet horizontal */
-
-@media (min-width: 769px) and (max-width: 1024px) and (orientation: landscape) {
-  .searchBar {
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-  }
-
-  .searchInputWrapper {
-    width: 100%;
-    max-width: 340px;
-  }
-
-  .searchInputWrapper input {
-    width: 100%;
+    gap: 15px;
   }
 
   .searchButton {
@@ -147,6 +122,8 @@
     justify-content: center;
     padding: 10px 18px;
     border-radius: 24px;
+    appearance: none;
+    -webkit-appearance: none;
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.18);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
@@ -156,5 +133,13 @@
     font-size: 0.95rem;
     cursor: pointer;
     transition: all 0.2s ease;
+  }
+}
+
+/* Tablet landscape */
+
+@media (min-width: 769px) and (max-width: 1200px) and (orientation: landscape) {
+  .searchInputWrapper {
+    max-width: 340px;
   }
 }

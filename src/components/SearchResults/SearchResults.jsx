@@ -35,10 +35,10 @@ function SearchResults({
           setSearchTerm={setSearchTerm}
         />
       ) : (
-        <h4 className="noResults">
+        <p className="noResults">
           No additional tracks available for this search. <br />
           All matching tracks are already in the playlist.
-        </h4>
+        </p>
       )}
     </div>
   );

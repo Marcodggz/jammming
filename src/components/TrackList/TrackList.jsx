@@ -11,7 +11,7 @@ function TrackList({
   setSearchTerm,
 }) {
   return (
-    <div className="trackList">
+    <div>
       {tracks.map((track) => (
         <Track
           key={track.id}

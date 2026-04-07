@@ -42,9 +42,9 @@ function Playlist({
             <span className="playlistTitleText">{playlistName}</span>
           )}
 
-          <FontAwesomeIcon
-            icon={faPenToSquare}
-            className="editIcon"
+          <button
+            type="button"
+            className="editButton"
             onClick={() => {
               setIsEditingTitle(true);
               requestAnimationFrame(() => {
@@ -55,7 +55,10 @@ function Playlist({
                 }
               });
             }}
-          />
+            aria-label="Edit playlist title"
+          >
+            <FontAwesomeIcon icon={faPenToSquare} className="editIcon" />
+          </button>
         </div>
 
         {playlistTracks.length > 0 && (
@@ -74,9 +77,9 @@ function Playlist({
 
       <div className="saveContainer">
         {playlistTracks.length > 0 && (
-          <div className="saveButton" onClick={savePlaylist}>
-            <h3>Save To Spotify</h3>
-          </div>
+          <button type="button" className="saveButton" onClick={savePlaylist}>
+            <span>Save To Spotify</span>
+          </button>
         )}
       </div>
     </div>

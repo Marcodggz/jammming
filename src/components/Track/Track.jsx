@@ -1,8 +1,21 @@
 import React from "react";
 import "./Track.css";
 
-
-function Track({ name, artist, artists, album, addTrack, id, showAddButton=true, removeTrack, showRemoveButton=false, uri, searchTracks, setSearchTerm, durationMs }) { 
+function Track({
+  name,
+  artist,
+  artists,
+  album,
+  addTrack,
+  id,
+  showAddButton = true,
+  removeTrack,
+  showRemoveButton = false,
+  uri,
+  searchTracks,
+  setSearchTerm,
+  durationMs,
+}) {
   const handleAddTrack = () => {
     addTrack({ name, artist, artists, album, id, uri, durationMs });
   }; // Handle adding a track to the playlist
@@ -13,8 +26,9 @@ function Track({ name, artist, artists, album, addTrack, id, showAddButton=true,
 
   const handleSearchTracks = (query) => {
     searchTracks(query);
-    setSearchTerm('');
+    setSearchTerm("");
   }; // Handle searching for tracks based on artist or album
+
   return (
     <div className="tracksContainer">
       <div className="trackInfo">
@@ -24,12 +38,13 @@ function Track({ name, artist, artists, album, addTrack, id, showAddButton=true,
             {artists.map((artist, index) => (
               <React.Fragment key={artist}>
                 {showAddButton ? (
-                  <span
+                  <button
+                    type="button"
                     onClick={() => handleSearchTracks(`artist:"${artist}"`)}
                     className="clickable"
                   >
                     {artist}
-                  </span>
+                  </button>
                 ) : (
                   <span>{artist}</span>
                 )}
@@ -38,12 +53,13 @@ function Track({ name, artist, artists, album, addTrack, id, showAddButton=true,
             ))}{" "}
             •{" "}
             {showAddButton ? (
-              <span
+              <button
+                type="button"
                 onClick={() => handleSearchTracks(`album:"${album}"`)}
                 className="clickable"
               >
                 {album}
-              </span>
+              </button>
             ) : (
               <span>{album}</span>
             )}
@@ -51,12 +67,12 @@ function Track({ name, artist, artists, album, addTrack, id, showAddButton=true,
         </div>
         <div className="trackActions">
           {showAddButton && (
-            <button onClick={handleAddTrack}>
+            <button type="button" onClick={handleAddTrack}>
               <span>+</span>
             </button>
           )}
           {showRemoveButton && (
-            <button onClick={handleRemoveTrack}>
+            <button type="button" onClick={handleRemoveTrack}>
               <span className="minus">-</span>
             </button>
           )}
@@ -67,5 +83,3 @@ function Track({ name, artist, artists, album, addTrack, id, showAddButton=true,
 }
 
 export default Track;
-
-

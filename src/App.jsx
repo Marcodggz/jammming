@@ -118,7 +118,7 @@ function App() {
               Connect your Spotify account to start searching and building
               playlists.
             </h4>
-            <button className="connectButton" onClick={Spotify.getAccessToken}>
+            <button type="button" className="connectButton" onClick={Spotify.getAccessToken}>
               <span className="connectButtonInner">
                 <FontAwesomeIcon icon={faSpotify} className="spotifyIcon" />
                 <span className="connectText">Connect to Spotify</span>
