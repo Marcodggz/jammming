@@ -1,8 +1,8 @@
-import TrackList from "../TrackList/TrackList";
-import "./Playlist.css";
+import { useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
-import { useRef, useState } from "react";
+import TrackList from "../TrackList/TrackList";
+import "./Playlist.css";
 
 function Playlist({
   playlistName,
@@ -19,27 +19,30 @@ function Playlist({
 
   return (
     <div id="playlist" className="playlistContainer">
-      <div className="playlistHeader">
+      <header className="playlistHeader">
         <div className="playlistTitleWrapper">
           {isEditingTitle ? (
             <input
               ref={playlistInputRef}
               className="playlistTitle"
               value={playlistName}
-              onChange={(e) => {
-                const value = e.target.value.slice(0, 25);
+              onChange={(event) => {
+                const value = event.target.value.slice(0, 25);
                 playlistNameChange({ target: { value } });
               }}
               onBlur={() => setIsEditingTitle(false)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.target.blur();
+              onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  event.target.blur();
                 }
               }}
+              aria-label="Playlist title"
               autoFocus
             />
           ) : (
-            <span className="playlistTitleText">{playlistName}</span>
+            <span id="playlist-heading" className="playlistTitleText">
+              {playlistName}
+            </span>
           )}
 
           <button
@@ -47,6 +50,7 @@ function Playlist({
             className="editButton"
             onClick={() => {
               setIsEditingTitle(true);
+
               requestAnimationFrame(() => {
                 if (playlistInputRef.current) {
                   playlistInputRef.current.focus();
@@ -57,16 +61,28 @@ function Playlist({
             }}
             aria-label="Edit playlist title"
           >
-            <FontAwesomeIcon icon={faPenToSquare} className="editIcon" />
+            <FontAwesomeIcon
+              icon={faPenToSquare}
+              className="editIcon"
+              aria-hidden="true"
+            />
           </button>
         </div>
 
         {playlistTracks.length > 0 && (
-          <span className="playlistDuration">{formattedDuration}</span>
+          <span
+            className="playlistDuration"
+            aria-label={`Playlist duration ${formattedDuration}`}
+          >
+            {formattedDuration}
+          </span>
         )}
-      </div>
+      </header>
 
-      <div className="playlistContent">
+      <div
+        className="playlistContent"
+        aria-label="Playlist tracks"
+      >
         <TrackList
           tracks={playlistTracks}
           showAddButton={showAddButton}
@@ -77,7 +93,12 @@ function Playlist({
 
       <div className="saveContainer">
         {playlistTracks.length > 0 && (
-          <button type="button" className="saveButton" onClick={savePlaylist}>
+          <button
+            type="button"
+            className="saveButton"
+            onClick={savePlaylist}
+            aria-label={`Save playlist ${playlistName} to Spotify`}
+          >
             <span>Save To Spotify</span>
           </button>
         )}

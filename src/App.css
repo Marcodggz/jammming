@@ -10,11 +10,24 @@ body,
   overflow-x: hidden;
 }
 
-
 body {
   min-height: 100vh;
   font-family: "inter", sans-serif;
   background-color: #050605;
+}
+
+/* Accessible utility */
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 /* App wrapper */
@@ -147,8 +160,11 @@ body {
 
 /* Focus & active states */
 
-.connectButton:focus,
-.connectButton:focus-visible,
+.connectButton:focus-visible {
+  outline: 2px solid rgba(200, 255, 220, 0.7);
+  outline-offset: 4px;
+}
+
 .connectButton:active {
   outline: none;
 }

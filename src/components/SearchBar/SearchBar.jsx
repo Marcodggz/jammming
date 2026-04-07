@@ -9,32 +9,38 @@ function SearchBar({ searchTracks, searchTerm, setSearchTerm }) {
     }
   };
 
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    handleSearch();
+  };
+
   return (
-    <div className="searchBarContainer">
+    <form className="searchBarContainer" onSubmit={handleSubmit} role="search">
       <div className="searchBar">
         <div className="searchInputWrapper">
+          <label htmlFor="track-search-input" className="srOnly">
+            Search songs, artists, or albums
+          </label>
           <FontAwesomeIcon
             icon={faMagnifyingGlass}
             className="searchIcon"
             aria-hidden="true"
           />
           <input
+            id="track-search-input"
             type="text"
             placeholder="Search songs..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                handleSearch();
-              }
-            }}
+            onChange={(event) => setSearchTerm(event.target.value)}
+            autoComplete="off"
           />
         </div>
-        <button type="button" className="searchButton" onClick={handleSearch}>
+
+        <button type="submit" className="searchButton">
           Search
         </button>
       </div>
-    </div>
+    </form>
   );
 }
 

@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import SearchBar from "./components/SearchBar/SearchBar";
 import SearchResults from "./components/SearchResults/SearchResults";
@@ -86,13 +85,13 @@ function App() {
   }
 
   // Search for tracks based on the search term
-  async function searchTracks(searchTerm) {
-    if (searchTerm.trim()) {
+  async function searchTracks(term) {
+    if (term.trim()) {
       setHasSearched(true);
       setIsLoading(true);
-      try {
-        const tracks = await Spotify.search(searchTerm);
 
+      try {
+        const tracks = await Spotify.search(term);
         setTracks(tracks);
         setIsAuthenticated(true);
       } catch (error) {
@@ -110,24 +109,33 @@ function App() {
   const isDeployPreview = window.location.hostname.includes("deploy-preview"); // Check if in deploy preview
   return (
     <>
-      {!isAuthenticated && !isDeployPreview ? ( //DELETE && !isDeployPreview
-        <div className="app">
-          <div className="welcomeHome">
-            <h1>Ready to build your playlist?</h1>
+      {!isAuthenticated && !isDeployPreview ? (  //DELETE && !isDeployPreview
+        <main className="app">
+          <section className="welcomeHome" aria-labelledby="welcome-title">
+            <h1 id="welcome-title">Ready to build your playlist?</h1>
             <h4>
               Connect your Spotify account to start searching and building
               playlists.
             </h4>
-            <button type="button" className="connectButton" onClick={Spotify.getAccessToken}>
+            <button
+              type="button"
+              className="connectButton"
+              onClick={Spotify.getAccessToken}
+              aria-label="Connect your Spotify account"
+            >
               <span className="connectButtonInner">
-                <FontAwesomeIcon icon={faSpotify} className="spotifyIcon" />
+                <FontAwesomeIcon
+                  icon={faSpotify}
+                  className="spotifyIcon"
+                  aria-hidden="true"
+                />
                 <span className="connectText">Connect to Spotify</span>
               </span>
             </button>
-          </div>
-        </div>
+          </section>
+        </main>
       ) : (
-        <div className="app">
+        <main className="app">
           <div className="searchBarContainer">
             <SearchBar
               searchTracks={searchTracks}
@@ -135,8 +143,9 @@ function App() {
               setSearchTerm={setSearchTerm}
             />
           </div>
+
           <div className="mainContainer">
-            <div
+            <section
               className={`results ${
                 !hasSearched
                   ? "isWelcome"
@@ -144,6 +153,7 @@ function App() {
                     ? "isNoResults"
                     : ""
               }`}
+              aria-labelledby="search-results-heading"
             >
               <SearchResults
                 tracks={visibleTracks}
@@ -154,11 +164,13 @@ function App() {
                 hasSearched={hasSearched}
                 isLoading={isLoading}
               />
-            </div>
-            <div
+            </section>
+
+            <section
               className={`playlist ${
                 playlistTracks.length === 0 ? "isEmpty" : ""
               }`}
+              aria-labelledby="playlist-heading"
             >
               <Playlist
                 playlistName={playlistName}
@@ -168,9 +180,9 @@ function App() {
                 savePlaylist={savePlaylist}
                 formattedDuration={formattedDuration}
               />
-            </div>
+            </section>
           </div>
-        </div>
+        </main>
       )}
     </>
   );

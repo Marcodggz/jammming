@@ -1,8 +1,17 @@
+/* Track list */
+
+.trackList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
 /* Component wrapper */
 
 .tracksContainer {
   display: flex;
   flex-direction: column;
+  list-style: none;
 }
 
 /* Track layout */
@@ -95,10 +104,13 @@
     0 0 8px rgba(94, 255, 149, 0.25);
 }
 
-.trackActions button:focus,
-.trackActions button:focus-visible,
-.trackActions button:active {
+.trackActions button:focus {
   outline: none;
+}
+
+.trackActions button:focus-visible {
+  outline: 2px solid rgba(200, 255, 220, 0.7);
+  outline-offset: 3px;
 }
 
 .trackActions button span {
@@ -127,10 +139,14 @@
   -webkit-appearance: none;
 }
 
-.clickable:focus,
-.clickable:focus-visible,
-.clickable:active {
+.clickable:focus {
   outline: none;
+}
+
+.clickable:focus-visible {
+  outline: 2px solid rgba(200, 255, 220, 0.65);
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 
 .clickable:hover {

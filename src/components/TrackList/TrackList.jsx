@@ -11,7 +11,7 @@ function TrackList({
   setSearchTerm,
 }) {
   return (
-    <div>
+    <ul className="trackList" role="list">
       {tracks.map((track) => (
         <Track
           key={track.id}
@@ -31,7 +31,7 @@ function TrackList({
           durationMs={track.durationMs}
         />
       ))}
-    </div>
+    </ul>
   );
 }
 

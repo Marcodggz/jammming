@@ -14,6 +14,10 @@ function SearchResults({
 }) {
   return (
     <div className="searchResults">
+      <h2 id="search-results-heading" className="srOnly">
+        Search results
+      </h2>
+
       {!hasSearched ? (
         <div className="welcome">
           <h2>Search for tracks</h2>
@@ -23,7 +27,7 @@ function SearchResults({
           </p>
         </div>
       ) : isLoading ? (
-        <p>Loading...</p>
+        <p aria-live="polite">Loading...</p>
       ) : tracks.length > 0 ? (
         <TrackList
           tracks={tracks}
@@ -35,7 +39,7 @@ function SearchResults({
           setSearchTerm={setSearchTerm}
         />
       ) : (
-        <p className="noResults">
+        <p className="noResults" aria-live="polite">
           No additional tracks available for this search. <br />
           All matching tracks are already in the playlist.
         </p>

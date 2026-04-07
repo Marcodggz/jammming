@@ -26,27 +26,33 @@ function Track({
 
   const handleSearchTracks = (query) => {
     searchTracks(query);
-    setSearchTerm("");
+
+    if (setSearchTerm) {
+      setSearchTerm("");
+    }
   }; // Handle searching for tracks based on artist or album
 
   return (
-    <div className="tracksContainer">
+    <li className="tracksContainer">
       <div className="trackInfo">
         <div className="trackDetails">
           <h3>{name}</h3>
           <p>
-            {artists.map((artist, index) => (
-              <React.Fragment key={artist}>
+            {artists.map((artistName, index) => (
+              <React.Fragment key={artistName}>
                 {showAddButton ? (
                   <button
                     type="button"
-                    onClick={() => handleSearchTracks(`artist:"${artist}"`)}
+                    onClick={() =>
+                      handleSearchTracks(`artist:"${artistName}"`)
+                    }
                     className="clickable"
+                    aria-label={`Search tracks by ${artistName}`}
                   >
-                    {artist}
+                    {artistName}
                   </button>
                 ) : (
-                  <span>{artist}</span>
+                  <span>{artistName}</span>
                 )}
                 {index < artists.length - 1 ? ", " : ""}
               </React.Fragment>
@@ -57,6 +63,7 @@ function Track({
                 type="button"
                 onClick={() => handleSearchTracks(`album:"${album}"`)}
                 className="clickable"
+                aria-label={`Search tracks from the album ${album}`}
               >
                 {album}
               </button>
@@ -65,20 +72,32 @@ function Track({
             )}
           </p>
         </div>
+
         <div className="trackActions">
           {showAddButton && (
-            <button type="button" onClick={handleAddTrack}>
-              <span>+</span>
+            <button
+              type="button"
+              onClick={handleAddTrack}
+              aria-label={`Add ${name} to playlist`}
+            >
+              <span aria-hidden="true">+</span>
             </button>
           )}
+
           {showRemoveButton && (
-            <button type="button" onClick={handleRemoveTrack}>
-              <span className="minus">-</span>
+            <button
+              type="button"
+              onClick={handleRemoveTrack}
+              aria-label={`Remove ${name} from playlist`}
+            >
+              <span className="minus" aria-hidden="true">
+                -
+              </span>
             </button>
           )}
         </div>
       </div>
-    </div>
+    </li>
   );
 }
 
