@@ -17,7 +17,7 @@ https://the-jammming.netlify.app/
 
 ## Preview
 
-![App Demo](./public/demo.gif)
+![App Demo](./assets/demo.gif)
 
 ---
 
