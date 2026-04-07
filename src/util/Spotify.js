@@ -2,11 +2,10 @@ const clientId = "40e1ad3d60c947c9b9333035a1d2f6cf";
 const redirectUri = `${window.location.origin}/`;
 
 // Required scopes:
-// - user-read-private: needed for GET /me
 // - playlist-modify-private: needed to create/edit private playlists
 // - playlist-modify-public: needed to create/edit public playlists
-const scopes =
-  "user-read-private playlist-modify-private playlist-modify-public";
+
+const scopes = "playlist-modify-private playlist-modify-public";
 
 let accessToken = "";
 
@@ -155,7 +154,7 @@ async function search(term) {
 
   const combinedTracks = [...json1.tracks.items, ...json2.tracks.items];
 
-  // delete duplicates by id
+  // Delete duplicates by id
   const uniqueTracks = combinedTracks.filter(
     (track, index, self) => index === self.findIndex((t) => t.id === track.id),
   );
@@ -178,28 +177,19 @@ async function savePlaylist(playlistName, trackUris) {
   }
 
   const token = await getAccessToken();
-  if (!token) return;
+
+  if (!token) {
+    return;
+  }
 
   const headers = {
     Authorization: `Bearer ${token}`,
     "Content-Type": "application/json",
   };
 
-  // Step 1: get current user ID
-  const userResponse = await fetch("https://api.spotify.com/v1/me", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
 
-  const userData = await userResponse.json();
 
-  if (!userResponse.ok) {
-    console.error("GET /me error:", userData);
-    throw new Error("Failed to retrieve Spotify user profile.");
-  }
-
-  // Step 2: create a new playlist
+  // Create a new playlist
   const createPlaylistResponse = await fetch(
     `https://api.spotify.com/v1/me/playlists`,
     {
@@ -222,7 +212,7 @@ async function savePlaylist(playlistName, trackUris) {
 
   const playlistId = playlistData.id;
 
-  // Step 3: add tracks to the playlist
+  // Add tracks to the playlist
   const addTracksResponse = await fetch(
     `https://api.spotify.com/v1/playlists/${playlistId}/items`,
     {
