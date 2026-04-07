@@ -14,6 +14,7 @@ body {
   min-height: 100vh;
   font-family: "inter", sans-serif;
   background-color: #050605;
+  color: #f3f5f3;
 }
 
 /* Accessible utility */

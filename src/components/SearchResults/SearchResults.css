@@ -28,6 +28,15 @@
   font-weight: 400;
 }
 
+/* Loading state */
+
+.loadingMessage {
+  text-align: center;
+  margin: 40px 0;
+  color: #a6b1a7;
+  font-size: 16px;
+}
+
 /* No results state */
 
 .searchResults .noResults {

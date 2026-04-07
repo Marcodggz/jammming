@@ -34,7 +34,7 @@ function SearchResults({
           </p>
         </div>
       ) : isLoading ? (
-        <p aria-live="polite">Loading...</p>
+        <p className="loadingMessage" aria-live="polite">Loading...</p>
       ) : tracks.length > 0 ? (
         <TrackList
           tracks={tracks}
