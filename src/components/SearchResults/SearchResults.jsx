@@ -11,12 +11,19 @@ function SearchResults({
   setSearchTerm,
   hasSearched,
   isLoading,
+  searchErrorMessage,
 }) {
   return (
     <div className="searchResults">
       <h2 id="search-results-heading" className="srOnly">
         Search results
       </h2>
+
+      {searchErrorMessage && (
+        <p className="errorMessage" aria-live="assertive">
+          {searchErrorMessage}
+        </p>
+      )}
 
       {!hasSearched ? (
         <div className="welcome">

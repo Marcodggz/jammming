@@ -15,6 +15,9 @@ function App() {
   const [hasSearched, setHasSearched] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [searchErrorMessage, setSearchErrorMessage] = useState("");
+  const [playlistErrorMessage, setPlaylistErrorMessage] = useState("");
+  const [playlistSuccessMessage, setPlaylistSuccessMessage] = useState("");
 
   const checkAuthentication = () => {
     const params = new URLSearchParams(window.location.search);
@@ -75,12 +78,23 @@ function App() {
   async function savePlaylist() {
     const trackURIs = playlistTracks.map((track) => track.uri);
 
+    if (trackURIs.length === 0) return;
+
+    setPlaylistErrorMessage("");
+    setPlaylistSuccessMessage("");
+
     try {
       await Spotify.savePlaylist(playlistName, trackURIs);
       setPlaylistTracks([]);
       setPlaylistName("My Playlist");
+      setPlaylistSuccessMessage("Playlist saved successfully to Spotify.");
+
+      setTimeout(() => {
+        setPlaylistSuccessMessage("");
+      }, 3000);
     } catch (error) {
       console.error(error);
+      setPlaylistErrorMessage("Failed to save playlist. Please try again.");
     }
   }
 
@@ -89,6 +103,7 @@ function App() {
     if (term.trim()) {
       setHasSearched(true);
       setIsLoading(true);
+      setSearchErrorMessage("");
 
       try {
         const tracks = await Spotify.search(term);
@@ -96,6 +111,9 @@ function App() {
         setIsAuthenticated(true);
       } catch (error) {
         console.error(error);
+        setSearchErrorMessage(
+          "Something went wrong while searching. Please try again.",
+        );
       } finally {
         setIsLoading(false);
       }
@@ -103,6 +121,7 @@ function App() {
       setTracks([]);
       setHasSearched(false);
       setIsLoading(false);
+      setSearchErrorMessage("");
     }
   }
   //DELETE THIS AFTER PRODUCTION TESTS
@@ -163,6 +182,7 @@ function App() {
                 setSearchTerm={setSearchTerm}
                 hasSearched={hasSearched}
                 isLoading={isLoading}
+                searchErrorMessage={searchErrorMessage}
               />
             </section>
 
@@ -179,6 +199,8 @@ function App() {
                 playlistNameChange={playlistNameChange}
                 savePlaylist={savePlaylist}
                 formattedDuration={formattedDuration}
+                playlistSuccessMessage={playlistSuccessMessage}
+                playlistErrorMessage={playlistErrorMessage}
               />
             </section>
           </div>
