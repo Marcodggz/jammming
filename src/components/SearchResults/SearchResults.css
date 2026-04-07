@@ -28,13 +28,37 @@
   font-weight: 400;
 }
 
+
 /* Loading state */
+
+.loadingState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 50px 0;
+}
+
+.loadingSpinner {
+  width: 22px;
+  height: 22px;
+  border: 2px solid rgba(255, 255, 255, 0.14);
+  border-top-color: rgba(200, 255, 220, 0.6);
+  border-radius: 50%;
+  animation: spin 0.75s linear infinite;
+}
 
 .loadingMessage {
   text-align: center;
-  margin: 50px 0;
+  margin: 12px 0 0;
   color: #a6b1a7;
   font-size: 16px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* No results state */

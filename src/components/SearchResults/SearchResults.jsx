@@ -34,7 +34,10 @@ function SearchResults({
           </p>
         </div>
       ) : isLoading ? (
-        <p className="loadingMessage" aria-live="polite">Searching tracks...</p>
+        <div className="loadingState" aria-live="polite">
+          <span className="loadingSpinner" aria-hidden="true"></span>
+          <p className="loadingMessage">Searching tracks...</p>
+        </div>
       ) : tracks.length > 0 ? (
         <TrackList
           tracks={tracks}
