@@ -124,11 +124,10 @@ function App() {
       setSearchErrorMessage("");
     }
   }
-  //DELETE THIS AFTER PRODUCTION TESTS
-  const isDeployPreview = window.location.hostname.includes("deploy-preview"); // Check if in deploy preview
+ 
   return (
     <>
-      {!isAuthenticated && !isDeployPreview ? (  //DELETE && !isDeployPreview
+      {!isAuthenticated ? ( 
         <main className="app">
           <section className="welcomeHome" aria-labelledby="welcome-title">
             <h1 id="welcome-title">Ready to build your playlist?</h1>

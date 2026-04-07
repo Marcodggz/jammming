@@ -3,7 +3,6 @@ import "./Track.css";
 
 function Track({
   name,
-  artist,
   artists,
   album,
   addTrack,
@@ -17,7 +16,7 @@ function Track({
   durationMs,
 }) {
   const handleAddTrack = () => {
-    addTrack({ name, artist, artists, album, id, uri, durationMs });
+    addTrack({ name, artists, album, id, uri, durationMs });
   }; // Handle adding a track to the playlist
 
   const handleRemoveTrack = () => {

@@ -163,7 +163,6 @@ async function search(term) {
     id: track.id,
     name: track.name,
     artists: track.artists.map((artist) => artist.name),
-    artist: track.artists.map((artist) => artist.name).join(", "),
     album: track.album.name,
     uri: track.uri,
     durationMs: track.duration_ms,
