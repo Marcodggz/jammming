@@ -17,7 +17,11 @@ https://the-jammming.netlify.app/
 
 ## Preview
 
-<video src="assets/demo.mp4" autoplay loop muted playsinline width="100%"></video>
+## Preview
+
+![App Demo](assets/demo.gif)
+
+[Watch full demo (high quality)](https://raw.githubusercontent.com/Marcodggz/jammming/main/assets/demo.mp4)
 
 ---
 
