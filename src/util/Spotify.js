@@ -8,6 +8,8 @@ const redirectUri = `${window.location.origin}/`;
 const scopes = "playlist-modify-private playlist-modify-public";
 
 let accessToken = "";
+const TOKEN_KEY = "spotify_access_token";
+const EXPIRY_KEY = "spotify_token_expiry";
 
 // Generate a random string for the PKCE code_verifier
 function generateRandomString(length) {
@@ -20,6 +22,12 @@ function generateRandomString(length) {
   }
 
   return text;
+}
+
+// Redirect user to Spotify login
+
+async function login() {
+  await redirectToSpotifyAuth();
 }
 
 // Create SHA-256 hash from the verifier
@@ -35,6 +43,41 @@ function base64encode(input) {
     .replace(/=/g, "")
     .replace(/\+/g, "-")
     .replace(/\//g, "_");
+}
+
+// Save the access token and its expiry time
+
+function saveToken(token, expiresIn) {
+  accessToken = token;
+  sessionStorage.setItem(TOKEN_KEY, token);
+  sessionStorage.setItem(EXPIRY_KEY, String(Date.now() + expiresIn * 1000));
+}
+
+function clearToken() {
+  accessToken = "";
+  sessionStorage.removeItem(TOKEN_KEY);
+  sessionStorage.removeItem(EXPIRY_KEY);
+}
+
+function getStoredToken() {
+  const storedToken = sessionStorage.getItem(TOKEN_KEY);
+  const storedExpiry = sessionStorage.getItem(EXPIRY_KEY);
+
+  if (!storedToken || !storedExpiry) return null;
+
+  const isExpired = Date.now() >= Number(storedExpiry);
+
+  if (isExpired) {
+    clearToken();
+    return null;
+  }
+
+  accessToken = storedToken;
+  return storedToken;
+}
+
+function hasValidSession() {
+  return !!getStoredToken();
 }
 
 // Redirect user to Spotify authorization page
@@ -88,13 +131,7 @@ async function exchangeCodeForToken(code) {
     throw new Error("Failed to exchange authorization code for access token.");
   }
 
-  accessToken = data.access_token;
-
-  if (data.expires_in) {
-    window.setTimeout(() => {
-      accessToken = "";
-    }, data.expires_in * 1000);
-  }
+  saveToken(data.access_token, data.expires_in);
 
   // Remove ?code=... from URL
   window.history.replaceState({}, document.title, redirectUri);
@@ -104,12 +141,20 @@ async function exchangeCodeForToken(code) {
 
 // Main function to retrieve token
 async function getAccessToken() {
-  if (accessToken) {
-    return accessToken;
+  const storedToken = getStoredToken();
+  if (storedToken) {
+    return storedToken;
   }
 
   const params = new URLSearchParams(window.location.search);
   const code = params.get("code");
+
+  const codeVerifier = sessionStorage.getItem("spotify_code_verifier");
+
+  // Inconsistent state: there is a verifier but no code or token
+  if (!code && codeVerifier) {
+    sessionStorage.removeItem("spotify_code_verifier");
+  }
 
   if (code) {
     try {
@@ -118,6 +163,7 @@ async function getAccessToken() {
       console.error("Token exchange failed:", error);
 
       window.history.replaceState({}, document.title, redirectUri);
+      clearToken();
       sessionStorage.removeItem("spotify_code_verifier");
 
       await redirectToSpotifyAuth();
@@ -186,8 +232,6 @@ async function savePlaylist(playlistName, trackUris) {
     "Content-Type": "application/json",
   };
 
-
-
   // Create a new playlist
   const createPlaylistResponse = await fetch(
     `https://api.spotify.com/v1/me/playlists`,
@@ -235,6 +279,8 @@ const Spotify = {
   getAccessToken,
   search,
   savePlaylist,
+  hasValidSession,
+  login,
 };
 
 export default Spotify;
