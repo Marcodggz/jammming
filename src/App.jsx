@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import "./App.css";
 import SearchBar from "./components/SearchBar/SearchBar";
 import SearchResults from "./components/SearchResults/SearchResults";
@@ -18,16 +18,35 @@ function App() {
   const [searchErrorMessage, setSearchErrorMessage] = useState("");
   const [playlistErrorMessage, setPlaylistErrorMessage] = useState("");
   const [playlistSuccessMessage, setPlaylistSuccessMessage] = useState("");
-
-  const checkAuthentication = () => {
-    const params = new URLSearchParams(window.location.search);
-    const code = params.get("code");
-
-    setIsAuthenticated(!!code);
-  };
+  const hasInitializedAuth = useRef(false);
 
   useEffect(() => {
-    checkAuthentication();
+    if (hasInitializedAuth.current) return;
+    hasInitializedAuth.current = true;
+
+    async function initializeAuth() {
+      const params = new URLSearchParams(window.location.search);
+      const code = params.get("code");
+
+      if (Spotify.hasValidSession()) {
+        setIsAuthenticated(true);
+        return;
+      }
+
+      if (code) {
+        try {
+          await Spotify.getAccessToken();
+          setIsAuthenticated(true);
+        } catch (error) {
+          console.error("Authentication initialization failed:", error);
+          setIsAuthenticated(false);
+        }
+      } else {
+        setIsAuthenticated(false);
+      }
+    }
+
+    initializeAuth();
   }, []);
 
   // Filter out tracks that are already in the playlist
@@ -108,7 +127,6 @@ function App() {
       try {
         const tracks = await Spotify.search(term);
         setTracks(tracks);
-        setIsAuthenticated(true);
       } catch (error) {
         console.error(error);
         setSearchErrorMessage(
@@ -138,7 +156,7 @@ function App() {
             <button
               type="button"
               className="connectButton"
-              onClick={Spotify.getAccessToken}
+              onClick={Spotify.login}
               aria-label="Connect your Spotify account"
             >
               <span className="connectButtonInner">
