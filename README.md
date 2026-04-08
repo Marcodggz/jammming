@@ -5,7 +5,7 @@
 ![Spotify API](https://img.shields.io/badge/API-Spotify-green)
 ![Status](https://img.shields.io/badge/status-Completed-success)
 
-A responsive React application that lets users search Spotify, build custom playlists, and save them directly to their account using the Spotify Web API.
+A responsive React application that integrates with the Spotify Web API, allowing users to search tracks, build custom playlists, and save them directly to their Spotify account.
 
 ---
 
@@ -13,15 +13,17 @@ A responsive React application that lets users search Spotify, build custom play
 
 https://the-jammming.netlify.app/
 
----
-
-## Preview
-
-## Preview
-
 ![App Demo](assets/demo.gif)
 
 [Watch full demo (high quality)](https://raw.githubusercontent.com/Marcodggz/jammming/main/assets/demo.mp4)
+
+---
+
+## Overview
+
+Jammming is a responsive React application that integrates with the Spotify Web API, allowing users to search tracks, build playlists, and save them directly to their Spotify account.
+
+The project focuses on real-world frontend challenges such as API integration, authentication, state management, and user experience.
 
 ---
 
@@ -44,14 +46,40 @@ https://the-jammming.netlify.app/
 - React
 - JavaScript (ES6+)
 - Vite
-- Spotify Web API
-- CSS
+- Spotify Web API (OAuth PKCE)
+- CSS 
 
 ---
 
-## Technical Design
+## Technical Decisions
 
-A technical design document was created to define the logic and structure behind filtering search results and preventing duplicate tracks.
+Key implementation decisions were made to improve data handling, authentication flow, and overall user experience.
+
+### 1. Filtering search results to prevent duplicate tracks
+
+Instead of mutating the original search results, duplicate tracks are filtered at render level by deriving a new array based on the current playlist state.
+
+This keeps the data flow predictable, avoids unnecessary state mutations, and ensures that search results always stay in sync with the playlist.
+
+---
+
+### 2. Handling Spotify OAuth and session persistence
+
+Authentication is implemented using Spotify’s PKCE flow. The access token and its expiration time are stored in sessionStorage to restore the session after page reload.
+
+The application initializes authentication on load, handling the OAuth callback automatically and preventing inconsistent states caused by URL-based logic.
+
+---
+
+### 3. Interactive search via artist and album
+
+Tracks include clickable artist and album names that trigger new searches using Spotify query filters such as artist:"..." and album:"...".
+
+This approach improves navigation within the app and allows users to explore related content without manually typing new queries.
+
+---
+
+A technical design document was created to define the logic and structure behind filtering search results and preventing duplicate tracks:
 
 - [View Technical Design Document](docs/jammming-design-document.md)
 
@@ -59,9 +87,13 @@ A technical design document was created to define the logic and structure behind
 
 ## Testing
 
-Core features were tested manually during development to ensure correct behavior, including search functionality, playlist management, and Spotify integration.
+Core features were tested manually during development to ensure correct behavior, including:
 
-Browser developer tools and React Developer Tools were used to inspect state, debug issues, and validate API requests.
+- Search functionality and API integration
+- Playlist creation and modification
+- Authentication flow and session persistence
+
+Browser Developer Tools and React Developer Tools were used to debug state, inspect API responses, and validate edge cases.
 
 ---
 
@@ -76,10 +108,12 @@ Browser developer tools and React Developer Tools were used to inspect state, de
 
 ## Installation
 
-git clone https://github.com/Marcodggz/jammming.git  
-cd jammming  
-npm install  
+```bash
+git clone https://github.com/Marcodggz/jammming.git
+cd jammming
+npm install
 npm run dev
+```
 
 ---
 
@@ -103,4 +137,4 @@ Due to Spotify API restrictions, only authorized users may be able to fully test
 
 ## Author
 
-Created as part of the Codecademy Front-End Engineer Path and further improved with additional features and UX enhancements.
+Created as part of the Codecademy Front-End Engineer Path and further developed with additional features, UX improvements, and authentication enhancements.

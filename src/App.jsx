@@ -124,10 +124,10 @@ function App() {
       setSearchErrorMessage("");
     }
   }
- 
+
   return (
     <>
-      {!isAuthenticated ? ( 
+      {!isAuthenticated ? (
         <main className="app">
           <section className="welcomeHome" aria-labelledby="welcome-title">
             <h1 id="welcome-title">Ready to build your playlist?</h1>

@@ -186,8 +186,6 @@ async function savePlaylist(playlistName, trackUris) {
     "Content-Type": "application/json",
   };
 
-
-
   // Create a new playlist
   const createPlaylistResponse = await fetch(
     `https://api.spotify.com/v1/me/playlists`,
