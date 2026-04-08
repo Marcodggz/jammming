@@ -17,7 +17,7 @@ https://the-jammming.netlify.app/
 
 ## Preview
 
-![App Demo](./assets/demo.gif)
+<video src="assets/demo.mp4" autoplay loop muted playsinline width="100%"></video>
 
 ---
 
