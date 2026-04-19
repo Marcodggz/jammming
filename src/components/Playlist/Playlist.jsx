@@ -87,12 +87,19 @@ function Playlist({
       </header>
 
       <div className="playlistContent">
-        <TrackList
-          tracks={playlistTracks}
-          showAddButton={showAddButton}
-          removeTrack={removeTrack}
-          showRemoveButton={showRemoveButton}
-        />
+        {playlistTracks.length === 0 ? (
+          <div className="emptyPlaylist">
+            <h4>No tracks yet</h4>
+            <p>Tap + to add songs</p>
+          </div>
+        ) : (
+          <TrackList
+            tracks={playlistTracks}
+            showAddButton={showAddButton}
+            removeTrack={removeTrack}
+            showRemoveButton={showRemoveButton}
+          />
+        )}
       </div>
 
       <div className="saveContainer">

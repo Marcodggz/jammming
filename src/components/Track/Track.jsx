@@ -49,7 +49,11 @@ function Track({
           {albumImage ? (
             <img src={albumImage} alt="" className="trackArtImage" />
           ) : (
-            <FontAwesomeIcon icon={faMusic} className="trackArtIcon" aria-hidden="true" />
+            <FontAwesomeIcon
+              icon={faMusic}
+              className="trackArtIcon"
+              aria-hidden="true"
+            />
           )}
         </div>
         <div className="trackDetails">

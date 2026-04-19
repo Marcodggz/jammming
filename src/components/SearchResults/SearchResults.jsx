@@ -12,6 +12,7 @@ function SearchResults({
   hasSearched,
   isLoading,
   searchErrorMessage,
+  allTracksAdded = false,
 }) {
   return (
     <div
@@ -32,21 +33,18 @@ function SearchResults({
       {!hasSearched ? (
         <div className="welcome">
           <h3>Search for tracks</h3>
-          <p>
-            Start building your playlist by searching for songs, artists, or
-            albums.
-          </p>
+          <p>Find songs, artists, or albums to build your perfect playlist.</p>
         </div>
       ) : isLoading ? (
         <div className="loadingState" role="status" aria-live="polite">
           <span className="loadingSpinner" aria-hidden="true"></span>
-          <p className="loadingMessage">Searching tracks...</p>
+          <p className="loadingMessage">Searching...</p>
         </div>
       ) : tracks.length > 0 ? (
         <>
-          <p className="srOnly" aria-live="polite" role="status">
-            {tracks.length} {tracks.length === 1 ? "track" : "tracks"} found.
-          </p>
+          <header className="resultsHeader">
+            <h3 className="resultsTitle">Results</h3>
+          </header>
           <TrackList
             tracks={tracks}
             addTrack={addTrack}
@@ -57,11 +55,16 @@ function SearchResults({
             setSearchTerm={setSearchTerm}
           />
         </>
+      ) : allTracksAdded ? (
+        <div className="allAddedState" aria-live="polite">
+          <h4>All added</h4>
+          <p>These tracks are already in your playlist.</p>
+        </div>
       ) : (
-        <p className="noResults" aria-live="polite">
-          No additional tracks available for this search. <br />
-          All matching tracks are already in the playlist.
-        </p>
+        <div className="noResults" aria-live="polite">
+          <h4>No results</h4>
+          <p>Try different keywords.</p>
+        </div>
       )}
     </div>
   );
