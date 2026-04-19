@@ -18,7 +18,7 @@
   margin-top: 40px;
 }
 
-.welcome h2 {
+.welcome h3 {
   color: #f3f5f3;
   font-weight: 500;
 }
@@ -27,7 +27,6 @@
   color: #a6b1a7;
   font-weight: 400;
 }
-
 
 /* Loading state */
 

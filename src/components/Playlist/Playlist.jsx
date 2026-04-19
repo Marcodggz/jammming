@@ -20,7 +20,12 @@ function Playlist({
   const [isEditingTitle, setIsEditingTitle] = useState(false);
 
   return (
-    <div id="playlist" className="playlistContainer">
+    <div
+      id="playlist"
+      className="playlistContainer"
+      role="region"
+      aria-labelledby="playlist-heading"
+    >
       <header className="playlistHeader">
         <div className="playlistTitleWrapper">
           {isEditingTitle ? (
@@ -42,9 +47,9 @@ function Playlist({
               autoFocus
             />
           ) : (
-            <span id="playlist-heading" className="playlistTitleText">
+            <h2 id="playlist-heading" className="playlistTitleText">
               {playlistName}
-            </span>
+            </h2>
           )}
 
           <button
@@ -81,7 +86,7 @@ function Playlist({
         )}
       </header>
 
-      <div className="playlistContent" aria-label="Playlist tracks">
+      <div className="playlistContent">
         <TrackList
           tracks={playlistTracks}
           showAddButton={showAddButton}
@@ -92,13 +97,21 @@ function Playlist({
 
       <div className="saveContainer">
         {playlistErrorMessage && (
-          <p className="playlistErrorMessage" aria-live="assertive">
+          <p
+            className="playlistErrorMessage"
+            role="alert"
+            aria-live="assertive"
+          >
             {playlistErrorMessage}
           </p>
         )}
 
         {playlistSuccessMessage && (
-          <p className="playlistSuccessMessage" aria-live="polite">
+          <p
+            className="playlistSuccessMessage"
+            role="status"
+            aria-live="polite"
+          >
             {playlistSuccessMessage}
           </p>
         )}

@@ -31,6 +31,47 @@ body {
   border: 0;
 }
 
+/* Skip to content link */
+
+.skipLink {
+  position: absolute;
+  top: -100%;
+  left: 16px;
+  z-index: 1000;
+  padding: 12px 20px;
+  background-color: #1db954;
+  color: #050605;
+  font-weight: 600;
+  font-size: 14px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: top 0.2s ease;
+}
+
+.skipLink:focus {
+  top: 16px;
+}
+
+/* Reduced motion preference */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Global focus styles */
+
+*:focus-visible {
+  outline: 2px solid rgba(200, 255, 220, 0.7);
+  outline-offset: 3px;
+}
+
 /* App wrapper */
 
 .app {
@@ -54,8 +95,7 @@ body {
   inset: 0;
   z-index: -1;
   background:
-    linear-gradient(rgba(5, 6, 5, 0.75), rgba(5, 6, 5, 0.95)),
-    url("/fondo.jpg");
+    linear-gradient(rgba(5, 6, 5, 0.75), rgba(5, 6, 5, 0.95)), url("/fondo.jpg");
   background-size: cover;
   background-position: 60% center;
   background-repeat: no-repeat;
@@ -114,7 +154,7 @@ body {
   font-weight: 400;
 }
 
-.welcomeHome h4 {
+.welcomeHome .welcomeSubtitle {
   font-size: 16px;
   margin-bottom: 25px;
   color: #a6b1a7;
@@ -313,7 +353,7 @@ body {
     margin-bottom: 5px;
   }
 
-  .welcomeHome h4 {
+  .welcomeHome .welcomeSubtitle {
     font-size: 14px;
     margin-bottom: 15px;
   }

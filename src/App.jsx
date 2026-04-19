@@ -145,14 +145,18 @@ function App() {
 
   return (
     <>
+      <a className="skipLink" href="#main-content">
+        Skip to main content
+      </a>
+
       {!isAuthenticated ? (
-        <main className="app">
+        <main className="app" id="main-content">
           <section className="welcomeHome" aria-labelledby="welcome-title">
             <h1 id="welcome-title">Ready to build your playlist?</h1>
-            <h4>
+            <p className="welcomeSubtitle">
               Connect your Spotify account to start searching and building
               playlists.
-            </h4>
+            </p>
             <button
               type="button"
               className="connectButton"
@@ -171,7 +175,12 @@ function App() {
           </section>
         </main>
       ) : (
-        <main className="app">
+        <main
+          className="app"
+          id="main-content"
+          aria-label="Jammming Spotify Playlist Builder"
+        >
+          <h1 className="srOnly">Jammming — Spotify Playlist Builder</h1>
           <div className="searchBarContainer">
             <SearchBar
               searchTracks={searchTracks}
@@ -190,6 +199,7 @@ function App() {
                     : ""
               }`}
               aria-labelledby="search-results-heading"
+              aria-busy={isLoading}
             >
               <SearchResults
                 tracks={visibleTracks}
