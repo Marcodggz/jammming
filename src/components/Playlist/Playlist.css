@@ -3,6 +3,7 @@
 .playlistContainer {
   display: flex;
   flex-direction: column;
+  height: 100%;
 }
 
 /* Header */
@@ -10,25 +11,35 @@
 .playlistHeader {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  height: 48px;
-  padding-bottom: 17px;
+  justify-content: space-between;
+  padding-bottom: 16px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .playlistTitleWrapper {
   display: flex;
   align-items: center;
-  width: fit-content;
-  gap: 0;
+  flex: 1;
+  min-width: 0;
+  gap: 8px;
 }
 
 .playlistDuration {
-  font-size: 18px;
+  font-size: 13px;
+  font-weight: 500;
   line-height: 1;
   flex-shrink: 0;
-  color: #f3f5f3a9;
-  margin-left: auto;
-  margin-right: 20px;
+  color: #a6b1a7;
+  padding: 5px 12px;
+  background: rgba(29, 185, 84, 0.1);
+  border: 1px solid rgba(29, 185, 84, 0.15);
+  border-radius: 20px;
+  transition: all 0.2s ease;
+}
+
+.playlistDuration:hover {
+  background: rgba(29, 185, 84, 0.15);
 }
 
 /* Title */
@@ -37,30 +48,40 @@
   border: none;
   background: transparent;
   color: #f3f5f3;
-  font-size: 24px;
-  font-weight: 500;
+  font-size: 22px;
+  font-weight: 600;
   font-family: "inter", sans-serif;
-  padding: 0;
+  letter-spacing: -0.3px;
+  padding: 4px 8px;
   margin: 0;
   min-width: 1ch;
   field-sizing: content;
+  border-radius: 8px;
+  transition:
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.playlistTitle:hover {
+  background: rgba(255, 255, 255, 0.06);
 }
 
 .playlistTitle:focus {
   outline: none;
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .playlistTitle:focus-visible {
-  outline: 2px solid rgba(255, 255, 255, 0.14);
-  outline-offset: 2px;
-  border-radius: 6px;
+  outline: 2px solid rgba(29, 185, 84, 0.4);
+  outline-offset: 0;
 }
 
 .playlistTitleText {
   color: #f3f5f3;
-  font-size: 24px;
-  font-weight: 500;
+  font-size: 22px;
+  font-weight: 600;
   font-family: "inter", sans-serif;
+  letter-spacing: -0.3px;
   line-height: 1;
   margin: 0;
   padding: 0;
@@ -74,13 +95,22 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0;
-  margin-left: 10px;
+  padding: 6px;
+  margin-left: 4px;
   border: none;
   background: transparent;
   cursor: pointer;
   appearance: none;
   -webkit-appearance: none;
+  border-radius: 8px;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.editButton:hover {
+  background: rgba(255, 255, 255, 0.08);
+  transform: scale(1.1);
 }
 
 .editButton:focus {
@@ -88,20 +118,20 @@
 }
 
 .editButton:focus-visible {
-  outline: 2px solid rgba(255, 255, 255, 0.14);
-  outline-offset: 2px;
-  border-radius: 6px;
+  outline: 2px solid rgba(29, 185, 84, 0.4);
+  outline-offset: 0;
 }
 
 .editIcon {
-  font-size: 20px;
-  color: #d4d5d484;
+  font-size: 16px;
+  color: #a6b1a7;
   flex-shrink: 0;
+  transition: color 0.2s ease;
 }
 
 .playlistTitleWrapper:hover .editIcon,
 .editButton:hover .editIcon {
-  opacity: 0.75;
+  color: #f3f5f3;
 }
 
 /* Content */
@@ -109,6 +139,8 @@
 .playlistContent {
   display: flex;
   flex-direction: column;
+  flex: 1;
+  overflow-y: auto;
 }
 
 /* Save button area */
@@ -209,12 +241,39 @@
   font-weight: 500;
 }
 
+/* Empty state */
+
+.emptyPlaylist {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 60px 24px;
+  margin: auto;
+}
+
+.emptyPlaylist h4 {
+  color: #f3f5f3;
+  font-weight: 600;
+  font-size: 18px;
+  margin: 0 0 8px 0;
+}
+
+.emptyPlaylist p {
+  color: #8a958b;
+  font-weight: 400;
+  font-size: 14px;
+  margin: 0;
+  line-height: 1.5;
+}
+
 /* Error state */
 
 .playlistErrorMessage {
   margin: 0;
   padding: 10px 14px;
-  border-radius: 8px;
+  border-radius: 10px;
   background: rgba(120, 40, 40, 0.22);
   border: 1px solid rgba(255, 80, 80, 0.2);
   color: #f3f5f3;
@@ -227,7 +286,7 @@
 .playlistSuccessMessage {
   margin: 0;
   padding: 10px 14px;
-  border-radius: 8px;
+  border-radius: 10px;
   background: rgba(34, 197, 94, 0.15);
   border: 1px solid rgba(94, 255, 149, 0.25);
   color: #f3f5f3;
