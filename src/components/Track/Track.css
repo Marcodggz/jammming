@@ -38,9 +38,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
-  min-width: 44px;
+  width: 56px;
+  height: 56px;
+  min-width: 56px;
   margin-right: 14px;
   border-radius: 6px;
   background: linear-gradient(
@@ -71,7 +71,7 @@
 }
 
 .trackArtIcon {
-  font-size: 18px;
+  font-size: 20px;
   color: rgba(29, 185, 84, 0.7);
   opacity: 0.8;
 }

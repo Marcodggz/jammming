@@ -211,10 +211,11 @@ async function search(term) {
     artists: track.artists.map((artist) => artist.name),
     album: track.album.name,
     // Album artwork: Spotify provides images in 3 sizes (640px, 300px, 64px)
-    // We prefer the smallest (index 2) for performance, with fallbacks to larger sizes
+    // We use the medium size (index 1, 300px) for good quality on desktop
+    // with fallbacks to other sizes if unavailable
     albumImage:
-      track.album.images[2]?.url ||
       track.album.images[1]?.url ||
+      track.album.images[2]?.url ||
       track.album.images[0]?.url ||
       null,
     uri: track.uri,
