@@ -86,7 +86,9 @@ function Playlist({
         )}
       </header>
 
-      <div className="playlistContent">
+      <div
+        className={`playlistContent ${playlistTracks.length > 0 ? "hasTracks" : ""}`}
+      >
         {playlistTracks.length === 0 ? (
           <div className="emptyPlaylist">
             <h4>No tracks yet</h4>
@@ -102,27 +104,27 @@ function Playlist({
         )}
       </div>
 
-      <div className="saveContainer">
-        {playlistErrorMessage && (
-          <p
-            className="playlistErrorMessage"
-            role="alert"
-            aria-live="assertive"
-          >
-            {playlistErrorMessage}
-          </p>
-        )}
+      {playlistTracks.length > 0 && (
+        <div className="saveContainer">
+          {playlistErrorMessage && (
+            <p
+              className="playlistErrorMessage"
+              role="alert"
+              aria-live="assertive"
+            >
+              {playlistErrorMessage}
+            </p>
+          )}
 
-        {playlistSuccessMessage && (
-          <p
-            className="playlistSuccessMessage"
-            role="status"
-            aria-live="polite"
-          >
-            {playlistSuccessMessage}
-          </p>
-        )}
-        {playlistTracks.length > 0 && (
+          {playlistSuccessMessage && (
+            <p
+              className="playlistSuccessMessage"
+              role="status"
+              aria-live="polite"
+            >
+              {playlistSuccessMessage}
+            </p>
+          )}
           <button
             type="button"
             className="saveButton"
@@ -131,8 +133,8 @@ function Playlist({
           >
             <span>Save To Spotify</span>
           </button>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
