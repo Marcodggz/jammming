@@ -208,7 +208,8 @@ function App() {
             </button>
 
             <p className="privacyNote">
-              Secure authentication via Spotify. We only request playlist permissions.
+              Secure authentication via Spotify. We only request playlist
+              permissions.
             </p>
           </section>
         </main>
