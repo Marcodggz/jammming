@@ -55,6 +55,10 @@ function App() {
       !playlistTracks.some((playlistTrack) => playlistTrack.id === track.id),
   );
 
+  // Check if all searched tracks are already in playlist
+  const allTracksAdded =
+    hasSearched && tracks.length > 0 && visibleTracks.length === 0;
+
   // Calculate the total duration of the playlist
   const totalDurationMs = playlistTracks.reduce(
     (total, track) => total + track.durationMs,
@@ -145,14 +149,48 @@ function App() {
 
   return (
     <>
+      <a className="skipLink" href="#main-content">
+        Skip to main content
+      </a>
+
       {!isAuthenticated ? (
-        <main className="app">
+        <main className="app landingPage" id="main-content">
           <section className="welcomeHome" aria-labelledby="welcome-title">
-            <h1 id="welcome-title">Ready to build your playlist?</h1>
-            <h4>
-              Connect your Spotify account to start searching and building
-              playlists.
-            </h4>
+            <div className="logoContainer">
+              <span className="logoIcon">🎧</span>
+              <h1 className="logoTitle">
+                Ja<span className="logoHighlight">mmm</span>ing
+              </h1>
+            </div>
+            <p id="welcome-title" className="welcomeHeadline">
+              Create the perfect playlist
+            </p>
+            <p className="welcomeSubtitle">
+              Search millions of songs, build your dream playlist, and save it
+              directly to your Spotify account.
+            </p>
+
+            <div className="featuresContainer" aria-label="App features">
+              <div className="featureItem">
+                <span className="featureIcon" aria-hidden="true">
+                  🔍
+                </span>
+                <span className="featureText">Search songs</span>
+              </div>
+              <div className="featureItem">
+                <span className="featureIcon" aria-hidden="true">
+                  ✨
+                </span>
+                <span className="featureText">Build playlists</span>
+              </div>
+              <div className="featureItem">
+                <span className="featureIcon" aria-hidden="true">
+                  💾
+                </span>
+                <span className="featureText">Save to Spotify</span>
+              </div>
+            </div>
+
             <button
               type="button"
               className="connectButton"
@@ -168,10 +206,19 @@ function App() {
                 <span className="connectText">Connect to Spotify</span>
               </span>
             </button>
+
+            <p className="privacyNote">
+              Secure authentication via Spotify. We only request playlist permissions.
+            </p>
           </section>
         </main>
       ) : (
-        <main className="app">
+        <main
+          className="app"
+          id="main-content"
+          aria-label="Jammming Spotify Playlist Builder"
+        >
+          <h1 className="srOnly">Jammming — Spotify Playlist Builder</h1>
           <div className="searchBarContainer">
             <SearchBar
               searchTracks={searchTracks}
@@ -190,6 +237,7 @@ function App() {
                     : ""
               }`}
               aria-labelledby="search-results-heading"
+              aria-busy={isLoading}
             >
               <SearchResults
                 tracks={visibleTracks}
@@ -200,6 +248,7 @@ function App() {
                 hasSearched={hasSearched}
                 isLoading={isLoading}
                 searchErrorMessage={searchErrorMessage}
+                allTracksAdded={allTracksAdded}
               />
             </section>
 

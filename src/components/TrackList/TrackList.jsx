@@ -11,7 +11,13 @@ function TrackList({
   setSearchTerm,
 }) {
   return (
-    <ul className="trackList" role="list">
+    <ul
+      className="trackList"
+      role="list"
+      aria-label={
+        showAddButton ? "Search results track list" : "Playlist track list"
+      }
+    >
       {tracks.map((track) => (
         <Track
           key={track.id}
@@ -20,6 +26,7 @@ function TrackList({
           artist={track.artist}
           artists={track.artists}
           album={track.album}
+          albumImage={track.albumImage}
           uri={track.uri}
           addTrack={addTrack}
           showAddButton={showAddButton}

@@ -12,47 +12,59 @@ function SearchResults({
   hasSearched,
   isLoading,
   searchErrorMessage,
+  allTracksAdded = false,
 }) {
   return (
-    <div className="searchResults">
+    <div
+      className="searchResults"
+      role="region"
+      aria-labelledby="search-results-heading"
+    >
       <h2 id="search-results-heading" className="srOnly">
         Search results
       </h2>
 
       {searchErrorMessage && (
-        <p className="errorMessage" aria-live="assertive">
+        <p className="errorMessage" role="alert" aria-live="assertive">
           {searchErrorMessage}
         </p>
       )}
 
       {!hasSearched ? (
         <div className="welcome">
-          <h2>Search for tracks</h2>
-          <p>
-            Start building your playlist by searching for songs, artists, or
-            albums.
-          </p>
+          <h3>Search for tracks</h3>
+          <p>Find songs, artists, or albums to build your perfect playlist.</p>
         </div>
       ) : isLoading ? (
-        <div className="loadingState" aria-live="polite">
+        <div className="loadingState" role="status" aria-live="polite">
           <span className="loadingSpinner" aria-hidden="true"></span>
-          <p className="loadingMessage">Searching tracks...</p>
+          <p className="loadingMessage">Searching...</p>
         </div>
       ) : tracks.length > 0 ? (
-        <TrackList
-          tracks={tracks}
-          addTrack={addTrack}
-          showAddButton={showAddButton}
-          showRemoveButton={showRemoveButton}
-          searchTracks={searchTracks}
-          searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm}
-        />
+        <>
+          <header className="resultsHeader">
+            <h3 className="resultsTitle">Results</h3>
+          </header>
+          <TrackList
+            tracks={tracks}
+            addTrack={addTrack}
+            showAddButton={showAddButton}
+            showRemoveButton={showRemoveButton}
+            searchTracks={searchTracks}
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+          />
+        </>
+      ) : allTracksAdded ? (
+        <div className="allAddedState" aria-live="polite">
+          <h4>All added</h4>
+          <p>These tracks are already in your playlist.</p>
+        </div>
       ) : (
-        <p className="noResults" aria-live="polite">
-          No additional tracks available for this search. <br />
-          All matching tracks are already in the playlist.
-        </p>
+        <div className="noResults" aria-live="polite">
+          <h4>No results</h4>
+          <p>Try different keywords.</p>
+        </div>
       )}
     </div>
   );

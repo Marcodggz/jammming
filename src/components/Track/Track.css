@@ -21,26 +21,120 @@
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  margin-right: 5px;
-  padding: 5px 0;
-  border-bottom: 1px solid #f6f3f3;
+  padding: 10px 10px 10px 12px;
+  border-radius: 12px;
+  background: transparent;
+  border-bottom: none;
+  transition: all 0.2s ease;
+}
+
+.trackInfo:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Album art placeholder */
+
+.trackArt {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  min-width: 56px;
+  margin-right: 14px;
+  border-radius: 6px;
+  background: linear-gradient(
+    145deg,
+    rgba(29, 185, 84, 0.15) 0%,
+    rgba(20, 25, 20, 0.6) 100%
+  );
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.trackInfo:hover .trackArt {
+  transform: scale(1.05);
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.trackArtImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.trackArtIcon {
+  font-size: 20px;
+  color: rgba(29, 185, 84, 0.7);
+  opacity: 0.8;
 }
 
 /* Track text */
 
+.trackDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  flex: 1;
+}
+
+.trackNameRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .trackDetails h3 {
-  font-size: 18px;
-  line-height: 1;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.3;
   color: #f3f5f3;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color 0.2s ease;
+}
+
+.trackInfo:hover .trackDetails h3 {
+  color: #ffffff;
+}
+
+.trackDuration {
+  font-size: 11px;
+  font-weight: 500;
+  color: #6b7c6c;
+  flex-shrink: 0;
+  padding: 3px 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  letter-spacing: 0.3px;
 }
 
 .trackDetails p {
-  font-size: 16px;
-  line-height: 1;
-  color: #a6b1a7;
+  font-size: 13px;
+  line-height: 1.3;
+  color: #8a958b;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Actions */
+
+.trackActions {
+  margin-left: 12px;
+  flex-shrink: 0;
+}
 
 .trackActions button {
   position: relative;
@@ -52,57 +146,45 @@
   aspect-ratio: 1 / 1;
   box-sizing: border-box;
   padding: 0;
-  border: none;
-  border-radius: 50%;
+  border: 1px solid rgba(94, 255, 149, 0.2);
+  border-radius: 8px;
   cursor: pointer;
   background: linear-gradient(
-    to bottom,
-    rgba(34, 197, 94, 0.29) 0%,
-    rgba(17, 24, 17, 0.7) 35%,
-    rgba(8, 9, 8, 0.85) 100%
+    145deg,
+    rgba(34, 197, 94, 0.18) 0%,
+    rgba(17, 24, 17, 0.5) 100%
   );
   box-shadow:
-    inset 0 0 0 1px rgba(94, 255, 149, 0.14),
-    0 4px 10px rgba(0, 0, 0, 0.25);
-  transition: box-shadow 120ms ease;
+    0 2px 8px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  transition:
+    box-shadow 180ms ease,
+    border-color 180ms ease,
+    transform 180ms ease,
+    background 180ms ease;
 }
 
-.trackActions button::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  pointer-events: none;
-  box-shadow:
-    inset 0 1px 0 rgba(178, 244, 211, 0.3),
-    inset 0 1.5px 0 rgba(129, 255, 171, 0.18);
-  -webkit-mask: radial-gradient(circle at 50% 20%, black 10px, transparent 45%);
-  mask: radial-gradient(circle at 50% 20%, black 10px, transparent 45%);
-}
-
+.trackActions button::before,
 .trackActions button::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  pointer-events: none;
-  box-shadow:
-    inset 0 -1px 0 rgba(178, 244, 211, 0.3),
-    inset 0 -1.5px 0 rgba(129, 255, 171, 0.18);
-  -webkit-mask: radial-gradient(
-    circle at 50% 100%,
-    black 10px,
-    transparent 45%
-  );
-  mask: radial-gradient(circle at 50% 100%, black 10px, transparent 45%);
+  display: none;
 }
 
-.trackActions button:hover,
-.trackActions button:active {
+.trackActions button:hover {
+  border-color: rgba(94, 255, 149, 0.4);
+  background: linear-gradient(
+    145deg,
+    rgba(34, 197, 94, 0.28) 0%,
+    rgba(17, 24, 17, 0.6) 100%
+  );
+  transform: scale(1.08);
   box-shadow:
-    inset 0 0 0 1px rgba(94, 255, 149, 0.32),
-    0 6px 14px rgba(0, 0, 0, 0.22),
-    0 0 8px rgba(94, 255, 149, 0.25);
+    0 4px 12px rgba(0, 0, 0, 0.25),
+    0 0 12px rgba(94, 255, 149, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.trackActions button:active {
+  transform: scale(0.95);
 }
 
 .trackActions button:focus {
@@ -111,19 +193,44 @@
 
 .trackActions button:focus-visible {
   outline: 2px solid rgba(200, 255, 220, 0.7);
-  outline-offset: 3px;
+  outline-offset: 2px;
 }
 
 .trackActions button span {
-  font-size: 19px;
-  font-weight: 300;
-  color: #dbdedc;
+  font-size: 18px;
+  font-weight: 400;
+  color: #7ddf9b;
+  line-height: 1;
 }
 
 .trackActions button span.minus {
-  font-size: 26px;
-  letter-spacing: -1px;
-  font-weight: 300;
+  font-size: 22px;
+  font-weight: 400;
+  color: #ff8a8a;
+}
+
+/* Remove button specific */
+
+.trackActions button.removeButton {
+  border-color: rgba(255, 120, 120, 0.2);
+  background: linear-gradient(
+    145deg,
+    rgba(255, 107, 107, 0.15) 0%,
+    rgba(50, 17, 17, 0.5) 100%
+  );
+}
+
+.trackActions button.removeButton:hover {
+  border-color: rgba(255, 120, 120, 0.4);
+  background: linear-gradient(
+    145deg,
+    rgba(255, 107, 107, 0.25) 0%,
+    rgba(50, 17, 17, 0.6) 100%
+  );
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.25),
+    0 0 12px rgba(255, 107, 107, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 /* Clickable text */
@@ -158,6 +265,48 @@
 /* Tablet + mobile */
 
 @media (max-width: 1024px) {
+  .trackInfo {
+    padding: 8px 8px 8px 10px;
+  }
+
+  .trackArt {
+    width: 38px;
+    height: 38px;
+    min-width: 38px;
+    margin-right: 12px;
+    border-radius: 6px;
+  }
+
+  .trackArtIcon {
+    font-size: 16px;
+  }
+
+  .trackDetails h3 {
+    font-size: 14px;
+  }
+
+  .trackDetails p {
+    font-size: 12px;
+  }
+
+  .trackDuration {
+    font-size: 10px;
+    padding: 2px 6px;
+  }
+
+  .trackActions button {
+    width: 28px;
+    height: 28px;
+  }
+
+  .trackActions button span {
+    font-size: 16px;
+  }
+
+  .trackActions button span.minus {
+    font-size: 20px;
+  }
+
   .clickable {
     text-decoration: underline;
     color: #ebe6ee9c;
@@ -167,6 +316,29 @@
 /* Tablet landscape above 1024px */
 
 @media (min-width: 1025px) and (max-width: 1200px) and (orientation: landscape) {
+  .trackArt {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    margin-right: 12px;
+  }
+
+  .trackArtIcon {
+    font-size: 16px;
+  }
+
+  .trackDetails h3 {
+    font-size: 14px;
+  }
+
+  .trackDetails p {
+    font-size: 12px;
+  }
+
+  .trackDuration {
+    font-size: 10px;
+  }
+
   .clickable {
     text-decoration: underline;
     color: #ebe6ee9c;
