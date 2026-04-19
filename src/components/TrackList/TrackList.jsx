@@ -26,6 +26,7 @@ function TrackList({
           artist={track.artist}
           artists={track.artists}
           album={track.album}
+          albumImage={track.albumImage}
           uri={track.uri}
           addTrack={addTrack}
           showAddButton={showAddButton}
