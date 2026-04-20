@@ -196,17 +196,24 @@
   outline-offset: 2px;
 }
 
-.trackActions button span {
-  font-size: 18px;
-  font-weight: 400;
+.trackActions button svg {
+  font-size: 13px;
   color: #7ddf9b;
-  line-height: 1;
+  transition: color 180ms ease;
 }
 
-.trackActions button span.minus {
-  font-size: 22px;
-  font-weight: 400;
+.trackActions button.removeButton svg {
+  font-size: 13px;
   color: #ff8a8a;
+  transition: color 180ms ease;
+}
+
+.trackActions button:hover svg {
+  color: #a8f0be;
+}
+
+.trackActions button.removeButton:hover svg {
+  color: #ffb3b3;
 }
 
 /* Remove button specific */
@@ -299,12 +306,12 @@
     height: 28px;
   }
 
-  .trackActions button span {
-    font-size: 16px;
+  .trackActions button svg {
+    font-size: 11px;
   }
 
-  .trackActions button span.minus {
-    font-size: 20px;
+  .trackActions button.removeButton svg {
+    font-size: 11px;
   }
 
   .clickable {
