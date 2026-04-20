@@ -57,14 +57,7 @@ function Track({
           )}
         </div>
         <div className="trackDetails">
-          <div className="trackNameRow">
-            <h3>{name}</h3>
-            {durationMs && (
-              <span className="trackDuration">
-                {formatDuration(durationMs)}
-              </span>
-            )}
-          </div>
+          <h3>{name}</h3>
           <p>
             {artists.map((artistName, index) => (
               <React.Fragment key={artistName}>
@@ -98,6 +91,10 @@ function Track({
             )}
           </p>
         </div>
+
+        {durationMs && (
+          <span className="trackDuration">{formatDuration(durationMs)}</span>
+        )}
 
         <div className="trackActions">
           {showAddButton && (

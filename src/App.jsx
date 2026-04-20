@@ -6,6 +6,8 @@ import Playlist from "./components/Playlist/Playlist";
 import Spotify from "./util/Spotify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpotify } from "@fortawesome/free-brands-svg-icons";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   const [tracks, setTracks] = useState([]);
@@ -16,9 +18,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isAuthLoading, setIsAuthLoading] = useState(true);
-  const [searchErrorMessage, setSearchErrorMessage] = useState("");
-  const [playlistErrorMessage, setPlaylistErrorMessage] = useState("");
-  const [playlistSuccessMessage, setPlaylistSuccessMessage] = useState("");
+
   const hasInitializedAuth = useRef(false);
 
   useEffect(() => {
@@ -106,21 +106,14 @@ function App() {
 
     if (trackURIs.length === 0) return;
 
-    setPlaylistErrorMessage("");
-    setPlaylistSuccessMessage("");
-
     try {
       await Spotify.savePlaylist(playlistName, trackURIs);
       setPlaylistTracks([]);
       setPlaylistName("My Playlist");
-      setPlaylistSuccessMessage("Playlist saved successfully to Spotify.");
-
-      setTimeout(() => {
-        setPlaylistSuccessMessage("");
-      }, 3000);
+      toast.success("Playlist saved successfully to Spotify! 🎉");
     } catch (error) {
       console.error(error);
-      setPlaylistErrorMessage("Failed to save playlist. Please try again.");
+      toast.error("Failed to save playlist. Please try again.");
     }
   }
 
@@ -129,16 +122,13 @@ function App() {
     if (term.trim()) {
       setHasSearched(true);
       setIsLoading(true);
-      setSearchErrorMessage("");
 
       try {
         const tracks = await Spotify.search(term);
         setTracks(tracks);
       } catch (error) {
         console.error(error);
-        setSearchErrorMessage(
-          "Something went wrong while searching. Please try again.",
-        );
+        toast.error("Something went wrong while searching. Please try again.");
       } finally {
         setIsLoading(false);
       }
@@ -146,12 +136,21 @@ function App() {
       setTracks([]);
       setHasSearched(false);
       setIsLoading(false);
-      setSearchErrorMessage("");
     }
   }
 
   return (
     <>
+      <ToastContainer
+        position="top-right"
+        autoClose={4000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        pauseOnHover
+        draggable
+        theme="dark"
+      />
       <a className="skipLink" href="#main-content">
         Skip to main content
       </a>
@@ -251,7 +250,6 @@ function App() {
                 setSearchTerm={setSearchTerm}
                 hasSearched={hasSearched}
                 isLoading={isLoading}
-                searchErrorMessage={searchErrorMessage}
                 allTracksAdded={allTracksAdded}
               />
             </section>
@@ -269,8 +267,6 @@ function App() {
                 playlistNameChange={playlistNameChange}
                 savePlaylist={savePlaylist}
                 formattedDuration={formattedDuration}
-                playlistSuccessMessage={playlistSuccessMessage}
-                playlistErrorMessage={playlistErrorMessage}
               />
             </section>
           </div>
