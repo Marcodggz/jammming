@@ -1,4 +1,4 @@
-const clientId = "40e1ad3d60c947c9b9333035a1d2f6cf";
+const clientId = import.meta.env.VITE_CLIENT_ID;
 const redirectUri = `${window.location.origin}/`;
 
 // Required scopes:
