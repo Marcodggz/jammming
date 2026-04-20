@@ -1,7 +1,7 @@
 import React from "react";
 import "./Track.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMusic } from "@fortawesome/free-solid-svg-icons";
+import { faMusic, faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
 
 function Track({
   name,
@@ -106,7 +106,7 @@ function Track({
               onClick={handleAddTrack}
               aria-label={`Add ${name} to playlist`}
             >
-              <span aria-hidden="true">+</span>
+              <FontAwesomeIcon icon={faPlus} />
             </button>
           )}
 
@@ -117,9 +117,7 @@ function Track({
               onClick={handleRemoveTrack}
               aria-label={`Remove ${name} from playlist`}
             >
-              <span className="minus" aria-hidden="true">
-                -
-              </span>
+              <FontAwesomeIcon icon={faMinus} />
             </button>
           )}
         </div>

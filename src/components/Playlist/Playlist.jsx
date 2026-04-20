@@ -91,6 +91,9 @@ function Playlist({
       >
         {playlistTracks.length === 0 ? (
           <div className="emptyPlaylist">
+            <span className="emptyStateIcon" aria-hidden="true">
+              🎵
+            </span>
             <h4>No tracks yet</h4>
             <p>Tap + to add songs</p>
           </div>
