@@ -120,7 +120,7 @@ body {
   width: 550px;
   max-width: 100%;
   height: 580px;
-  overflow-y: auto;
+  overflow: hidden; /* Remove scrolling from main containers */
   box-sizing: border-box;
   background: linear-gradient(
     165deg,
@@ -139,6 +139,7 @@ body {
   transition:
     transform 0.3s ease,
     box-shadow 0.3s ease;
+  /* Remove container-level scrollbar styling since we use internal scrolling */
 }
 
 .results:hover,
@@ -396,9 +397,16 @@ body {
   }
 }
 
-/* Tablet landscape (two-column layout) */
+/* Tablet landscape (two-column layout with scrollable containers) */
 
 @media (min-width: 769px) and (max-width: 1200px) and (orientation: landscape) {
+  .app {
+    min-height: 100vh;
+    padding: 15px 0;
+    justify-content: flex-start;
+    gap: 15px;
+  }
+
   .mainContainer {
     flex-direction: row;
     justify-content: center;
@@ -406,9 +414,11 @@ body {
     gap: 24px;
     width: 100%;
     max-width: 1100px;
-    padding: 10px 20px;
-    margin: 0 auto 70px;
+    padding: 0 20px;
+    margin: 0 auto;
     box-sizing: border-box;
+    height: calc(100vh - 140px); /* Reduced from 160px for better proportions */
+    max-height: 600px; /* Prevent containers from being too tall */
   }
 
   .results,
@@ -417,21 +427,27 @@ body {
     width: 0;
     max-width: none;
     min-width: 0;
-    height: auto;
-    min-height: 500px;
+    height: 100%;
+    max-height: 100%;
+    overflow: hidden; /* Remove scrolling from main containers */
+    overflow-x: hidden;
+    /* No container-level scrollbar styling needed */
   }
 
-  /* Empty / no results states */
+  /* Smooth scrolling behavior for internal content */
+  .searchContent,
+  .playlistContent {
+    scroll-behavior: smooth;
+  }
 
+  /* Empty / no results states - remove centering behavior */
   .results.isWelcome,
   .results.isNoResults {
-    min-height: 280px;
-    height: auto;
+    min-height: 100%;
   }
 
   .playlist.isEmpty {
-    min-height: 280px;
-    height: auto;
+    min-height: 100%;
   }
 }
 
