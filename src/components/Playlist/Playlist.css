@@ -327,23 +327,46 @@
   font-weight: 500;
 }
 
+/* Empty state shared icon */
+
+.emptyStateIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  font-size: 24px;
+  margin-bottom: 16px;
+  background: rgba(29, 185, 84, 0.08);
+  border: 1px solid rgba(29, 185, 84, 0.12);
+  border-radius: 50%;
+}
+
 /* Empty state */
 
 .emptyPlaylist {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   text-align: center;
-  padding: 40px 24px 20px 24px;
-  margin-top: 20px;
+  padding: 48px 32px;
+  margin: auto 20px;
+  flex: 1;
+  max-width: 320px;
+  width: 100%;
+  align-self: center;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
 }
 
 .emptyPlaylist h4 {
   color: #f3f5f3;
   font-weight: 600;
-  font-size: 18px;
-  margin: 0 0 8px 0;
+  font-size: 20px;
+  margin: 0 0 10px 0;
+  letter-spacing: -0.3px;
 }
 
 .emptyPlaylist p {

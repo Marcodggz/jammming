@@ -35,6 +35,9 @@ function SearchResults({
 
         {!hasSearched ? (
           <div className="welcome">
+            <span className="emptyStateIcon" aria-hidden="true">
+              🔍
+            </span>
             <h3>Search for tracks</h3>
             <p>
               Find songs, artists, or albums to build your perfect playlist.
@@ -57,11 +60,17 @@ function SearchResults({
           />
         ) : allTracksAdded ? (
           <div className="allAddedState" aria-live="polite">
+            <span className="emptyStateIcon" aria-hidden="true">
+              ✅
+            </span>
             <h4>All added</h4>
             <p>These tracks are already in your playlist.</p>
           </div>
         ) : (
           <div className="noResults" aria-live="polite">
+            <span className="emptyStateIcon" aria-hidden="true">
+              😕
+            </span>
             <h4>No results</h4>
             <p>Try different keywords.</p>
           </div>
