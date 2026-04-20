@@ -15,6 +15,7 @@ function App() {
   const [hasSearched, setHasSearched] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthLoading, setIsAuthLoading] = useState(true);
   const [searchErrorMessage, setSearchErrorMessage] = useState("");
   const [playlistErrorMessage, setPlaylistErrorMessage] = useState("");
   const [playlistSuccessMessage, setPlaylistSuccessMessage] = useState("");
@@ -30,6 +31,7 @@ function App() {
 
       if (Spotify.hasValidSession()) {
         setIsAuthenticated(true);
+        setIsAuthLoading(false);
         return;
       }
 
@@ -44,6 +46,7 @@ function App() {
       } else {
         setIsAuthenticated(false);
       }
+      setIsAuthLoading(false);
     }
 
     initializeAuth();
@@ -153,7 +156,7 @@ function App() {
         Skip to main content
       </a>
 
-      {!isAuthenticated ? (
+      {isAuthLoading ? null : !isAuthenticated ? (
         <main className="app landingPage" id="main-content">
           <section className="welcomeHome" aria-labelledby="welcome-title">
             <div className="logoContainer">
