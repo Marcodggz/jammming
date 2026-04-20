@@ -143,6 +143,7 @@
   flex: 1;
   overflow-y: auto;
   padding-bottom: 10px;
+  padding-right: 10px;
   min-height: 0;
 }
 
@@ -153,31 +154,32 @@
 
 /* Ensure consistent scrollbar styling for playlistContent */
 .playlistContent::-webkit-scrollbar {
-  width: 4px;
+  width: 6px;
 }
 
 .playlistContent::-webkit-scrollbar-track {
-  background: transparent;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 3px;
+  margin: 8px 0;
 }
 
 .playlistContent::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 2px;
-  transition: background 0.3s ease;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
 }
 
 .playlistContent::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(29, 185, 84, 0.4);
 }
 
 .playlistContent::-webkit-scrollbar-thumb:active {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(29, 185, 84, 0.55);
 }
 
 /* Firefox scrollbar */
 .playlistContent {
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+  scrollbar-color: rgba(255, 255, 255, 0.15) rgba(255, 255, 255, 0.04);
 }
 
 /* Save button area */
@@ -192,7 +194,7 @@
   align-items: center;
   justify-content: flex-end;
   gap: 8px;
-  padding: 16px 22px 10px 22px;
+  padding: 16px 14px 10px 14px;
   margin: 0;
   background: linear-gradient(
     to bottom,
