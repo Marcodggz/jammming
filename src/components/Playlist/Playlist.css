@@ -143,7 +143,7 @@
   flex: 1;
   overflow-y: auto;
   padding-bottom: 10px;
-  padding-right: 10px;
+  padding-right: 2px;
   min-height: 0;
 }
 
@@ -401,4 +401,89 @@
   color: #f3f5f3;
   font-size: 14px;
   text-align: center;
+}
+
+/* Mobile styles */
+
+@media (max-width: 480px) {
+  .playlistHeader {
+    padding-bottom: 12px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .playlistTitleWrapper {
+    gap: 6px;
+  }
+
+  .playlistTitle,
+  .playlistTitleText {
+    font-size: 18px;
+    padding: 3px 6px;
+  }
+
+  .playlistDuration {
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 14px;
+  }
+
+  .editButton {
+    padding: 5px;
+  }
+
+  .editButton svg {
+    font-size: 12px;
+  }
+
+  .playlistContent {
+    padding-right: 2px;
+    padding-bottom: 8px;
+  }
+
+  .emptyPlaylist {
+    padding: 32px 20px;
+    margin: auto 8px;
+    border-radius: 14px;
+  }
+
+  .emptyPlaylist h4 {
+    font-size: 16px;
+    margin-bottom: 6px;
+  }
+
+  .emptyPlaylist p {
+    font-size: 13px;
+    line-height: 1.4;
+  }
+
+  .emptyStateIcon {
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+    margin-bottom: 12px;
+  }
+
+  .saveContainer {
+    padding: 12px 10px 10px 10px;
+  }
+
+  .saveButton {
+    height: 38px;
+    padding: 0 20px;
+    border-radius: 12px;
+    max-width: 180px;
+  }
+
+  .saveButton span {
+    font-size: 14px;
+  }
+
+  .playlistErrorMessage,
+  .playlistSuccessMessage {
+    padding: 8px 12px;
+    font-size: 13px;
+    border-radius: 8px;
+  }
 }

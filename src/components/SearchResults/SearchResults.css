@@ -34,7 +34,7 @@
   flex: 1;
   overflow-y: auto;
   padding-bottom: 10px;
-  padding-right: 10px;
+  padding-right: 2px;
   min-height: 0;
 }
 
@@ -243,4 +243,75 @@
   color: #ff8a8a;
   font-size: 14px;
   text-align: center;
+}
+
+/* Mobile styles */
+
+@media (max-width: 480px) {
+  .searchHeader {
+    padding-bottom: 12px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .searchTitle {
+    font-size: 18px;
+    letter-spacing: -0.2px;
+  }
+
+  .resultsCount {
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 14px;
+  }
+
+  .searchContent {
+    padding-right: 2px;
+    padding-bottom: 8px;
+  }
+
+  .welcome,
+  .noResults,
+  .allAddedState {
+    padding: 32px 20px;
+    margin: auto 8px;
+    border-radius: 14px;
+  }
+
+  .welcome h3,
+  .noResults h4,
+  .allAddedState h4 {
+    font-size: 16px;
+    margin-bottom: 6px;
+  }
+
+  .welcome p,
+  .noResults p,
+  .allAddedState p {
+    font-size: 13px;
+    line-height: 1.4;
+  }
+
+  .emptyStateIcon {
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+    margin-bottom: 12px;
+  }
+
+  .loadingSpinner {
+    width: 28px;
+    height: 28px;
+  }
+
+  .loadingMessage {
+    font-size: 13px;
+  }
+
+  .errorMessage {
+    padding: 12px 14px;
+    font-size: 13px;
+    border-radius: 8px;
+  }
 }
