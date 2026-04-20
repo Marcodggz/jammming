@@ -13,8 +13,6 @@ function Playlist({
   playlistNameChange,
   savePlaylist,
   formattedDuration,
-  playlistSuccessMessage,
-  playlistErrorMessage,
 }) {
   const playlistInputRef = useRef(null);
   const [isEditingTitle, setIsEditingTitle] = useState(false);
@@ -109,25 +107,6 @@ function Playlist({
 
       {playlistTracks.length > 0 && (
         <div className="saveContainer">
-          {playlistErrorMessage && (
-            <p
-              className="playlistErrorMessage"
-              role="alert"
-              aria-live="assertive"
-            >
-              {playlistErrorMessage}
-            </p>
-          )}
-
-          {playlistSuccessMessage && (
-            <p
-              className="playlistSuccessMessage"
-              role="status"
-              aria-live="polite"
-            >
-              {playlistSuccessMessage}
-            </p>
-          )}
           <button
             type="button"
             className="saveButton"

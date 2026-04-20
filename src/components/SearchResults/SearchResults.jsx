@@ -11,7 +11,6 @@ function SearchResults({
   setSearchTerm,
   hasSearched,
   isLoading,
-  searchErrorMessage,
   allTracksAdded = false,
 }) {
   return (
@@ -27,12 +26,6 @@ function SearchResults({
       </header>
 
       <div className="searchContent">
-        {searchErrorMessage && (
-          <p className="errorMessage" role="alert" aria-live="assertive">
-            {searchErrorMessage}
-          </p>
-        )}
-
         {!hasSearched ? (
           <div className="welcome">
             <span className="emptyStateIcon" aria-hidden="true">
