@@ -17,33 +17,62 @@ function Playlist({
   const playlistInputRef = useRef(null);
   const [isEditingTitle, setIsEditingTitle] = useState(false);
 
+  const handleEditTitle = () => {
+    setIsEditingTitle(true);
+
+    // Use setTimeout to ensure the input is rendered before focusing
+    setTimeout(() => {
+      if (playlistInputRef.current) {
+        playlistInputRef.current.focus();
+        playlistInputRef.current.select();
+      }
+    }, 0);
+  };
+
+  const handleTitleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      event.target.blur();
+    }
+    if (event.key === "Escape") {
+      event.preventDefault();
+      setIsEditingTitle(false);
+    }
+  };
+
   return (
-    <div
+    <section
       id="playlist"
       className="playlistContainer"
-      role="region"
       aria-labelledby="playlist-heading"
     >
       <header className="playlistHeader">
         <div className="playlistTitleWrapper">
           {isEditingTitle ? (
-            <input
-              ref={playlistInputRef}
-              className="playlistTitle"
-              value={playlistName}
-              onChange={(event) => {
-                const value = event.target.value.slice(0, 25);
-                playlistNameChange({ target: { value } });
-              }}
-              onBlur={() => setIsEditingTitle(false)}
-              onKeyDown={(event) => {
-                if (event.key === "Enter") {
-                  event.target.blur();
-                }
-              }}
-              aria-label="Playlist title"
-              autoFocus
-            />
+            <div>
+              <label htmlFor="playlist-title-input" className="srOnly">
+                Edit playlist title
+              </label>
+              <input
+                id="playlist-title-input"
+                ref={playlistInputRef}
+                className="playlistTitle"
+                value={playlistName}
+                onChange={(event) => {
+                  const value = event.target.value.slice(0, 25);
+                  playlistNameChange({ target: { value } });
+                }}
+                onBlur={() => setIsEditingTitle(false)}
+                onKeyDown={handleTitleKeyDown}
+                aria-label="Playlist title"
+                aria-describedby="playlist-title-help"
+                maxLength="25"
+                autoComplete="off"
+              />
+              <div id="playlist-title-help" className="srOnly">
+                Press Enter to save, Escape to cancel. Maximum 25 characters.
+              </div>
+            </div>
           ) : (
             <h2 id="playlist-heading" className="playlistTitleText">
               {playlistName}
@@ -53,18 +82,8 @@ function Playlist({
           <button
             type="button"
             className="editButton"
-            onClick={() => {
-              setIsEditingTitle(true);
-
-              requestAnimationFrame(() => {
-                if (playlistInputRef.current) {
-                  playlistInputRef.current.focus();
-                  const length = playlistInputRef.current.value.length;
-                  playlistInputRef.current.setSelectionRange(length, length);
-                }
-              });
-            }}
-            aria-label="Edit playlist title"
+            onClick={handleEditTitle}
+            aria-label={`Edit playlist title "${playlistName}"`}
           >
             <FontAwesomeIcon
               icon={faPenToSquare}
@@ -75,12 +94,14 @@ function Playlist({
         </div>
 
         {playlistTracks.length > 0 && (
-          <span
+          <div
             className="playlistDuration"
-            aria-label={`Playlist duration ${formattedDuration}`}
+            role="status"
+            tabIndex="0"
+            aria-label={`Total playlist duration: ${formattedDuration}`}
           >
             {formattedDuration}
-          </span>
+          </div>
         )}
       </header>
 
@@ -88,12 +109,16 @@ function Playlist({
         className={`playlistContent ${playlistTracks.length > 0 ? "hasTracks" : ""}`}
       >
         {playlistTracks.length === 0 ? (
-          <div className="emptyPlaylist">
+          <div
+            className="emptyPlaylist"
+            role="status"
+            aria-labelledby="empty-playlist-heading"
+          >
             <span className="emptyStateIcon" aria-hidden="true">
               🎵
             </span>
-            <h4>No tracks yet</h4>
-            <p>Tap + to add songs</p>
+            <h4 id="empty-playlist-heading">No tracks yet</h4>
+            <p>Search for songs and add them with the + button</p>
           </div>
         ) : (
           <TrackList
@@ -111,13 +136,13 @@ function Playlist({
             type="button"
             className="saveButton"
             onClick={savePlaylist}
-            aria-label={`Save playlist ${playlistName} to Spotify`}
+            aria-label={`Save "${playlistName}" playlist with ${playlistTracks.length} track${playlistTracks.length === 1 ? "" : "s"} to Spotify`}
           >
             <span>Save To Spotify</span>
           </button>
         </div>
       )}
-    </div>
+    </section>
   );
 }
 

@@ -24,6 +24,15 @@
   color: #f3f5f3;
   margin: 0;
   letter-spacing: -0.3px;
+  border-radius: 4px;
+}
+
+/* Focus style for programmatic focus after search (WCAG 2.4.3).
+   The .programmatic-focus class is added via JS only during useEffect focus,
+   so this outline never appears on mouse click. */
+.searchTitle.programmatic-focus:focus {
+  outline: 2px solid rgba(29, 185, 84, 0.5);
+  outline-offset: 4px;
 }
 
 /* Content area */
@@ -66,21 +75,6 @@
 .searchContent {
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.15) rgba(255, 255, 255, 0.04);
-}
-
-.resultsCount {
-  font-size: 13px;
-  font-weight: 500;
-  color: #a6b1a7;
-  padding: 5px 12px;
-  background: rgba(29, 185, 84, 0.1);
-  border: 1px solid rgba(29, 185, 84, 0.15);
-  border-radius: 20px;
-  transition: all 0.2s ease;
-}
-
-.resultsCount:hover {
-  background: rgba(29, 185, 84, 0.15);
 }
 
 /* Empty state shared icon */
@@ -232,19 +226,6 @@
   margin: 0;
 }
 
-/* Error state */
-
-.errorMessage {
-  margin: 16px 0;
-  padding: 14px 18px;
-  border-radius: 10px;
-  background: rgba(255, 107, 107, 0.1);
-  border: 1px solid rgba(255, 107, 107, 0.25);
-  color: #ff8a8a;
-  font-size: 14px;
-  text-align: center;
-}
-
 /* Mobile styles */
 
 @media (max-width: 480px) {
@@ -258,12 +239,6 @@
   .searchTitle {
     font-size: 18px;
     letter-spacing: -0.2px;
-  }
-
-  .resultsCount {
-    font-size: 11px;
-    padding: 4px 10px;
-    border-radius: 14px;
   }
 
   .searchContent {
@@ -307,11 +282,5 @@
 
   .loadingMessage {
     font-size: 13px;
-  }
-
-  .errorMessage {
-    padding: 12px 14px;
-    font-size: 13px;
-    border-radius: 8px;
   }
 }

@@ -190,9 +190,10 @@
   outline: none;
 }
 
-.trackActions button:focus-visible {
-  outline: 2px solid rgba(200, 255, 220, 0.7);
-  outline-offset: 2px;
+.trackActions button:focus-visible,
+html[data-keyboard] .trackActions button:focus {
+  outline: 2px solid rgba(29, 185, 84, 0.5);
+  outline-offset: 3px;
 }
 
 .trackActions button svg {
@@ -257,9 +258,10 @@
   outline: none;
 }
 
-.clickable:focus-visible {
-  outline: 2px solid rgba(200, 255, 220, 0.65);
-  outline-offset: 2px;
+.clickable:focus-visible,
+html[data-keyboard] .clickable:focus {
+  outline: 2px solid rgba(29, 185, 84, 0.5);
+  outline-offset: 3px;
   border-radius: 4px;
 }
 

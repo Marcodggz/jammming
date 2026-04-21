@@ -7,23 +7,19 @@ function TrackList({
   removeTrack,
   showRemoveButton,
   searchTracks,
-  searchTerm,
   setSearchTerm,
 }) {
+  const listLabel = showAddButton
+    ? `Search results: ${tracks.length} track${tracks.length === 1 ? "" : "s"} found`
+    : `Your playlist: ${tracks.length} track${tracks.length === 1 ? "" : "s"}`;
+
   return (
-    <ul
-      className="trackList"
-      role="list"
-      aria-label={
-        showAddButton ? "Search results track list" : "Playlist track list"
-      }
-    >
+    <ul className="trackList" aria-label={listLabel}>
       {tracks.map((track) => (
         <Track
           key={track.id}
           id={track.id}
           name={track.name}
-          artist={track.artist}
           artists={track.artists}
           album={track.album}
           albumImage={track.albumImage}
@@ -33,7 +29,6 @@ function TrackList({
           removeTrack={removeTrack}
           showRemoveButton={showRemoveButton}
           searchTracks={searchTracks}
-          searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
           durationMs={track.durationMs}
         />

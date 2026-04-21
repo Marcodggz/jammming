@@ -18,23 +18,14 @@ function Track({
   setSearchTerm,
   durationMs,
 }) {
-  const handleAddTrack = () => {
+  const handleAddTrack = () =>
     addTrack({ name, artists, album, albumImage, id, uri, durationMs });
-  }; // Handle adding a track to the playlist
-
-  const handleRemoveTrack = () => {
-    removeTrack({ id });
-  }; // Handle removing a track from the playlist
-
+  const handleRemoveTrack = () => removeTrack({ id });
   const handleSearchTracks = (query) => {
     searchTracks(query);
+    if (setSearchTerm) setSearchTerm("");
+  };
 
-    if (setSearchTerm) {
-      setSearchTerm("");
-    }
-  }; // Handle searching for tracks based on artist or album
-
-  // Format duration from ms to mm:ss
   const formatDuration = (ms) => {
     const totalSeconds = Math.floor(ms / 1000);
     const minutes = Math.floor(totalSeconds / 60);
@@ -42,58 +33,88 @@ function Track({
     return `${minutes}:${seconds.toString().padStart(2, "0")}`;
   };
 
+  const artistNames = artists.join(", ");
+  const formattedDuration = durationMs ? formatDuration(durationMs) : null;
+
   return (
     <li className="tracksContainer">
-      <div className="trackInfo">
-        <div className="trackArt">
+      <article className="trackInfo" aria-label={`${name} by ${artistNames}`}>
+        <div className="trackArt" aria-hidden="true">
           {albumImage ? (
-            <img src={albumImage} alt="" className="trackArtImage" />
-          ) : (
-            <FontAwesomeIcon
-              icon={faMusic}
-              className="trackArtIcon"
-              aria-hidden="true"
+            <img
+              src={albumImage}
+              alt=""
+              className="trackArtImage"
+              loading="lazy"
+              decoding="async"
             />
+          ) : (
+            <FontAwesomeIcon icon={faMusic} className="trackArtIcon" />
           )}
         </div>
+
         <div className="trackDetails">
-          <h3>{name}</h3>
+          {/* tabIndex="0" makes the song name reachable via Tab.
+              aria-label provides the full description to screen readers. */}
+          <h3
+            id={`track-name-${id}`}
+            className="track-title"
+            tabIndex="0"
+            aria-label={`${name} by ${artistNames}, from the album ${album}${formattedDuration ? `, duration ${formattedDuration}` : ""}`}
+          >
+            {name}
+          </h3>
+
+          {/* Visual metadata with accessible artist/album search buttons */}
           <p>
-            {artists.map((artistName, index) => (
-              <React.Fragment key={artistName}>
-                {showAddButton ? (
-                  <button
-                    type="button"
-                    onClick={() => handleSearchTracks(`artist:"${artistName}"`)}
-                    className="clickable"
-                    aria-label={`Search tracks by ${artistName}`}
-                  >
-                    {artistName}
-                  </button>
-                ) : (
-                  <span>{artistName}</span>
-                )}
-                {index < artists.length - 1 ? ", " : ""}
-              </React.Fragment>
-            ))}{" "}
-            •{" "}
-            {showAddButton ? (
-              <button
-                type="button"
-                onClick={() => handleSearchTracks(`album:"${album}"`)}
-                className="clickable"
-                aria-label={`Search tracks from the album ${album}`}
-              >
-                {album}
-              </button>
-            ) : (
-              <span>{album}</span>
-            )}
+            <span className="artist-info">
+              {artists.map((artistName, index) => (
+                <React.Fragment key={artistName}>
+                  {showAddButton ? (
+                    <button
+                      type="button"
+                      className="clickable"
+                      onClick={() =>
+                        handleSearchTracks(`artist:"${artistName}"`)
+                      }
+                      aria-label={`Search tracks by ${artistName}`}
+                    >
+                      {artistName}
+                    </button>
+                  ) : (
+                    <span>{artistName}</span>
+                  )}
+                  {index < artists.length - 1 ? ", " : ""}
+                </React.Fragment>
+              ))}
+            </span>
+            {" • "}
+            <span className="album-info">
+              {showAddButton ? (
+                <button
+                  type="button"
+                  className="clickable"
+                  onClick={() => handleSearchTracks(`album:"${album}"`)}
+                  aria-label={`Search tracks from album ${album}`}
+                >
+                  {album}
+                </button>
+              ) : (
+                <span>{album}</span>
+              )}
+            </span>
           </p>
         </div>
 
-        {durationMs && (
-          <span className="trackDuration">{formatDuration(durationMs)}</span>
+        {/* tabIndex="0" makes the duration reachable via Tab */}
+        {formattedDuration && (
+          <span
+            className="trackDuration"
+            tabIndex="0"
+            aria-label={`Duration: ${formattedDuration}`}
+          >
+            {formattedDuration}
+          </span>
         )}
 
         <div className="trackActions">
@@ -101,9 +122,9 @@ function Track({
             <button
               type="button"
               onClick={handleAddTrack}
-              aria-label={`Add ${name} to playlist`}
+              aria-label={`Add ${name} by ${artistNames} to playlist`}
             >
-              <FontAwesomeIcon icon={faPlus} />
+              <FontAwesomeIcon icon={faPlus} aria-hidden="true" />
             </button>
           )}
 
@@ -112,13 +133,13 @@ function Track({
               type="button"
               className="removeButton"
               onClick={handleRemoveTrack}
-              aria-label={`Remove ${name} from playlist`}
+              aria-label={`Remove ${name} by ${artistNames} from playlist`}
             >
-              <FontAwesomeIcon icon={faMinus} />
+              <FontAwesomeIcon icon={faMinus} aria-hidden="true" />
             </button>
           )}
         </div>
-      </div>
+      </article>
     </li>
   );
 }
