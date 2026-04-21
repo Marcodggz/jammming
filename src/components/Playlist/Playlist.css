@@ -357,14 +357,15 @@ html[data-keyboard] .saveButton:focus {
   justify-content: center;
   text-align: center;
   padding: 48px 32px;
-  margin: auto 20px;
+  margin: auto 0;
   flex: 1;
-  max-width: 320px;
-  width: 100%;
+  max-width: 100%;
+  width: auto;
   align-self: center;
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 16px;
+  box-sizing: border-box;
 }
 
 .emptyPlaylist h4 {
@@ -428,8 +429,11 @@ html[data-keyboard] .saveButton:focus {
 
   .emptyPlaylist {
     padding: 32px 20px;
-    margin: auto 8px;
+    margin: auto 0;
     border-radius: 14px;
+    max-width: 100%;
+    width: auto;
+    box-sizing: border-box;
   }
 
   .emptyPlaylist h4 {

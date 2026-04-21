@@ -597,8 +597,8 @@ body {
 @media (max-width: 768px) {
   .mainContainer {
     width: 100%;
-    gap: 24px;
-    margin-top: 80px;
+    gap: 32px;
+    margin-top: 88px;
     padding: 0 14px;
     box-sizing: border-box;
   }
