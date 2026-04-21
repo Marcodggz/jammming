@@ -52,6 +52,49 @@ body {
   top: 16px;
 }
 
+/* Main content focus — shown when focused via skip link (keyboard navigation) */
+#main-content:focus {
+  outline: none;
+}
+
+#main-content:focus-visible {
+  outline: 3px solid rgba(29, 185, 84, 0.5);
+  outline-offset: -3px;
+}
+
+/* Track title focus styles */
+.track-title:focus {
+  outline: none;
+}
+
+.track-title:focus-visible {
+  outline: 2px solid rgba(29, 185, 84, 0.5);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Track duration focus styles */
+.trackDuration:focus {
+  outline: none;
+}
+
+.trackDuration:focus-visible {
+  outline: 2px solid rgba(29, 185, 84, 0.5);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Playlist duration focus styles */
+.playlistDuration:focus {
+  outline: none;
+}
+
+.playlistDuration:focus-visible {
+  outline: 2px solid rgba(29, 185, 84, 0.5);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
 /* Reduced motion preference */
 
 @media (prefers-reduced-motion: reduce) {
@@ -65,12 +108,74 @@ body {
   }
 }
 
-/* Global focus styles */
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  body {
+    background-color: #000000;
+    color: #ffffff;
+  }
 
-*:focus-visible {
-  outline: 2px solid rgba(200, 255, 220, 0.7);
-  outline-offset: 3px;
+  .results,
+  .playlist {
+    background: #1a1a1a;
+    border: 2px solid #ffffff;
+  }
+
+  .connectButton {
+    background: #ffffff;
+    color: #000000;
+    border: 2px solid #ffffff;
+  }
+
+  .trackActions button {
+    background: #ffffff;
+    color: #000000;
+    border: 2px solid #ffffff;
+  }
+
+  .trackActions button.removeButton {
+    background: #ff0000;
+    color: #ffffff;
+    border: 2px solid #ff0000;
+  }
+
+  .searchInputWrapper {
+    background: #ffffff;
+    border: 2px solid #ffffff;
+  }
+
+  .searchInputWrapper input {
+    color: #000000;
+  }
+
+  .saveButton {
+    background: #00ff00;
+    color: #000000;
+    border: 2px solid #00ff00;
+  }
 }
+
+/* Enhanced color contrast for better readability */
+@media (prefers-contrast: more) {
+  .trackDetails p {
+    color: #d1d5d1;
+  }
+
+  .trackDuration {
+    color: #b1c1b2;
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  .featureText {
+    color: #e1e5e1;
+  }
+
+  .welcomeSubtitle {
+    color: #c1c5c1;
+  }
+}
+
+/* Global focus styles - removed to allow component-specific WCAG-compliant focus styles */
 
 /* App wrapper */
 
@@ -309,8 +414,20 @@ body {
 /* Focus & active states */
 
 .connectButton:focus-visible {
-  outline: 2px solid rgba(29, 185, 84, 0.7);
-  outline-offset: 4px;
+  outline: 2px solid rgba(29, 185, 84, 0.5);
+  outline-offset: 3px;
+}
+
+/* Landing page focus management */
+.landingPage {
+  isolation: isolate;
+}
+
+/* Improved button hover timing for accessibility */
+.connectButton,
+.saveButton,
+.searchButton {
+  transition: all 0.2s ease-in-out;
 }
 
 .connectButton:active {
