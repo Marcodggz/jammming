@@ -24,9 +24,13 @@ function Playlist({
     setTimeout(() => {
       if (playlistInputRef.current) {
         playlistInputRef.current.focus();
+        // Select all text - use setSelectionRange for better mobile compatibility
+        const length = playlistInputRef.current.value.length;
+        playlistInputRef.current.setSelectionRange(0, length);
+        // Fallback to select() for additional compatibility
         playlistInputRef.current.select();
       }
-    }, 0);
+    }, 50);
   };
 
   const handleTitleKeyDown = (event) => {
@@ -68,6 +72,8 @@ function Playlist({
                 aria-describedby="playlist-title-help"
                 maxLength="25"
                 autoComplete="off"
+                type="text"
+                inputMode="text"
               />
               <div id="playlist-title-help" className="srOnly">
                 Press Enter to save, Escape to cancel. Maximum 25 characters.
