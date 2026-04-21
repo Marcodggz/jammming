@@ -20,23 +20,17 @@ function Playlist({
   const handleEditTitle = () => {
     setIsEditingTitle(true);
 
-    // For mobile/tablet: focus immediately after state update
-    // Use flushSync to ensure React renders before we focus
-    // requestAnimationFrame ensures the DOM is painted before focusing
-    requestAnimationFrame(() => {
+    // Use setTimeout to ensure the input is rendered before focusing
+    setTimeout(() => {
       if (playlistInputRef.current) {
-        // Use a small delay to ensure iOS renders the input
-        requestAnimationFrame(() => {
-          if (playlistInputRef.current) {
-            playlistInputRef.current.focus();
-            // Select all text
-            const length = playlistInputRef.current.value.length;
-            playlistInputRef.current.setSelectionRange(0, length);
-            playlistInputRef.current.select();
-          }
-        });
+        playlistInputRef.current.focus();
+        // Select all text - use setSelectionRange for better mobile compatibility
+        const length = playlistInputRef.current.value.length;
+        playlistInputRef.current.setSelectionRange(0, length);
+        // Fallback to select() for additional compatibility
+        playlistInputRef.current.select();
       }
-    });
+    }, 50);
   };
 
   const handleTitleKeyDown = (event) => {
@@ -49,11 +43,11 @@ function Playlist({
       setIsEditingTitle(false);
     }
   };
+
   return (
-    <div
+    <section
       id="playlist"
       className="playlistContainer"
-      role="region"
       aria-labelledby="playlist-heading"
     >
       <header className="playlistHeader">
@@ -101,7 +95,7 @@ function Playlist({
             type="button"
             className="editButton"
             onClick={handleEditTitle}
-            aria-label="Edit playlist title"
+            aria-label={`Edit playlist title "${playlistName}"`}
           >
             <FontAwesomeIcon
               icon={faPenToSquare}
@@ -112,12 +106,14 @@ function Playlist({
         </div>
 
         {playlistTracks.length > 0 && (
-          <span
+          <div
             className="playlistDuration"
-            aria-label={`Playlist duration ${formattedDuration}`}
+            role="status"
+            tabIndex="0"
+            aria-label={`Total playlist duration: ${formattedDuration}`}
           >
             {formattedDuration}
-          </span>
+          </div>
         )}
       </header>
 
@@ -125,12 +121,16 @@ function Playlist({
         className={`playlistContent ${playlistTracks.length > 0 ? "hasTracks" : ""}`}
       >
         {playlistTracks.length === 0 ? (
-          <div className="emptyPlaylist">
+          <div
+            className="emptyPlaylist"
+            role="status"
+            aria-labelledby="empty-playlist-heading"
+          >
             <span className="emptyStateIcon" aria-hidden="true">
               🎵
             </span>
-            <h4>No tracks yet</h4>
-            <p>Tap + to add songs</p>
+            <h4 id="empty-playlist-heading">No tracks yet</h4>
+            <p>Search for songs and add them with the + button</p>
           </div>
         ) : (
           <TrackList
@@ -148,13 +148,13 @@ function Playlist({
             type="button"
             className="saveButton"
             onClick={savePlaylist}
-            aria-label={`Save playlist ${playlistName} to Spotify`}
+            aria-label={`Save "${playlistName}" playlist with ${playlistTracks.length} track${playlistTracks.length === 1 ? "" : "s"} to Spotify`}
           >
             <span>Save To Spotify</span>
           </button>
         </div>
       )}
-    </div>
+    </section>
   );
 }
 

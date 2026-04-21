@@ -1,139 +1,140 @@
 # Jammming
 
-Jammming is a React web application that allows users to search the Spotify library, create a custom playlist, and save it directly to their Spotify account.
+![React](https://img.shields.io/badge/React-18-blue)
+![Vite](https://img.shields.io/badge/Vite-Frontend-purple)
+![Spotify API](https://img.shields.io/badge/API-Spotify-green)
+![Status](https://img.shields.io/badge/status-Completed-success)
 
-The application integrates with the Spotify Web API and demonstrates core front-end development concepts such as component architecture, state management, API requests, and authentication.
-
----
-
-## Demo
-<!-- https://jammming-app.vercel.app -->
-
-## Screenshot
-<!-- ![App Screenshot](./screenshot.png) -->
-
-## Project Overview
-
-The goal of this project was to build a fully functional React application that interacts with the Spotify API.
-
-Users can:
-
-- Search for songs using the Spotify API
-- View song information including title, artist, and album
-- Add songs to a custom playlist
-- Remove songs from the playlist
-- Rename the playlist
-- Save the playlist directly to their Spotify account
-
-The application uses Spotify authentication and API requests to retrieve and manipulate user data.
+A responsive React application that integrates with the Spotify Web API, allowing users to search tracks, build custom playlists, and save them directly to their Spotify account.
 
 ---
 
-## Technologies Used
+## Live Demo
 
-- React
-- JavaScript (ES6+)
-- Vite
-- Spotify Web API
-- Fetch API
-- CSS
+https://the-jammming.netlify.app/
+
+![App Demo](assets/demo.gif)
+
+[Watch full demo (high quality)](https://raw.githubusercontent.com/Marcodggz/jammming/main/assets/demo.mp4)
+
+---
+
+## Overview
+
+Jammming is a responsive React application that integrates with the Spotify Web API, allowing users to search tracks, build playlists, and save them directly to their Spotify account.
+
+The project focuses on real-world frontend challenges such as API integration, authentication, state management, and user experience.
 
 ---
 
 ## Features
 
-### Spotify Authentication
-The application integrates with Spotify’s OAuth flow, allowing users to securely connect their account and interact with their personal library.
-
-### Smart Search System
-Users can search for tracks using the Spotify API. Results are dynamically fetched and updated based on the search term.
-
-### Interactive Navigation
-Clicking on an artist or album triggers a new search, enabling quick exploration of related music directly from the results list.
-
-### Playlist Creation
-Users can build a custom playlist by adding songs from the search results.
-
-### Duplicate Prevention
-Tracks already added to the playlist are automatically filtered out from the search results, ensuring a clean and intuitive experience.
-
-### Playlist Management
-Tracks can be added or removed from the playlist, and duplicate entries are prevented.
-
-### Playlist Renaming
-Users can rename their playlist directly in the interface.
-
-### Playlist Duration
-The total duration of the playlist is calculated in real time and displayed in a user-friendly format.
-
-### Loading and Empty States
-The UI handles loading states and empty results gracefully, improving the overall user experience.
-
-### Conditional UI Flow
-The interface adapts based on the application state:
-- Not authenticated → connection screen
-- Authenticated without search → onboarding message
-- Searching → loading state
-- Results → track list
-- No results → empty state message
-
-### Spotify Integration
-Playlists can be saved directly to the user's Spotify account using the Spotify Web API.
+- Search tracks using the Spotify API
+- Add and remove tracks from a custom playlist
+- Rename playlists directly in the UI
+- Save playlists to the user's Spotify account
+- Click on artists or albums to trigger new searches
+- Prevent duplicate tracks in the playlist
+- Real-time playlist duration calculation
+- Loading, empty, and error states handled in the UI
+- Conditional UI based on authentication and search state
 
 ---
 
-## Technical Design
+## Tech Stack
 
-The technical design document for the search result filtering feature can be found here:
-
-- [Jammming Technical Design Document](docs/jammming-design-document.md)
+- React
+- JavaScript (ES6+)
+- Vite
+- Spotify Web API (OAuth PKCE)
+- CSS 
 
 ---
 
-## Testing and Debugging
+## Technical Decisions
 
-### Testing Approach
+Key implementation decisions were made to improve data handling, authentication flow, and overall user experience.
 
-The application was tested incrementally during development. Each core functionality was verified manually to ensure that the application behaves as expected.
+### 1. Filtering search results to prevent duplicate tracks
 
-React Developer Tools and browser console logs were used to inspect component state, props, and data flow.
+Instead of mutating the original search results, duplicate tracks are filtered at render level by deriving a new array based on the current playlist state.
 
-### Test Cases
+This keeps the data flow predictable, avoids unnecessary state mutations, and ensures that search results always stay in sync with the playlist.
 
-| Feature | Action | Expected Result | Result |
-|-------|------|------|------|
-| Search tracks | Enter a search term and click "Search" | Tracks from Spotify API appear in the results list | Passed |
-| Add track | Click "Add" next to a track in search results | Track appears in the playlist | Passed |
-| Prevent duplicates | Add the same track twice | Track should not be duplicated in the playlist | Passed |
-| Remove track | Click "Remove" next to a track in playlist | Track is removed from playlist | Passed |
-| Rename playlist | Edit the playlist name input | Playlist name updates in real time | Passed |
-| Save playlist | Click "Save to Spotify" | Playlist is created in the user's Spotify account | Passed |
-| Reset playlist | After saving | Playlist clears and the name resets | Passed |
+---
 
-### Debugging Tools
+### 2. Handling Spotify OAuth and session persistence
 
-The following tools and techniques were used during development:
+Authentication is implemented using Spotify’s PKCE flow. The access token and its expiration time are stored in sessionStorage to restore the session after page reload.
 
-- Browser console logging to inspect data flow
-- Breakpoints in the browser debugger
-- React Developer Tools to inspect component state and props
-- Network tab inspection for Spotify API requests
+The application initializes authentication on load, handling the OAuth callback automatically and preventing inconsistent states caused by URL-based logic.
 
-All major features were tested and verified before completing the project.
+---
+
+### 3. Interactive search via artist and album
+
+Tracks include clickable artist and album names that trigger new searches using Spotify query filters such as artist:"..." and album:"...".
+
+This approach improves navigation within the app and allows users to explore related content without manually typing new queries.
+
+---
+
+A technical design document was created to define the logic and structure behind filtering search results and preventing duplicate tracks:
+
+- [View Technical Design Document](docs/jammming-design-document.md)
+
+---
+
+## Testing
+
+Core features were tested manually during development to ensure correct behavior, including:
+
+- Search functionality and API integration
+- Playlist creation and modification
+- Authentication flow and session persistence
+
+Browser Developer Tools and React Developer Tools were used to debug state, inspect API responses, and validate edge cases.
+
+---
+
+## How It Works
+
+1. The user connects their Spotify account via OAuth (PKCE flow)
+2. Searches are performed using the Spotify Search API
+3. Tracks can be added to a custom playlist
+4. The playlist is created and saved using the Spotify Web API
+
+---
+
+## Installation
+
+```bash
+git clone https://github.com/Marcodggz/jammming.git
+cd jammming
+npm install
+npm run dev
+```
+
+---
+
+## Important Note
+
+Spotify authentication is required to use the application.
+
+Due to Spotify API restrictions, only authorized users may be able to fully test the app unless the application is approved for production use.
 
 ---
 
 ## Future Improvements
 
-- Improve visual design and polish the overall UI/UX
-- Add drag-and-drop functionality to reorder playlist tracks
-- Implement debounced search to reduce unnecessary API calls
+- Add debounced search for better performance
+- Implement request cancellation to avoid race conditions
+- Improve UI animations and transitions
+- Add drag-and-drop support for playlist reordering
 - Persist authentication state across sessions
-- Add user feedback for actions such as playlist saves or errors
-- Introduce more refined transitions and interaction states
 
 ---
 
 ## Author
 
-Created as part of the **Codecademy Front-End Engineer Path**.
+Created as part of the Codecademy Front-End Engineer Path and further developed with additional features, UX improvements, and authentication enhancements.

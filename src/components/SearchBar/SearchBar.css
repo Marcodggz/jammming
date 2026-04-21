@@ -24,9 +24,10 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   transition:
     border-color 0.3s ease,
-    box-shadow 0.3s ease,
     background-color 0.3s ease,
     transform 0.3s ease;
+  /* box-shadow intentionally excluded: keyboard→mouse switch must be instant,
+       not a 0.3s fade that shows the keyboard glow briefly on mouse click */
 }
 
 .searchInputWrapper:hover {
@@ -36,12 +37,21 @@
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18);
 }
 
+/* Mouse focus: identical to playlist edit — 1.5px green ring, subtle background */
 .searchInputWrapper:focus-within {
+  transform: none;
+  border-color: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 0 0 1.5px rgba(29, 185, 84, 0.55);
+}
+
+/* Keyboard / screen reader: state set in React onFocus — always timing-safe */
+.searchInputWrapper[data-keyboard-focused]:focus-within {
   border-color: rgba(29, 185, 84, 0.5);
   background: rgba(255, 255, 255, 0.1);
   transform: translateY(-1px);
   box-shadow:
-    0 0 0 3px rgba(29, 185, 84, 0.12),
+    0 0 0 3px rgba(29, 185, 84, 0.18),
     0 8px 28px rgba(0, 0, 0, 0.2);
 }
 
@@ -110,14 +120,37 @@
 }
 
 .searchInputWrapper:focus-within .searchIcon {
+  color: rgba(255, 255, 255, 0.4);
+  transform: translateY(-50%); /* no colour change for mouse */
+}
+
+.searchInputWrapper[data-keyboard-focused]:focus-within .searchIcon {
   color: rgba(29, 185, 84, 0.9);
   transform: translateY(-50%) scale(1.1);
 }
 
 /* Button */
 
+/* Hidden on desktop (search on Enter key is standard).
+   Shown on tablet to provide explicit search action.
+   See tablet media query below. */
 .searchButton {
   display: none;
+  transition: all 0.3s ease;
+}
+
+.searchButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.searchButton:disabled:hover {
+  transform: none;
+  box-shadow: none;
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.1);
 }
 
 /* Mobile */
@@ -155,11 +188,22 @@
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
   }
 
+  /* Mouse focus: same as playlist edit — 1.5px green ring only */
   .searchInputWrapper:focus-within {
     transform: none;
-    background: rgba(5, 6, 5, 0.7);
-    border: 1px solid rgba(29, 185, 84, 0.35);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+    background: rgba(5, 6, 5, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 0 1.5px rgba(29, 185, 84, 0.55);
+  }
+
+  /* Keyboard / screen reader: stronger green glow */
+  .searchInputWrapper[data-keyboard-focused]:focus-within {
+    transform: none;
+    background: rgba(5, 6, 5, 0.65);
+    border: 1px solid rgba(29, 185, 84, 0.45);
+    box-shadow:
+      0 0 0 2.5px rgba(29, 185, 84, 0.2),
+      0 4px 20px rgba(0, 0, 0, 0.35);
   }
 
   .searchInputWrapper input {
@@ -210,7 +254,7 @@
   }
 
   .searchButton:focus-visible {
-    outline: 2px solid rgba(255, 255, 255, 0.3);
+    outline: 2px solid rgba(29, 185, 84, 0.5);
     outline-offset: 3px;
     background: rgba(255, 255, 255, 0.1);
     transform: translateY(-1px);

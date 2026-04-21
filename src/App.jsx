@@ -21,6 +21,25 @@ function App() {
 
   const hasInitializedAuth = useRef(false);
 
+  // Track keyboard vs mouse navigation globally.
+  // Tab sets data-keyboard on <html>; pointerdown (capture phase) clears it.
+  // Capture phase fires before focus events, so the attribute is always in the
+  // correct state by the time :focus-within CSS is evaluated.
+  useEffect(() => {
+    const onKeyDown = (e) => {
+      if (e.key === "Tab")
+        document.documentElement.setAttribute("data-keyboard", "true");
+    };
+    const onPointerDown = () =>
+      document.documentElement.removeAttribute("data-keyboard");
+    document.addEventListener("keydown", onKeyDown);
+    document.addEventListener("pointerdown", onPointerDown, true); // capture!
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      document.removeEventListener("pointerdown", onPointerDown, true);
+    };
+  }, []);
+
   useEffect(() => {
     if (hasInitializedAuth.current) return;
     hasInitializedAuth.current = true;
@@ -150,13 +169,23 @@ function App() {
         pauseOnHover
         draggable
         theme="dark"
+        role="alert"
+        aria-live="polite"
+        aria-label="Notifications"
       />
-      <a className="skipLink" href="#main-content">
+      <a
+        className="skipLink"
+        href="#main-content"
+        onClick={(e) => {
+          e.preventDefault();
+          document.getElementById("main-content")?.focus();
+        }}
+      >
         Skip to main content
       </a>
 
       {isAuthLoading ? null : !isAuthenticated ? (
-        <main className="app landingPage" id="main-content">
+        <main className="app landingPage" id="main-content" tabIndex="-1">
           <section className="welcomeHome" aria-labelledby="welcome-title">
             <div className="logoContainer">
               <span className="logoIcon">🎧</span>
@@ -219,6 +248,7 @@ function App() {
         <main
           className="app"
           id="main-content"
+          tabIndex="-1"
           aria-label="Jammming Spotify Playlist Builder"
         >
           <h1 className="srOnly">Jammming — Spotify Playlist Builder</h1>
