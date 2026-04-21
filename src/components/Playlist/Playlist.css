@@ -66,6 +66,18 @@
   -webkit-touch-callout: none;
 }
 
+.playlistTitle::selection {
+  background-color: Highlight;
+  color: HighlightText;
+  padding: 8px 12px;
+}
+
+.playlistTitle::-moz-selection {
+  background-color: Highlight;
+  color: HighlightText;
+  padding: 8px 12px;
+}
+
 .playlistTitle:hover {
   background: rgba(255, 255, 255, 0.06);
 }
