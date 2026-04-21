@@ -17,6 +17,42 @@ function Playlist({
   const playlistInputRef = useRef(null);
   const [isEditingTitle, setIsEditingTitle] = useState(false);
 
+<<<<<<< HEAD
+=======
+  const handleEditTitle = () => {
+    setIsEditingTitle(true);
+
+    // For mobile/tablet: focus immediately after state update
+    // Use flushSync to ensure React renders before we focus
+    // requestAnimationFrame ensures the DOM is painted before focusing
+    requestAnimationFrame(() => {
+      if (playlistInputRef.current) {
+        // Use a small delay to ensure iOS renders the input
+        requestAnimationFrame(() => {
+          if (playlistInputRef.current) {
+            playlistInputRef.current.focus();
+            // Select all text
+            const length = playlistInputRef.current.value.length;
+            playlistInputRef.current.setSelectionRange(0, length);
+            playlistInputRef.current.select();
+          }
+        });
+      }
+    });
+  };
+
+  const handleTitleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      event.target.blur();
+    }
+    if (event.key === "Escape") {
+      event.preventDefault();
+      setIsEditingTitle(false);
+    }
+  };
+
+>>>>>>> 4b2e435 (Improve mobile keyboard and text selection for playlist title editing)
   return (
     <div
       id="playlist"
@@ -27,6 +63,7 @@ function Playlist({
       <header className="playlistHeader">
         <div className="playlistTitleWrapper">
           {isEditingTitle ? (
+<<<<<<< HEAD
             <input
               ref={playlistInputRef}
               className="playlistTitle"
@@ -44,6 +81,40 @@ function Playlist({
               aria-label="Playlist title"
               autoFocus
             />
+=======
+            <div>
+              <label htmlFor="playlist-title-input" className="srOnly">
+                Edit playlist title
+              </label>
+              <input
+                id="playlist-title-input"
+                ref={playlistInputRef}
+                className="playlistTitle"
+                value={playlistName}
+                onChange={(event) => {
+                  const value = event.target.value.slice(0, 25);
+                  playlistNameChange({ target: { value } });
+                }}
+                onBlur={() => setIsEditingTitle(false)}
+                onKeyDown={handleTitleKeyDown}
+                onFocus={(e) => {
+                  // Ensure text is selected when focused
+                  const length = e.target.value.length;
+                  e.target.setSelectionRange(0, length);
+                }}
+                aria-label="Playlist title"
+                aria-describedby="playlist-title-help"
+                maxLength="25"
+                autoComplete="off"
+                type="text"
+                inputMode="text"
+                autoFocus
+              />
+              <div id="playlist-title-help" className="srOnly">
+                Press Enter to save, Escape to cancel. Maximum 25 characters.
+              </div>
+            </div>
+>>>>>>> 4b2e435 (Improve mobile keyboard and text selection for playlist title editing)
           ) : (
             <h2 id="playlist-heading" className="playlistTitleText">
               {playlistName}
