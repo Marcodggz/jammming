@@ -379,27 +379,31 @@ html[data-keyboard] .saveButton:focus {
   }
 
   .playlistTitleWrapper {
-    gap: 6px;
+    gap: 4px;
   }
 
   .playlistTitle,
   .playlistTitleText {
-    font-size: 18px;
+    font-size: 20px;
     padding: 3px 6px;
   }
 
   .playlistDuration {
-    font-size: 11px;
-    padding: 4px 10px;
+    font-size: 13px;
+    padding: 5px 11px;
     border-radius: 14px;
   }
 
   .editButton {
-    padding: 5px;
+    padding: 8px;
+    min-width: 36px;
+    min-height: 36px;
+    border-radius: 8px;
   }
 
-  .editButton svg {
-    font-size: 12px;
+  .editButton svg,
+  .editIcon {
+    font-size: 18px;
   }
 
   .playlistContent {
