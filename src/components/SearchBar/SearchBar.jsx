@@ -23,7 +23,10 @@ function SearchBar({ searchTracks, searchTerm, setSearchTerm }) {
     if (searchTerm.trim() !== "") {
       setSearchFeedback(`Searching for "${searchTerm.trim()}"...`);
       searchTracks(searchTerm);
-      // Don't blur the input after search to maintain focus for screen readers
+      // Blur the input after search to remove active state on mobile/tablet
+      if (inputRef.current) {
+        inputRef.current.blur();
+      }
       // Clear feedback after search starts
       setTimeout(() => setSearchFeedback(""), 2000);
     } else {
@@ -107,6 +110,12 @@ function SearchBar({ searchTracks, searchTerm, setSearchTerm }) {
               : "Search for songs"
           }
           disabled={!searchTerm.trim()}
+          onClick={() => {
+            // Ensure input loses focus when search button is clicked
+            if (inputRef.current) {
+              inputRef.current.blur();
+            }
+          }}
         >
           <span>Search</span>
         </button>
