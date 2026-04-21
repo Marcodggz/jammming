@@ -17,8 +17,6 @@ function Playlist({
   const playlistInputRef = useRef(null);
   const [isEditingTitle, setIsEditingTitle] = useState(false);
 
-<<<<<<< HEAD
-=======
   const handleEditTitle = () => {
     setIsEditingTitle(true);
 
@@ -51,8 +49,6 @@ function Playlist({
       setIsEditingTitle(false);
     }
   };
-
->>>>>>> 4b2e435 (Improve mobile keyboard and text selection for playlist title editing)
   return (
     <div
       id="playlist"
@@ -63,25 +59,6 @@ function Playlist({
       <header className="playlistHeader">
         <div className="playlistTitleWrapper">
           {isEditingTitle ? (
-<<<<<<< HEAD
-            <input
-              ref={playlistInputRef}
-              className="playlistTitle"
-              value={playlistName}
-              onChange={(event) => {
-                const value = event.target.value.slice(0, 25);
-                playlistNameChange({ target: { value } });
-              }}
-              onBlur={() => setIsEditingTitle(false)}
-              onKeyDown={(event) => {
-                if (event.key === "Enter") {
-                  event.target.blur();
-                }
-              }}
-              aria-label="Playlist title"
-              autoFocus
-            />
-=======
             <div>
               <label htmlFor="playlist-title-input" className="srOnly">
                 Edit playlist title
@@ -114,7 +91,6 @@ function Playlist({
                 Press Enter to save, Escape to cancel. Maximum 25 characters.
               </div>
             </div>
->>>>>>> 4b2e435 (Improve mobile keyboard and text selection for playlist title editing)
           ) : (
             <h2 id="playlist-heading" className="playlistTitleText">
               {playlistName}
@@ -124,17 +100,7 @@ function Playlist({
           <button
             type="button"
             className="editButton"
-            onClick={() => {
-              setIsEditingTitle(true);
-
-              requestAnimationFrame(() => {
-                if (playlistInputRef.current) {
-                  playlistInputRef.current.focus();
-                  const length = playlistInputRef.current.value.length;
-                  playlistInputRef.current.setSelectionRange(length, length);
-                }
-              });
-            }}
+            onClick={handleEditTitle}
             aria-label="Edit playlist title"
           >
             <FontAwesomeIcon
