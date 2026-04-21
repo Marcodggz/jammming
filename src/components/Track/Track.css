@@ -33,6 +33,20 @@
   background: rgba(255, 255, 255, 0.05);
 }
 
+/* Prevent hover effects from sticking on touch devices */
+@media (hover: none) {
+  .trackInfo:hover {
+    background: transparent;
+  }
+
+  .trackInfo:hover .trackArt {
+    transform: none;
+    box-shadow:
+      0 2px 8px rgba(0, 0, 0, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+}
+
 /* Album art placeholder */
 
 .trackArt {
