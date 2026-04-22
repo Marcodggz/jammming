@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import "./Track.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMusic, faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
@@ -18,9 +18,44 @@ function Track({
   setSearchTerm,
   durationMs,
 }) {
-  const handleAddTrack = () =>
+  const timeoutRef = useRef(null);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
+
+  const handleAddTrack = (e) => {
     addTrack({ name, artists, album, albumImage, id, uri, durationMs });
-  const handleRemoveTrack = () => removeTrack({ id });
+    // Clear any existing timeout
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    // Blur after a short delay to allow active state to show but prevent persistence
+    timeoutRef.current = setTimeout(() => {
+      if (e.currentTarget && typeof e.currentTarget.blur === "function") {
+        e.currentTarget.blur();
+      }
+    }, 150);
+  };
+
+  const handleRemoveTrack = (e) => {
+    removeTrack({ id });
+    // Clear any existing timeout
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    // Blur after a short delay to allow active state to show but prevent persistence
+    timeoutRef.current = setTimeout(() => {
+      if (e.currentTarget && typeof e.currentTarget.blur === "function") {
+        e.currentTarget.blur();
+      }
+    }, 150);
+  };
   const handleSearchTracks = (query) => {
     searchTracks(query);
     if (setSearchTerm) setSearchTerm("");
@@ -121,15 +156,7 @@ function Track({
           {showAddButton && (
             <button
               type="button"
-              onClick={(e) => {
-                e.currentTarget.blur();
-                handleAddTrack();
-                requestAnimationFrame(() => {
-                  if (document.activeElement instanceof HTMLElement) {
-                    document.activeElement.blur();
-                  }
-                });
-              }}
+              onClick={handleAddTrack}
               aria-label={`Add ${name} by ${artistNames} to playlist`}
             >
               <FontAwesomeIcon icon={faPlus} aria-hidden="true" />
@@ -140,15 +167,7 @@ function Track({
             <button
               type="button"
               className="removeButton"
-              onClick={(e) => {
-                e.currentTarget.blur();
-                handleRemoveTrack();
-                requestAnimationFrame(() => {
-                  if (document.activeElement instanceof HTMLElement) {
-                    document.activeElement.blur();
-                  }
-                });
-              }}
+              onClick={handleRemoveTrack}
               aria-label={`Remove ${name} by ${artistNames} from playlist`}
             >
               <FontAwesomeIcon icon={faMinus} aria-hidden="true" />

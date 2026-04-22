@@ -200,19 +200,39 @@
   transform: scale(0.95);
 }
 
-/* On touch devices, prevent :active from persisting or transferring
-   to elements that appear at the same position after a list re-render */
-@media (pointer: coarse) {
+/* Prevent active/focus state transfer on touch devices */
+@media (hover: none) and (pointer: coarse) {
+  .trackActions button {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  /* Allow active state to show briefly, then remove it */
   .trackActions button:active {
-    transition: none;
+    transform: scale(0.95);
+    transition:
+      transform 0.1s ease-out,
+      background-color 0.1s ease-out;
+  }
+
+  /* On touch devices, remove focus outline since touch doesn't use keyboard navigation */
+  .trackActions button:focus {
+    outline: none;
   }
 }
 
+/* Preserve focus outline for keyboard users on devices with hover capability */
 .trackActions button:focus {
   outline: none;
 }
 
 .trackActions button:focus-visible,
+html[data-keyboard] .trackActions button:focus {
+  outline: 2px solid rgba(29, 185, 84, 0.5);
+  outline-offset: 3px;
+}
 html[data-keyboard] .trackActions button:focus {
   outline: 2px solid rgba(29, 185, 84, 0.5);
   outline-offset: 3px;
