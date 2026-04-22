@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React from "react";
 import "./Track.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMusic, faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
@@ -18,37 +18,31 @@ function Track({
   setSearchTerm,
   durationMs,
 }) {
-  const timeoutRef = useRef(null);
-
-  // Cleanup timeout on unmount
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
-  }, []);
-
+  // Handle add/remove with robust blur strategy to prevent focus transfer
   const handleAddTrack = (e) => {
-    // Save button reference before async operation
-    const button = e.currentTarget;
+    // Blur BEFORE state change to prevent focus transfer during re-render
+    e.currentTarget.blur();
     addTrack({ name, artists, album, albumImage, id, uri, durationMs });
-    // Blur after a short delay to allow active state to show but prevent persistence
-    clearTimeout(timeoutRef.current);
-    timeoutRef.current = setTimeout(() => {
-      button?.blur?.();
-    }, 150);
+
+    // Additional safety: blur after React processes the state change
+    setTimeout(() => {
+      if (document.activeElement?.closest?.(".trackActions")) {
+        document.activeElement.blur();
+      }
+    }, 0);
   };
 
   const handleRemoveTrack = (e) => {
-    // Save button reference before async operation
-    const button = e.currentTarget;
+    // Blur BEFORE state change to prevent focus transfer during re-render
+    e.currentTarget.blur();
     removeTrack({ id });
-    // Blur after a short delay to allow active state to show but prevent persistence
-    clearTimeout(timeoutRef.current);
-    timeoutRef.current = setTimeout(() => {
-      button?.blur?.();
-    }, 150);
+
+    // Additional safety: blur after React processes the state change
+    setTimeout(() => {
+      if (document.activeElement?.closest?.(".trackActions")) {
+        document.activeElement.blur();
+      }
+    }, 0);
   };
   const handleSearchTracks = (query) => {
     searchTracks(query);

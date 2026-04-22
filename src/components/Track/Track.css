@@ -26,24 +26,32 @@
   border-radius: 12px;
   background: transparent;
   border-bottom: none;
-  transition: all 0.2s ease;
+  /* No transition by default to prevent stuck states */
+  transition: none;
 }
 
-.trackInfo:hover {
-  background: rgba(255, 255, 255, 0.05);
-}
-
-/* Prevent hover effects from sticking on touch devices */
-@media (hover: none) {
-  .trackInfo:hover {
-    background: transparent;
+/* Only apply hover effects on desktop with mouse */
+@media (hover: hover) and (pointer: fine) {
+  .trackInfo {
+    transition: background 0.2s ease;
   }
 
-  .trackInfo:hover .trackArt {
-    transform: none;
-    box-shadow:
-      0 2px 8px rgba(0, 0, 0, 0.2),
-      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  .trackInfo:hover {
+    background: rgba(255, 255, 255, 0.05);
+  }
+}
+
+/* Explicitly prevent any visual feedback on touch devices */
+@media (hover: none), (pointer: coarse) {
+  .trackInfo {
+    background: transparent !important;
+  }
+
+  /* Prevent any touch-based visual feedback */
+  .trackInfo:hover,
+  .trackInfo:focus,
+  .trackInfo:active {
+    background: transparent !important;
   }
 }
 
@@ -67,16 +75,23 @@
     0 2px 8px rgba(0, 0, 0, 0.2),
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
   overflow: hidden;
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
+  transition: none;
 }
 
-.trackInfo:hover .trackArt {
-  transform: scale(1.05);
-  box-shadow:
-    0 4px 12px rgba(0, 0, 0, 0.25),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+/* Album art hover effects only on desktop */
+@media (hover: hover) and (pointer: fine) {
+  .trackArt {
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  .trackInfo:hover .trackArt {
+    transform: scale(1.05);
+    box-shadow:
+      0 4px 12px rgba(0, 0, 0, 0.25),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
 }
 
 .trackArtImage {
@@ -200,36 +215,43 @@
   transform: scale(0.95);
 }
 
-/* Prevent active/focus state transfer on touch devices */
-@media (hover: none) and (pointer: coarse) {
+/* Prevent focus/active persistence on touch devices */
+@media (hover: none), (pointer: coarse) {
   .trackActions button {
     -webkit-tap-highlight-color: transparent;
-    -webkit-touch-callout: none;
+    outline: none;
+    /* Prevent text selection which can interfere with focus */
     -webkit-user-select: none;
     user-select: none;
   }
 
-  /* Show active state without transition to prevent state transfer */
+  /* Allow active visual feedback but ensure it doesn't persist */
   .trackActions button:active {
     transform: scale(0.95);
+    /* No transition on touch to prevent stuck states */
+    transition: none;
   }
 
-  /* Remove focus styles on touch devices */
-  .trackActions button:focus {
+  /* Aggressively reset focus state */
+  .trackActions button:focus,
+  .trackActions button:focus-within {
     outline: none;
+    transform: scale(1);
   }
 
-  /* Reset non-active buttons to prevent inherited active state */
+  /* Force reset any button that shouldn't be active */
   .trackActions button:not(:active) {
     transform: scale(1);
   }
 }
 
-/* Preserve focus outline for keyboard users */
-.trackActions button:focus-visible,
-html[data-keyboard] .trackActions button:focus {
-  outline: 2px solid rgba(29, 185, 84, 0.5);
-  outline-offset: 3px;
+/* Preserve accessibility on desktop */
+@media (hover: hover) and (pointer: fine) {
+  .trackActions button:focus-visible,
+  html[data-keyboard] .trackActions button:focus {
+    outline: 2px solid rgba(29, 185, 84, 0.5);
+    outline-offset: 3px;
+  }
 }
 html[data-keyboard] .trackActions button:focus {
   outline: 2px solid rgba(29, 185, 84, 0.5);
