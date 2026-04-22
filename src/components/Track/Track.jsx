@@ -124,6 +124,11 @@ function Track({
               onClick={(e) => {
                 e.currentTarget.blur();
                 handleAddTrack();
+                requestAnimationFrame(() => {
+                  if (document.activeElement instanceof HTMLElement) {
+                    document.activeElement.blur();
+                  }
+                });
               }}
               aria-label={`Add ${name} by ${artistNames} to playlist`}
             >
@@ -138,6 +143,11 @@ function Track({
               onClick={(e) => {
                 e.currentTarget.blur();
                 handleRemoveTrack();
+                requestAnimationFrame(() => {
+                  if (document.activeElement instanceof HTMLElement) {
+                    document.activeElement.blur();
+                  }
+                });
               }}
               aria-label={`Remove ${name} by ${artistNames} from playlist`}
             >

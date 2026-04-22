@@ -200,6 +200,14 @@
   transform: scale(0.95);
 }
 
+/* On touch devices, prevent :active from persisting or transferring
+   to elements that appear at the same position after a list re-render */
+@media (pointer: coarse) {
+  .trackActions button:active {
+    transition: none;
+  }
+}
+
 .trackActions button:focus {
   outline: none;
 }
