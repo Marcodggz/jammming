@@ -121,7 +121,10 @@ function Track({
           {showAddButton && (
             <button
               type="button"
-              onClick={handleAddTrack}
+              onClick={(e) => {
+                e.currentTarget.blur();
+                handleAddTrack();
+              }}
               aria-label={`Add ${name} by ${artistNames} to playlist`}
             >
               <FontAwesomeIcon icon={faPlus} aria-hidden="true" />
@@ -132,7 +135,10 @@ function Track({
             <button
               type="button"
               className="removeButton"
-              onClick={handleRemoveTrack}
+              onClick={(e) => {
+                e.currentTarget.blur();
+                handleRemoveTrack();
+              }}
               aria-label={`Remove ${name} by ${artistNames} from playlist`}
             >
               <FontAwesomeIcon icon={faMinus} aria-hidden="true" />
