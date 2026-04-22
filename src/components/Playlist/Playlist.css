@@ -410,13 +410,6 @@ html[data-keyboard] .saveButton:focus {
     border-radius: 14px;
   }
 
-  .editButton {
-    padding: 8px;
-    min-width: 36px;
-    min-height: 36px;
-    border-radius: 8px;
-  }
-
   .editButton svg,
   .editIcon {
     font-size: 18px;
