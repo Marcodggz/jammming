@@ -30,30 +30,24 @@ function Track({
   }, []);
 
   const handleAddTrack = (e) => {
+    // Save button reference before async operation
+    const button = e.currentTarget;
     addTrack({ name, artists, album, albumImage, id, uri, durationMs });
-    // Clear any existing timeout
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
     // Blur after a short delay to allow active state to show but prevent persistence
+    clearTimeout(timeoutRef.current);
     timeoutRef.current = setTimeout(() => {
-      if (e.currentTarget && typeof e.currentTarget.blur === "function") {
-        e.currentTarget.blur();
-      }
+      button?.blur?.();
     }, 150);
   };
 
   const handleRemoveTrack = (e) => {
+    // Save button reference before async operation
+    const button = e.currentTarget;
     removeTrack({ id });
-    // Clear any existing timeout
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
     // Blur after a short delay to allow active state to show but prevent persistence
+    clearTimeout(timeoutRef.current);
     timeoutRef.current = setTimeout(() => {
-      if (e.currentTarget && typeof e.currentTarget.blur === "function") {
-        e.currentTarget.blur();
-      }
+      button?.blur?.();
     }, 150);
   };
   const handleSearchTracks = (query) => {
