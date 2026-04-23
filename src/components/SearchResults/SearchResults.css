@@ -92,9 +92,11 @@
   border-radius: 50%;
 }
 
-/* Welcome state */
+/* Empty state shared styles */
 
-.welcome {
+.welcome,
+.noResults,
+.allAddedState {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -112,6 +114,8 @@
   box-sizing: border-box;
 }
 
+/* Welcome state */
+
 .welcome h3 {
   color: #f3f5f3;
   font-weight: 600;
@@ -126,6 +130,38 @@
   font-size: 14px;
   margin: 0;
   line-height: 1.5;
+}
+
+/* No results state */
+
+.noResults h4 {
+  color: #f3f5f3;
+  font-weight: 600;
+  font-size: 18px;
+  margin: 0 0 8px 0;
+}
+
+.noResults p {
+  color: #8a958b;
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* All added state */
+
+.allAddedState h4 {
+  color: #f3f5f3;
+  font-weight: 600;
+  font-size: 18px;
+  margin: 0 0 8px 0;
+}
+
+.allAddedState p {
+  color: #8a958b;
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0;
 }
 
 /* Loading state */
@@ -161,74 +197,6 @@
   }
 }
 
-/* No results state */
-
-.searchResults .noResults {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 48px 32px;
-  margin: auto 0;
-  flex: 1;
-  max-width: 100%;
-  width: auto;
-  align-self: center;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 16px;
-  box-sizing: border-box;
-}
-
-.noResults h4 {
-  color: #f3f5f3;
-  font-weight: 600;
-  font-size: 18px;
-  margin: 0 0 8px 0;
-}
-
-.noResults p {
-  color: #8a958b;
-  margin: 0;
-  font-size: 14px;
-  line-height: 1.5;
-}
-
-/* All added state */
-
-.allAddedState {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 48px 32px;
-  margin: auto 0;
-  flex: 1;
-  max-width: 100%;
-  width: auto;
-  align-self: center;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 16px;
-  box-sizing: border-box;
-}
-
-.allAddedState h4 {
-  color: #f3f5f3;
-  font-weight: 600;
-  font-size: 18px;
-  margin: 0 0 8px 0;
-}
-
-.allAddedState p {
-  color: #8a958b;
-  font-size: 14px;
-  line-height: 1.5;
-  margin: 0;
-}
-
 /* Mobile styles */
 
 @media (max-width: 480px) {
@@ -249,6 +217,13 @@
     padding-bottom: 8px;
   }
 
+  /* Ensure empty states have consistent min-height in mobile */
+  .searchResults:has(.welcome),
+  .searchResults:has(.noResults),
+  .searchResults:has(.allAddedState) {
+    min-height: 280px;
+  }
+
   .welcome,
   .noResults,
   .allAddedState {
@@ -264,7 +239,7 @@
   .noResults h4,
   .allAddedState h4 {
     font-size: 16px;
-    margin-bottom: 6px;
+    margin: 0 0 6px 0;
   }
 
   .welcome p,
@@ -272,6 +247,7 @@
   .allAddedState p {
     font-size: 13px;
     line-height: 1.4;
+    margin: 0;
   }
 
   .emptyStateIcon {
