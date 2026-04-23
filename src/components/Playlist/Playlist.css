@@ -420,11 +420,6 @@ html[data-keyboard] .saveButton:focus {
     padding-bottom: 8px;
   }
 
-  /* Ensure empty state has consistent min-height in mobile */
-  .playlistContainer:has(.emptyPlaylist) {
-    min-height: 280px;
-  }
-
   .emptyPlaylist {
     padding: 32px 20px;
     margin: auto 0;
@@ -436,13 +431,12 @@ html[data-keyboard] .saveButton:focus {
 
   .emptyPlaylist h4 {
     font-size: 16px;
-    margin: 0 0 6px 0;
+    margin-bottom: 6px;
   }
 
   .emptyPlaylist p {
     font-size: 13px;
     line-height: 1.4;
-    margin: 0;
   }
 
   .emptyStateIcon {
