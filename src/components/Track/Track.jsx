@@ -46,7 +46,9 @@ function Track({
   };
   const handleSearchTracks = (query) => {
     searchTracks(query);
-    if (setSearchTerm) setSearchTerm("");
+    // Extract clean name from query and normalize to lowercase for display
+    const cleanName = query.match(/"([^"]+)"/)?.[1] || query;
+    if (setSearchTerm) setSearchTerm(cleanName.toLowerCase());
   };
 
   const formatDuration = (ms) => {
