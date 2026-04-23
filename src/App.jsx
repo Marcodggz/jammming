@@ -6,8 +6,7 @@ import Playlist from "./components/Playlist/Playlist";
 import Spotify from "./util/Spotify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpotify } from "@fortawesome/free-brands-svg-icons";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { Toaster, toast } from "sonner";
 
 function App() {
   const [tracks, setTracks] = useState([]);
@@ -160,19 +159,7 @@ function App() {
 
   return (
     <>
-      <ToastContainer
-        position="top-right"
-        autoClose={4000}
-        hideProgressBar={false}
-        newestOnTop
-        closeOnClick
-        pauseOnHover
-        draggable
-        theme="dark"
-        role="alert"
-        aria-live="polite"
-        aria-label="Notifications"
-      />
+      <Toaster position="top-right" richColors theme="dark" duration={4000} />
       <a
         className="skipLink"
         href="#main-content"
