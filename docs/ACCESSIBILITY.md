@@ -78,6 +78,7 @@ All functionality available with a mouse is equally available via keyboard. No k
 |---|---|---|---|
 | Skip link | Yes | `Enter` | First focusable element on the page |
 | Search input | Yes | — | Type to filter tracks |
+| Back arrow button | Yes | `Enter`, `Space` | Appears inside the search bar when a previous search exists; returns to previous results |
 | Search button | Yes | `Enter`, `Space` | Disabled while the input is empty |
 | Artist search buttons | Yes | `Enter`, `Space` | Trigger a new search by artist name |
 | Album search buttons | Yes | `Enter`, `Space` | Trigger a new search by album name |

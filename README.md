@@ -4,18 +4,34 @@
 ![Vite](https://img.shields.io/badge/Vite-Frontend-purple)
 ![Spotify API](https://img.shields.io/badge/API-Spotify-green)
 ![Status](https://img.shields.io/badge/status-Completed-success)
+![Demo Mode](https://img.shields.io/badge/Demo%20Mode-Portfolio%20Ready-brightgreen)
 
-A responsive React application that integrates with the Spotify Web API, allowing users to search tracks, build custom playlists, and save them directly to their Spotify account.
+A responsive React application that integrates with the Spotify Web API, allowing users to search tracks, build custom playlists, and save them directly to their Spotify account. **Features a comprehensive Demo Mode with 80+ tracks for portfolio showcasing!**
 
 ---
 
 ## Live Demo
 
-https://the-jammming.netlify.app/
+https://jammming-navy.vercel.app/
 
 ![App Demo](assets/demo.gif)
 
 [Watch full demo (high quality)](https://raw.githubusercontent.com/Marcodggz/jammming/main/assets/demo.mp4)
+
+---
+
+## Demo Mode
+
+Perfect for portfolio presentation — no Spotify authentication required.
+
+**Features:**
+- **80+ Curated Tracks** from 10 popular artists
+- **Reliable Album Covers** with fallback system
+- **Smart Search** with English & Spanish support
+- **International & Spanish Artists** for diverse content
+- **Professional UI** with consistent visual design
+
+**Try Demo Mode:** Click "Try Demo Mode" on the landing page!
 
 ---
 
@@ -33,7 +49,8 @@ The project focuses on real-world frontend challenges such as API integration, a
 - Add and remove tracks from a custom playlist
 - Rename playlists directly in the UI
 - Save playlists to the user's Spotify account
-- Click on artists or albums to trigger new searches
+- Click on artists or albums to drill down into related content
+- Navigate back through previous search results
 - Prevent duplicate tracks in the playlist
 - Real-time playlist duration calculation
 - Loading, empty, and error states handled in the UI
@@ -71,11 +88,11 @@ The application initializes authentication on load, handling the OAuth callback 
 
 ---
 
-### 3. Interactive search via artist and album
+### 3. Drill-down navigation with back navigation
 
-Tracks include clickable artist and album names that trigger new searches using Spotify query filters such as artist:"..." and album:"...".
+Tracks include clickable artist and album names that trigger new searches using Spotify query filters such as `artist:"..."` and `album:"..."`. Each drill-down push the current search state onto a stack, allowing the user to navigate back through previous results with a single button in the search bar.
 
-This approach improves navigation within the app and allows users to explore related content without manually typing new queries.
+This approach improves exploration within the app without losing context, and keeps the search bar input updated with a human-readable label (e.g. the artist name) rather than the raw query syntax.
 
 ---
 
@@ -131,10 +148,11 @@ Due to Spotify API restrictions, only authorized users may be able to fully test
 - Implement request cancellation to avoid race conditions
 - Improve UI animations and transitions
 - Add drag-and-drop support for playlist reordering
-- Persist authentication state across sessions
 
 ---
 
 ## Author
 
-Created as part of the Codecademy Front-End Engineer Path and further developed with additional features, UX improvements, and authentication enhancements.
+Built by [Marco](https://github.com/Marcodggz) — a front-end developer focused on building clean, accessible, and user-centered web applications.
+
+Feel free to reach out or explore more projects on [GitHub](https://github.com/Marcodggz).
