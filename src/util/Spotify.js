@@ -184,28 +184,17 @@ async function search(term) {
     Authorization: `Bearer ${token}`,
   };
 
-  const url1 = `https://api.spotify.com/v1/search?type=track&q=${encodeURIComponent(term)}&limit=10&offset=0`;
-  const url2 = `https://api.spotify.com/v1/search?type=track&q=${encodeURIComponent(term)}&limit=10&offset=10`;
+  const url = `https://api.spotify.com/v1/search?type=track&q=${encodeURIComponent(term)}&limit=10`;
 
-  const response1 = await fetch(url1, { headers });
-  const response2 = await fetch(url2, { headers });
+  const response = await fetch(url, { headers });
+  const json = await response.json();
 
-  const json1 = await response1.json();
-  const json2 = await response2.json();
-
-  if (!response1.ok || !response2.ok) {
-    console.error("Search error:", json1, json2);
+  if (!response.ok) {
+    console.error("Search error:", json);
     throw new Error("Spotify search request failed.");
   }
 
-  const combinedTracks = [...json1.tracks.items, ...json2.tracks.items];
-
-  // Delete duplicates by id
-  const uniqueTracks = combinedTracks.filter(
-    (track, index, self) => index === self.findIndex((t) => t.id === track.id),
-  );
-
-  return uniqueTracks.map((track) => ({
+  return json.tracks.items.map((track) => ({
     id: track.id,
     name: track.name,
     artists: track.artists.map((artist) => artist.name),
