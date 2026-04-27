@@ -129,6 +129,40 @@
   transform: translateY(-50%) scale(1.1);
 }
 
+/* Back arrow button (replaces search icon when previous search exists) */
+
+.searchIconButton {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  color: #1db954;
+  font-size: 16px;
+  transition:
+    color 0.2s ease,
+    background 0.2s ease;
+}
+
+.searchIconButton:hover {
+  color: #1ed760;
+  background: rgba(29, 185, 84, 0.12);
+}
+
+.searchIconButton:focus-visible {
+  outline: 2px solid rgba(29, 185, 84, 0.6);
+  outline-offset: 2px;
+}
+
 /* Button */
 
 /* Hidden on desktop (search on Enter key is standard).
@@ -214,6 +248,11 @@
 
   .searchIcon {
     left: 16px;
+    font-size: 18px;
+  }
+
+  .searchIconButton {
+    left: 10px;
     font-size: 18px;
   }
 }

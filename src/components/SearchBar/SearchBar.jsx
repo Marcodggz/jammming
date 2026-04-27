@@ -1,9 +1,18 @@
 import { useRef, useState } from "react";
 import "./SearchBar.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import {
+  faMagnifyingGlass,
+  faArrowLeft,
+} from "@fortawesome/free-solid-svg-icons";
 
-function SearchBar({ searchTracks, searchTerm, setSearchTerm }) {
+function SearchBar({
+  searchTracks,
+  searchTerm,
+  setSearchTerm,
+  hasPrevSearch,
+  onGoBack,
+}) {
   const inputRef = useRef(null);
   const wrapperRef = useRef(null);
   const [searchFeedback, setSearchFeedback] = useState("");
@@ -63,11 +72,22 @@ function SearchBar({ searchTracks, searchTerm, setSearchTerm }) {
           <label htmlFor="track-search-input" className="srOnly">
             Search for songs, artists, or albums
           </label>
-          <FontAwesomeIcon
-            icon={faMagnifyingGlass}
-            className="searchIcon"
-            aria-hidden="true"
-          />
+          {hasPrevSearch ? (
+            <button
+              type="button"
+              className="searchIconButton backArrow"
+              onClick={onGoBack}
+              aria-label="Go back to previous search results"
+            >
+              <FontAwesomeIcon icon={faArrowLeft} aria-hidden="true" />
+            </button>
+          ) : (
+            <FontAwesomeIcon
+              icon={faMagnifyingGlass}
+              className="searchIcon"
+              aria-hidden="true"
+            />
+          )}
           <input
             ref={inputRef}
             id="track-search-input"

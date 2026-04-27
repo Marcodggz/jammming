@@ -15,7 +15,6 @@ function Track({
   showRemoveButton = false,
   uri,
   searchTracks,
-  setSearchTerm,
   durationMs,
 }) {
   // Handle add/remove with robust blur strategy to prevent focus transfer
@@ -44,9 +43,8 @@ function Track({
       }
     }, 0);
   };
-  const handleSearchTracks = (query) => {
-    searchTracks(query);
-    if (setSearchTerm) setSearchTerm("");
+  const handleSearchTracks = (query, displayTerm) => {
+    searchTracks(query, true, displayTerm);
   };
 
   const formatDuration = (ms) => {
@@ -98,7 +96,7 @@ function Track({
                       type="button"
                       className="clickable"
                       onClick={() =>
-                        handleSearchTracks(`artist:"${artistName}"`)
+                        handleSearchTracks(`artist:"${artistName}"`, artistName)
                       }
                       aria-label={`Search tracks by ${artistName}`}
                     >
@@ -117,7 +115,7 @@ function Track({
                 <button
                   type="button"
                   className="clickable"
-                  onClick={() => handleSearchTracks(`album:"${album}"`)}
+                  onClick={() => handleSearchTracks(`album:"${album}"`, album)}
                   aria-label={`Search tracks from album ${album}`}
                 >
                   {album}

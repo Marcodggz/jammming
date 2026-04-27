@@ -4,6 +4,7 @@ import SearchBar from "./components/SearchBar/SearchBar";
 import SearchResults from "./components/SearchResults/SearchResults";
 import Playlist from "./components/Playlist/Playlist";
 import Spotify from "./util/Spotify";
+import MockSpotify from "./util/mockSpotify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpotify } from "@fortawesome/free-brands-svg-icons";
 import { Toaster, toast } from "sonner";
@@ -17,8 +18,13 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isAuthLoading, setIsAuthLoading] = useState(true);
+  const [isDemoMode, setIsDemoMode] = useState(false);
+  const [prevSearchStack, setPrevSearchStack] = useState([]);
 
   const hasInitializedAuth = useRef(false);
+
+  // Get the appropriate service based on mode
+  const spotifyService = isDemoMode ? MockSpotify : Spotify;
 
   // Track keyboard vs mouse navigation globally.
   // Tab sets data-keyboard on <html>; pointerdown (capture phase) clears it.
@@ -44,10 +50,17 @@ function App() {
     hasInitializedAuth.current = true;
 
     async function initializeAuth() {
+      // Skip real auth in demo mode
+      if (isDemoMode) {
+        setIsAuthenticated(true);
+        setIsAuthLoading(false);
+        return;
+      }
+
       const params = new URLSearchParams(window.location.search);
       const code = params.get("code");
 
-      if (Spotify.hasValidSession()) {
+      if (spotifyService.hasValidSession()) {
         setIsAuthenticated(true);
         setIsAuthLoading(false);
         return;
@@ -55,7 +68,7 @@ function App() {
 
       if (code) {
         try {
-          await Spotify.getAccessToken();
+          await spotifyService.getAccessToken();
           setIsAuthenticated(true);
         } catch (error) {
           console.error("Authentication initialization failed:", error);
@@ -68,7 +81,7 @@ function App() {
     }
 
     initializeAuth();
-  }, []);
+  }, [isDemoMode, spotifyService]);
 
   // Filter out tracks that are already in the playlist
   const visibleTracks = tracks.filter(
@@ -102,7 +115,6 @@ function App() {
   function addTrack(track) {
     if (!playlistTracks.find((savedTrack) => savedTrack.id === track.id)) {
       setPlaylistTracks((prevTracks) => [...prevTracks, track]);
-      // Add the playlist tracks
     }
   }
 
@@ -110,12 +122,10 @@ function App() {
     setPlaylistTracks((prevTracks) =>
       prevTracks.filter((savedTrack) => savedTrack.id !== track.id),
     );
-    // Remove the playlist tracks
   }
 
   function playlistNameChange(event) {
     setPlaylistName(event.target.value);
-    // Update the playlist name
   }
 
   // Save the playlist to Spotify
@@ -125,25 +135,54 @@ function App() {
     if (trackURIs.length === 0) return;
 
     try {
-      await Spotify.savePlaylist(playlistName, trackURIs);
+      await spotifyService.savePlaylist(playlistName, trackURIs);
       setPlaylistTracks([]);
       setPlaylistName("My Playlist");
-      toast.success("Playlist saved successfully to Spotify! 🎉");
+
+      if (isDemoMode) {
+        toast.success(
+          "Demo playlist saved! 🎉 (This would save to Spotify in real mode)",
+        );
+      } else {
+        toast.success("Playlist saved successfully to Spotify! 🎉");
+      }
     } catch (error) {
       console.error(error);
       toast.error("Failed to save playlist. Please try again.");
     }
   }
 
+  // Demo mode handlers
+  function startDemoMode() {
+    setIsDemoMode(true);
+    setIsAuthenticated(true);
+    setIsAuthLoading(false);
+  }
+
+  function exitDemoMode() {
+    setIsDemoMode(false);
+    setIsAuthenticated(false);
+    setTracks([]);
+    setPlaylistTracks([]);
+    setSearchTerm("");
+    setHasSearched(false);
+  }
+
   // Search for tracks based on the search term
-  async function searchTracks(term) {
+  async function searchTracks(term, isDrillDown = false, displayTerm = null) {
     if (term.trim()) {
+      if (isDrillDown) {
+        setPrevSearchStack((prev) => [...prev, { term: searchTerm, tracks }]);
+      } else {
+        setPrevSearchStack([]);
+      }
+      setSearchTerm(displayTerm ?? term);
       setHasSearched(true);
       setIsLoading(true);
 
       try {
-        const tracks = await Spotify.search(term);
-        setTracks(tracks);
+        const results = await spotifyService.search(term);
+        setTracks(results);
       } catch (error) {
         console.error(error);
         toast.error("Something went wrong while searching. Please try again.");
@@ -155,6 +194,15 @@ function App() {
       setHasSearched(false);
       setIsLoading(false);
     }
+  }
+
+  function goBack() {
+    if (prevSearchStack.length === 0) return;
+    const prev = prevSearchStack[prevSearchStack.length - 1];
+    setSearchTerm(prev.term);
+    setTracks(prev.tracks);
+    setPrevSearchStack((stack) => stack.slice(0, -1));
+    setHasSearched(true);
   }
 
   return (
@@ -209,21 +257,37 @@ function App() {
               </div>
             </div>
 
-            <button
-              type="button"
-              className="connectButton"
-              onClick={Spotify.login}
-              aria-label="Connect your Spotify account"
-            >
-              <span className="connectButtonInner">
-                <FontAwesomeIcon
-                  icon={faSpotify}
-                  className="spotifyIcon"
-                  aria-hidden="true"
-                />
-                <span className="connectText">Connect to Spotify</span>
-              </span>
-            </button>
+            <div className="authButtons">
+              <button
+                type="button"
+                className="connectButton"
+                onClick={Spotify.login}
+                aria-label="Connect your Spotify account"
+              >
+                <span className="connectButtonInner">
+                  <FontAwesomeIcon
+                    icon={faSpotify}
+                    className="spotifyIcon"
+                    aria-hidden="true"
+                  />
+                  <span className="connectText">Connect to Spotify</span>
+                </span>
+              </button>
+
+              <button
+                type="button"
+                className="demoButton"
+                onClick={startDemoMode}
+                aria-label="Try demo mode with sample songs"
+              >
+                <span className="demoButtonInner">
+                  <span className="demoIcon" aria-hidden="true">
+                    🎵
+                  </span>
+                  <span className="demoText">Try Demo</span>
+                </span>
+              </button>
+            </div>
 
             <p className="privacyNote">
               Secure authentication via Spotify. We only request playlist
@@ -239,13 +303,27 @@ function App() {
           aria-label="Jammming Spotify Playlist Builder"
         >
           <h1 className="srOnly">Jammming — Spotify Playlist Builder</h1>
-          <div className="searchBarContainer">
-            <SearchBar
-              searchTracks={searchTracks}
-              searchTerm={searchTerm}
-              setSearchTerm={setSearchTerm}
-            />
-          </div>
+          {isDemoMode && (
+            <div className="demoModeBanner">
+              <span className="demoBannerText">
+                🎵 Demo Mode - Using sample songs
+              </span>
+              <button
+                className="exitDemoButton"
+                onClick={exitDemoMode}
+                aria-label="Exit demo mode"
+              >
+                Exit Demo
+              </button>
+            </div>
+          )}
+          <SearchBar
+            searchTracks={searchTracks}
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            hasPrevSearch={prevSearchStack.length > 0}
+            onGoBack={goBack}
+          />
 
           <div className="mainContainer">
             <section
@@ -264,7 +342,6 @@ function App() {
                 addTrack={addTrack}
                 searchTracks={searchTracks}
                 searchTerm={searchTerm}
-                setSearchTerm={setSearchTerm}
                 hasSearched={hasSearched}
                 isLoading={isLoading}
                 allTracksAdded={allTracksAdded}

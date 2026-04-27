@@ -9,7 +9,6 @@ function SearchResults({
   showRemoveButton = false,
   searchTracks,
   searchTerm,
-  setSearchTerm,
   hasSearched,
   isLoading,
   allTracksAdded = false,
@@ -100,7 +99,6 @@ function SearchResults({
             showRemoveButton={showRemoveButton}
             searchTracks={searchTracks}
             searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
           />
         ) : allTracksAdded ? (
           <div

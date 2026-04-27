@@ -469,6 +469,139 @@ body {
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);
 }
 
+/* Auth buttons container */
+
+.authButtons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+/* Demo button */
+
+.demoButton {
+  padding: 14px 32px;
+  border-radius: 50px;
+  cursor: pointer;
+  background: linear-gradient(
+    145deg,
+    rgba(75, 85, 99, 0.9) 0%,
+    rgba(55, 65, 81, 0.95) 100%
+  );
+  border: 1px solid rgba(75, 85, 99, 0.6);
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.3),
+    0 2px 4px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    background 180ms ease;
+}
+
+.demoButton:hover {
+  transform: translateY(-1px);
+  background: linear-gradient(
+    145deg,
+    rgba(85, 95, 109, 0.95) 0%,
+    rgba(75, 85, 99, 1) 100%
+  );
+  box-shadow:
+    0 6px 16px rgba(0, 0, 0, 0.4),
+    0 3px 6px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.demoButton:focus-visible {
+  outline: 2px solid rgba(75, 85, 99, 0.7);
+  outline-offset: 3px;
+}
+
+.demoButton:active {
+  transform: translateY(1px);
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.3),
+    inset 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.demoButtonInner {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.demoIcon {
+  font-size: 20px;
+  flex-shrink: 0;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.2));
+}
+
+.demoText {
+  display: block;
+  white-space: nowrap;
+  color: #e5e7eb;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.1px;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);
+}
+
+/* Demo mode banner */
+
+.demoModeBanner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(
+    90deg,
+    rgba(67, 56, 202, 0.1) 0%,
+    rgba(99, 102, 241, 0.15) 50%,
+    rgba(67, 56, 202, 0.1) 100%
+  );
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  border-radius: 8px;
+  padding: 10px 16px;
+  margin: 0 20px 16px 20px;
+  backdrop-filter: blur(10px);
+}
+
+.demoBannerText {
+  font-size: 14px;
+  font-weight: 500;
+  color: #e0e7ff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.exitDemoButton {
+  background: rgba(239, 68, 68, 0.2);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  border-radius: 6px;
+  color: #fecaca;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.exitDemoButton:hover {
+  background: rgba(239, 68, 68, 0.3);
+  color: #fee2e2;
+}
+
+.exitDemoButton:focus-visible {
+  outline: 2px solid rgba(239, 68, 68, 0.6);
+  outline-offset: 2px;
+}
+
 /* Desktop: lock page scroll, content scrolls inside containers */
 
 @media (min-width: 1025px) {

@@ -7,7 +7,6 @@ function TrackList({
   removeTrack,
   showRemoveButton,
   searchTracks,
-  setSearchTerm,
 }) {
   const listLabel = showAddButton
     ? `Search results: ${tracks.length} track${tracks.length === 1 ? "" : "s"} found`
@@ -29,7 +28,6 @@ function TrackList({
           removeTrack={removeTrack}
           showRemoveButton={showRemoveButton}
           searchTracks={searchTracks}
-          setSearchTerm={setSearchTerm}
           durationMs={track.durationMs}
         />
       ))}
