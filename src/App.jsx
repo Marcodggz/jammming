@@ -255,6 +255,10 @@ function App() {
               </div>
             </div>
 
+            <p className="privacyNote">
+              Playlist creation only. Your data is never shared.
+            </p>
+
             <div className="authButtons">
               <button
                 type="button"
@@ -276,21 +280,12 @@ function App() {
                 type="button"
                 className="demoButton"
                 onClick={startDemoMode}
-                aria-label="Try demo mode with sample songs"
+                aria-label="Create a playlist with sample songs — no account needed"
               >
-                <span className="demoButtonInner">
-                  <span className="demoIcon" aria-hidden="true">
-                    🎵
-                  </span>
-                  <span className="demoText">Try Demo</span>
-                </span>
+                Create a playlist
+                <span className="demoBadge">Sample songs</span>
               </button>
             </div>
-
-            <p className="privacyNote">
-              Secure authentication via Spotify. We only request playlist
-              permissions.
-            </p>
           </section>
         </main>
       ) : (
@@ -303,15 +298,13 @@ function App() {
           <h1 className="srOnly">Jammming — Spotify Playlist Builder</h1>
           {isDemoMode && (
             <div className="demoModeBanner">
-              <span className="demoBannerText">
-                🎵 Demo Mode - Using sample songs
-              </span>
+              <span className="demoBannerText">Sample data mode</span>
               <button
                 className="exitDemoButton"
                 onClick={exitDemoMode}
-                aria-label="Exit demo mode"
+                aria-label="Exit demo mode and connect to Spotify"
               >
-                Exit Demo
+                Exit
               </button>
             </div>
           )}
