@@ -140,11 +140,9 @@ function App() {
       setPlaylistName("My Playlist");
 
       if (isDemoMode) {
-        toast.success(
-          "Demo playlist saved! 🎉 (This would save to Spotify in real mode)",
-        );
+        toast.success("Playlist saved to your library");
       } else {
-        toast.success("Playlist saved successfully to Spotify! 🎉");
+        toast.success("Playlist saved to Spotify");
       }
     } catch (error) {
       console.error(error);
