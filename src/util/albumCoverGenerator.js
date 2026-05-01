@@ -105,15 +105,15 @@ export const generateAlbumCover = ({
     </svg>
   `;
 
-  return `data:image/svg+xml;base64,${btoa(svg)}`;
+  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
 };
 
 /**
- * Album cover configurations for the mock dataset
- * Each entry defines the visual style for a specific album
+ * Album cover configurations for the mock dataset.
+ * One entry per album present in the mock catalog.
  */
 export const ALBUM_COVER_CONFIGS = {
-  // The Weeknd - Dark, moody aesthetic
+  // The Weeknd — dark, cinematic, neon-accented aesthetic
   after_hours: {
     artistName: "The Weeknd",
     albumName: "After Hours",
@@ -128,8 +128,22 @@ export const ALBUM_COVER_CONFIGS = {
     accentColor: "#3498db",
     pattern: "geometric",
   },
+  starboy: {
+    artistName: "The Weeknd",
+    albumName: "Starboy",
+    primaryColor: "#0d0d1a",
+    accentColor: "#9b59b6",
+    pattern: "geometric",
+  },
+  beauty_behind_the_madness: {
+    artistName: "The Weeknd",
+    albumName: "Beauty Behind the Madness",
+    primaryColor: "#1c0a00",
+    accentColor: "#e74c3c",
+    pattern: "waves",
+  },
 
-  // Lady Gaga - Bold, pop aesthetic
+  // Lady Gaga — bold, theatrical, avant-garde aesthetic
   chromatica: {
     artistName: "Lady Gaga",
     albumName: "Chromatica",
@@ -145,26 +159,24 @@ export const ALBUM_COVER_CONFIGS = {
     textColor: "#ffffff",
     pattern: "minimal",
   },
-
-  // Harry Styles - Soft, contemporary aesthetic
-  harrys_house: {
-    artistName: "Harry Styles",
-    albumName: "Harry's House",
-    primaryColor: "#87ceeb",
-    accentColor: "#ff6b6b",
-    textColor: "#2c3e50",
-    pattern: "waves",
+  mayhem: {
+    artistName: "Lady Gaga",
+    albumName: "MAYHEM",
+    primaryColor: "#d4d4d4",
+    accentColor: "#0a0a0a",
+    textColor: "#0a0a0a",
+    pattern: "geometric",
   },
-  fine_line: {
-    artistName: "Harry Styles",
-    albumName: "Fine Line",
-    primaryColor: "#ffb6c1",
-    accentColor: "#6c5ce7",
-    textColor: "#2c3e50",
-    pattern: "minimal",
+  the_fame_monster: {
+    artistName: "Lady Gaga",
+    albumName: "The Fame Monster",
+    primaryColor: "#0a0a0a",
+    accentColor: "#cc0000",
+    textColor: "#ffffff",
+    pattern: "geometric",
   },
 
-  // Dua Lipa - Vibrant, dance aesthetic
+  // Dua Lipa — vibrant, dance-pop, neon retro aesthetic
   future_nostalgia: {
     artistName: "Dua Lipa",
     albumName: "Future Nostalgia",
@@ -172,33 +184,35 @@ export const ALBUM_COVER_CONFIGS = {
     accentColor: "#ffd700",
     pattern: "geometric",
   },
-  dua_lipa: {
+  radical_optimism: {
     artistName: "Dua Lipa",
-    albumName: "Dua Lipa",
-    primaryColor: "#9370db",
-    accentColor: "#00ced1",
-    pattern: "waves",
+    albumName: "Radical Optimism",
+    primaryColor: "#6200ea",
+    accentColor: "#00e5ff",
+    pattern: "geometric",
   },
 
-  // Ed Sheeran - Warm, acoustic aesthetic
-  divide: {
-    artistName: "Ed Sheeran",
-    albumName: "Divide",
-    primaryColor: "#ff8c00",
-    accentColor: "#ffd700",
-    textColor: "#2c3e50",
-    pattern: "minimal",
-  },
-  equals: {
-    artistName: "Ed Sheeran",
-    albumName: "Equals",
-    primaryColor: "#32cd32",
-    accentColor: "#228b22",
+  // Feid — dark reggaeton atmosphere
+  mor_no_le_temas: {
+    artistName: "Feid",
+    albumName: "MOR, NO LE TEMAS",
+    primaryColor: "#0d1a0d",
+    accentColor: "#00ff41",
     textColor: "#ffffff",
     pattern: "waves",
   },
 
-  // Billie Eilish - Alternative, indie aesthetic
+  // Bad Bunny — reggaeton trap, vibrant summer aesthetic
+  un_verano_sin_ti: {
+    artistName: "Bad Bunny",
+    albumName: "Un Verano Sin Ti",
+    primaryColor: "#ff6b35",
+    accentColor: "#ffd166",
+    textColor: "#1a0a00",
+    pattern: "waves",
+  },
+
+  // Billie Eilish — muted, alternative, introspective aesthetic
   happier_than_ever: {
     artistName: "Billie Eilish",
     albumName: "Happier Than Ever",
@@ -207,68 +221,8 @@ export const ALBUM_COVER_CONFIGS = {
     textColor: "#2c3e50",
     pattern: "minimal",
   },
-  wwafawdwg: {
-    artistName: "Billie Eilish",
-    albumName: "WWAFAWDWG",
-    primaryColor: "#90ee90",
-    accentColor: "#006400",
-    textColor: "#2c3e50",
-    pattern: "geometric",
-  },
 
-  // Feid - Latin trap/urbano
-  ferxxocalipsis: {
-    artistName: "Feid",
-    albumName: "FERXXOCALIPSIS",
-    primaryColor: "#228B22",
-    accentColor: "#FFD700",
-    pattern: "geometric",
-  },
-  mor: {
-    artistName: "Feid",
-    albumName: "MOR",
-    primaryColor: "#1a472a",
-    accentColor: "#39ff14",
-    pattern: "waves",
-  },
-
-  // Bad Bunny - Reggaeton aesthetic
-  un_verano_sin_ti: {
-    artistName: "Bad Bunny",
-    albumName: "Un Verano Sin Ti",
-    primaryColor: "#ff4500",
-    accentColor: "#ffd700",
-    textColor: "#2c3e50",
-    pattern: "waves",
-  },
-  yhlqmdlg: {
-    artistName: "Bad Bunny",
-    albumName: "YHLQMDLG",
-    primaryColor: "#ffd700",
-    accentColor: "#ff6347",
-    textColor: "#2c3e50",
-    pattern: "geometric",
-  },
-
-  // Nathy Peluso - Argentine urban/soul
-  calambre: {
-    artistName: "Nathy Peluso",
-    albumName: "Calambre",
-    primaryColor: "#0d0d0d",
-    accentColor: "#FFD700",
-    textColor: "#ffffff",
-    pattern: "geometric",
-  },
-  la_sandunguera: {
-    artistName: "Nathy Peluso",
-    albumName: "La Sandunguera",
-    primaryColor: "#7b1fa2",
-    accentColor: "#f06292",
-    textColor: "#ffffff",
-    pattern: "waves",
-  },
-
-  // Tyler, The Creator - Hip-hop/Alternative rap
+  // Tyler, The Creator — vivid, maximalist, experimental aesthetic
   flower_boy: {
     artistName: "Tyler, The Creator",
     albumName: "Flower Boy",
@@ -277,48 +231,255 @@ export const ALBUM_COVER_CONFIGS = {
     textColor: "#2c3e50",
     pattern: "waves",
   },
-  igor: {
-    artistName: "Tyler, The Creator",
-    albumName: "IGOR",
-    primaryColor: "#ff6347",
-    accentColor: "#ffd700",
-    textColor: "#2c3e50",
-    pattern: "minimal",
-  },
 
-  // Olivia Rodrigo - Gen Z pop
-  sour: {
-    artistName: "Olivia Rodrigo",
-    albumName: "SOUR",
-    primaryColor: "#dda0dd",
-    accentColor: "#ff1493",
-    textColor: "#2c3e50",
-    pattern: "minimal",
-  },
-  guts: {
-    artistName: "Olivia Rodrigo",
-    albumName: "GUTS",
-    primaryColor: "#8b0000",
-    accentColor: "#ff69b4",
+  // Travis Scott — psychedelic, dark carnival, atmospheric aesthetic
+  astroworld: {
+    artistName: "Travis Scott",
+    albumName: "Astroworld",
+    primaryColor: "#1a0a00",
+    accentColor: "#ff8c00",
     pattern: "geometric",
   },
 
-  // Ariana Grande - Glamorous pop
-  positions: {
-    artistName: "Ariana Grande",
-    albumName: "Positions",
-    primaryColor: "#f5deb3",
-    accentColor: "#da70d6",
-    textColor: "#2c3e50",
+  // Karol G — turquoise and pink, Colombian reggaeton aesthetic
+  kg0516: {
+    artistName: "Karol G",
+    albumName: "KG0516",
+    primaryColor: "#c9184a",
+    accentColor: "#7209b7",
+    pattern: "geometric",
+  },
+  karolg_manana: {
+    artistName: "Karol G",
+    albumName: "mañana será bonito",
+    primaryColor: "#f72585",
+    accentColor: "#ffe66d",
+    textColor: "#1a0a00",
     pattern: "waves",
   },
-  thank_u_next: {
-    artistName: "Ariana Grande",
-    albumName: "Thank U Next",
-    primaryColor: "#ffb6c1",
-    accentColor: "#ff1493",
-    textColor: "#2c3e50",
+  karolg_ocean: {
+    artistName: "Karol G",
+    albumName: "OCEAN",
+    primaryColor: "#0096c7",
+    accentColor: "#48cae4",
+    textColor: "#ffffff",
+    pattern: "waves",
+  },
+  karolg_tropicoqueta: {
+    artistName: "Karol G",
+    albumName: "TROPICOQUETA",
+    primaryColor: "#e63946",
+    accentColor: "#f4a261",
+    textColor: "#ffffff",
+    pattern: "geometric",
+  },
+
+  // Feid expanded
+  feid_ferxxocalipsis: {
+    artistName: "Feid",
+    albumName: "FERXXOCALIPSIS",
+    primaryColor: "#0a0a0a",
+    accentColor: "#39ff14",
+    textColor: "#ffffff",
+    pattern: "geometric",
+  },
+  feid_19: {
+    artistName: "Feid",
+    albumName: "19",
+    primaryColor: "#1a1a2e",
+    accentColor: "#e94560",
+    textColor: "#ffffff",
     pattern: "minimal",
+  },
+  feid_inter_shibuya: {
+    artistName: "Feid",
+    albumName: "INTER SHIBUYA",
+    primaryColor: "#0f0c29",
+    accentColor: "#302b63",
+    textColor: "#ffffff",
+    pattern: "geometric",
+  },
+
+  // Bad Bunny expanded
+  bb_yhlqmdlg: {
+    artistName: "Bad Bunny",
+    albumName: "YHLQMDLG",
+    primaryColor: "#000000",
+    accentColor: "#ffdd00",
+    textColor: "#ffffff",
+    pattern: "geometric",
+  },
+  bb_ultimo_tour: {
+    artistName: "Bad Bunny",
+    albumName: "El Último Tour",
+    primaryColor: "#1a1a1a",
+    accentColor: "#ffffff",
+    textColor: "#ffffff",
+    pattern: "minimal",
+  },
+  bb_nadie_sabe: {
+    artistName: "Bad Bunny",
+    albumName: "Nadie Sabe",
+    primaryColor: "#2d1b69",
+    accentColor: "#c77dff",
+    textColor: "#ffffff",
+    pattern: "waves",
+  },
+
+  // Billie Eilish expanded
+  billie_wwafawdwg: {
+    artistName: "Billie Eilish",
+    albumName: "WWAFAWDWG?",
+    primaryColor: "#0d0d0d",
+    accentColor: "#b5ff4a",
+    textColor: "#b5ff4a",
+    pattern: "minimal",
+  },
+  billie_hmhas: {
+    artistName: "Billie Eilish",
+    albumName: "HIT ME HARD AND SOFT",
+    primaryColor: "#1a1a3e",
+    accentColor: "#7b8cde",
+    textColor: "#ffffff",
+    pattern: "waves",
+  },
+
+  // Tyler, The Creator expanded
+  tyler_igor: {
+    artistName: "Tyler, The Creator",
+    albumName: "IGOR",
+    primaryColor: "#ffff00",
+    accentColor: "#1c1c1c",
+    textColor: "#1c1c1c",
+    pattern: "minimal",
+  },
+  tyler_cmiygl: {
+    artistName: "Tyler, The Creator",
+    albumName: "CALL ME IF YOU GET LOST",
+    primaryColor: "#006400",
+    accentColor: "#ffd700",
+    textColor: "#ffffff",
+    pattern: "geometric",
+  },
+  tyler_chromakopia: {
+    artistName: "Tyler, The Creator",
+    albumName: "CHROMAKOPIA",
+    primaryColor: "#8b4513",
+    accentColor: "#ffd700",
+    textColor: "#ffffff",
+    pattern: "geometric",
+  },
+
+  // Travis Scott expanded
+  travis_utopia: {
+    artistName: "Travis Scott",
+    albumName: "UTOPIA",
+    primaryColor: "#0a0a0a",
+    accentColor: "#4a9eff",
+    textColor: "#ffffff",
+    pattern: "geometric",
+  },
+  travis_rodeo: {
+    artistName: "Travis Scott",
+    albumName: "Rodeo",
+    primaryColor: "#1a0028",
+    accentColor: "#ff00ff",
+    textColor: "#ffffff",
+    pattern: "waves",
+  },
+  travis_bitm: {
+    artistName: "Travis Scott",
+    albumName: "Birds in the Trap",
+    primaryColor: "#1a1a1a",
+    accentColor: "#c0392b",
+    textColor: "#ffffff",
+    pattern: "geometric",
+  },
+
+  // Nathy Peluso — bold, theatrical, Latin soul
+  nathy_calambre: {
+    artistName: "Nathy Peluso",
+    albumName: "calambre",
+    primaryColor: "#c62828",
+    accentColor: "#ff8f00",
+    textColor: "#ffffff",
+    pattern: "geometric",
+  },
+  nathy_grasa: {
+    artistName: "Nathy Peluso",
+    albumName: "grasa",
+    primaryColor: "#212121",
+    accentColor: "#e0e0e0",
+    textColor: "#ffffff",
+    pattern: "minimal",
+  },
+  nathy_esmeralda: {
+    artistName: "Nathy Peluso",
+    albumName: "esmeralda",
+    primaryColor: "#1b5e20",
+    accentColor: "#a5d6a7",
+    textColor: "#ffffff",
+    pattern: "waves",
+  },
+
+  // Frank Ocean — soft, introspective, R&B aesthetic
+  frank_blonde: {
+    artistName: "Frank Ocean",
+    albumName: "Blonde",
+    primaryColor: "#ffd54f",
+    accentColor: "#ff8a65",
+    textColor: "#1a1a1a",
+    pattern: "minimal",
+  },
+
+  // A$AP Rocky — streetwear, high fashion, dark trap
+  asap_dont_be_dumb: {
+    artistName: "A$AP Rocky",
+    albumName: "Don't Be Dumb",
+    primaryColor: "#0d0d0d",
+    accentColor: "#bdbdbd",
+    textColor: "#ffffff",
+    pattern: "geometric",
+  },
+
+  // Ariana Grande — dreamy pop, soft pinks and whites
+  ariana_positions: {
+    artistName: "Ariana Grande",
+    albumName: "Positions",
+    primaryColor: "#fce4ec",
+    accentColor: "#f48fb1",
+    textColor: "#4a148c",
+    pattern: "waves",
+  },
+
+  // Mora — urban Latino
+  mora_microdosis: {
+    artistName: "Mora",
+    albumName: "Microdosis",
+    primaryColor: "#263238",
+    accentColor: "#80cbc4",
+    textColor: "#ffffff",
+    pattern: "minimal",
+  },
+
+  // Chencho Corleone — trap romántico
+  chencho_solo: {
+    artistName: "Chencho Corleone",
+    albumName: "Solo",
+    primaryColor: "#1a1a2e",
+    accentColor: "#e94560",
+    textColor: "#ffffff",
+    pattern: "geometric",
+  },
+
+  // Lana Del Rey — cinematic, vintage, melancholic
+  lana_born_to_die: {
+    artistName: "Lana Del Rey",
+    albumName: "Born To Die",
+    primaryColor: "#2c1654",
+    accentColor: "#c9a0dc",
+    textColor: "#ffffff",
+    pattern: "waves",
   },
 };
 

@@ -1,4 +1,4 @@
-import React from "react";
+import { Fragment } from "react";
 import "./Track.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMusic, faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
@@ -90,7 +90,7 @@ function Track({
           <p>
             <span className="artist-info">
               {artists.map((artistName, index) => (
-                <React.Fragment key={artistName}>
+                <Fragment key={artistName}>
                   {showAddButton ? (
                     <button
                       type="button"
@@ -106,7 +106,7 @@ function Track({
                     <span>{artistName}</span>
                   )}
                   {index < artists.length - 1 ? ", " : ""}
-                </React.Fragment>
+                </Fragment>
               ))}
             </span>
             {" • "}
