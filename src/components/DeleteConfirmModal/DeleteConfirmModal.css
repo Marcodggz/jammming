@@ -1,0 +1,173 @@
+/* ================================================================
+   DeleteConfirmModal — dark / glass overlay matching app theme
+   ================================================================ */
+
+/* ----------------------------------------------------------------
+   Backdrop overlay
+   ---------------------------------------------------------------- */
+
+.deleteModalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  z-index: 1000;
+
+  /* Center the dialog */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* Subtle fade-in */
+  animation: overlayFadeIn 0.15s ease;
+}
+
+@keyframes overlayFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ----------------------------------------------------------------
+   Dialog box
+   ---------------------------------------------------------------- */
+
+.deleteModalDialog {
+  background: #1a1f1b;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+  padding: 28px 28px 24px;
+  width: 320px;
+  max-width: calc(100vw - 32px);
+
+  /* Slide-up on enter */
+  animation: dialogSlideIn 0.18s ease;
+}
+
+@keyframes dialogSlideIn {
+  from {
+    transform: translateY(12px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* ----------------------------------------------------------------
+   Title
+   ---------------------------------------------------------------- */
+
+.deleteModalTitle {
+  margin: 0 0 10px;
+  font-size: 17px;
+  font-weight: 600;
+  color: #f3f5f3;
+  letter-spacing: 0.01em;
+}
+
+/* ----------------------------------------------------------------
+   Body text
+   ---------------------------------------------------------------- */
+
+.deleteModalBody {
+  margin: 0 0 24px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: #8a948b;
+}
+
+.deleteModalPlaylistName {
+  color: #c8cdc8;
+  font-style: italic;
+}
+
+/* ----------------------------------------------------------------
+   Action buttons row
+   ---------------------------------------------------------------- */
+
+.deleteModalActions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+/* Shared button base */
+.deleteModalCancelButton,
+.deleteModalConfirmButton {
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.18s ease,
+    color 0.18s ease,
+    border-color 0.18s ease,
+    transform 0.12s ease;
+  border: 1px solid transparent;
+  outline: none;
+}
+
+.deleteModalCancelButton:focus-visible,
+.deleteModalConfirmButton:focus-visible {
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.35);
+}
+
+/* Cancel — ghost */
+.deleteModalCancelButton {
+  background: transparent;
+  color: #8a948b;
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.deleteModalCancelButton:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #d1d5d1;
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+.deleteModalCancelButton:active {
+  transform: scale(0.97);
+}
+
+/* Delete — destructive red */
+.deleteModalConfirmButton {
+  background: rgba(224, 90, 90, 0.15);
+  color: #e05a5a;
+  border-color: rgba(224, 90, 90, 0.35);
+}
+
+.deleteModalConfirmButton:hover {
+  background: rgba(224, 90, 90, 0.28);
+  color: #f07070;
+  border-color: rgba(224, 90, 90, 0.55);
+}
+
+.deleteModalConfirmButton:active {
+  transform: scale(0.97);
+}
+
+/* ----------------------------------------------------------------
+   Mobile
+   ---------------------------------------------------------------- */
+
+@media (max-width: 480px) {
+  .deleteModalDialog {
+    padding: 22px 20px 20px;
+    width: 100%;
+    border-radius: 14px 14px 0 0;
+    position: fixed;
+    bottom: 0;
+  }
+
+  .deleteModalOverlay {
+    align-items: flex-end;
+  }
+}

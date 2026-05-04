@@ -3,11 +3,66 @@ import "./App.css";
 import SearchBar from "./components/SearchBar/SearchBar";
 import SearchResults from "./components/SearchResults/SearchResults";
 import Playlist from "./components/Playlist/Playlist";
+import PlaylistHome from "./components/PlaylistHome/PlaylistHome";
+import UserPlaylists from "./components/UserPlaylists/UserPlaylists";
 import Spotify from "./util/Spotify";
 import MockSpotify from "./util/mockSpotify";
+import {
+  loadDemoPlaylists,
+  createDemoPlaylist,
+  updateDemoPlaylist,
+  deleteDemoPlaylist,
+} from "./util/demoPlaylists";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpotify } from "@fortawesome/free-brands-svg-icons";
 import { Toaster, toast } from "sonner";
+import DeleteConfirmModal from "./components/DeleteConfirmModal/DeleteConfirmModal";
+
+/**
+ * Pure helper — loads the user's playlist list from the correct source.
+ * Defined outside the component so it has no closure dependencies and can
+ * be called safely inside useEffect without re-creating on every render.
+ *
+ * Returned shape per item: { id, name, trackCount, imageUrl, isOwned }
+ */
+/**
+ * Pure dirty-state helper — compares current editor state against the snapshot
+ * captured when the playlist was first loaded.
+ *
+ * Returns true when the user has made at least one change (name or tracks).
+ * Returns false when nothing has changed, or when there is no snapshot yet.
+ *
+ * Rules:
+ *  - Trims both names before comparing so trailing whitespace is ignored.
+ *  - Compares URI arrays in order — reordering tracks counts as a change.
+ *  - Does not rely on track count alone.
+ */
+function hasPlaylistChanges(
+  initialName,
+  initialTracks,
+  currentName,
+  currentTracks,
+) {
+  if (initialName === null || initialTracks === null) return false;
+  if (currentName.trim() !== initialName.trim()) return true;
+  const initialUris = initialTracks.map((t) => t.uri);
+  const currentUris = currentTracks.map((t) => t.uri);
+  if (currentUris.length !== initialUris.length) return true;
+  return currentUris.some((uri, i) => uri !== initialUris[i]);
+}
+
+async function loadPlaylistsFromSource(isDemo) {
+  if (isDemo) {
+    return loadDemoPlaylists().map((p) => ({
+      id: p.id,
+      name: p.name,
+      trackCount: p.tracks.length,
+      imageUrl: null,
+      isOwned: true,
+    }));
+  }
+  return Spotify.getUserPlaylists();
+}
 
 function App() {
   const [tracks, setTracks] = useState([]);
@@ -20,6 +75,38 @@ function App() {
   const [isAuthLoading, setIsAuthLoading] = useState(true);
   const [isDemoMode, setIsDemoMode] = useState(false);
   const [prevSearchStack, setPrevSearchStack] = useState([]);
+
+  // Playlist browser state
+  const [playlists, setPlaylists] = useState([]);
+  const [playlistsLoading, setPlaylistsLoading] = useState(false);
+  const [playlistsError, setPlaylistsError] = useState(null);
+  // null  → creating a new playlist
+  // truthy → editing an existing playlist with that ID
+  const [selectedPlaylistId, setSelectedPlaylistId] = useState(null);
+  const isEditingExisting = selectedPlaylistId !== null;
+
+  // Delete confirmation modal state — holds the id of the playlist pending deletion
+  const [pendingDeleteId, setPendingDeleteId] = useState(null);
+
+  // Snapshot of the playlist state at the moment it was loaded for editing.
+  // Stores full track objects (not just URIs) so we can both detect changes
+  // and revert to the exact saved state without touching the API.
+  // Both are null when creating a new playlist (no snapshot to compare against).
+  const [initialPlaylistName, setInitialPlaylistName] = useState(null);
+  const [initialPlaylistTracks, setInitialPlaylistTracks] = useState(null);
+
+  // True when the current editor state differs from the snapshot captured on load.
+  // Always false for new (unsaved) playlists — no snapshot exists to compare against.
+  // Must be computed AFTER the snapshot state declarations above.
+  const hasChanges = hasPlaylistChanges(
+    initialPlaylistName,
+    initialPlaylistTracks,
+    playlistName,
+    playlistTracks,
+  );
+
+  // Controls which view fills the right panel: "home" (default), "editor", or "browser".
+  const [playlistPanelView, setPlaylistPanelView] = useState("home");
 
   const hasInitializedAuth = useRef(false);
 
@@ -83,6 +170,41 @@ function App() {
     initializeAuth();
   }, [isDemoMode, spotifyService]);
 
+  // Fetch the user's playlist list whenever they become authenticated.
+  // Using a cancellation flag prevents a stale setState if the component
+  // unmounts or the mode changes while the request is in-flight.
+  useEffect(() => {
+    if (!isAuthenticated) {
+      setPlaylists([]);
+      return;
+    }
+
+    let cancelled = false;
+    setPlaylistsLoading(true);
+    setPlaylistsError(null);
+
+    loadPlaylistsFromSource(isDemoMode)
+      .then((result) => {
+        if (!cancelled) {
+          setPlaylists(result);
+          setPlaylistsLoading(false);
+        }
+      })
+      .catch((err) => {
+        // Log the real error so it appears in the browser console.
+        // This is the first place to look when playlists fail to load.
+        console.error("Failed to load playlists:", err);
+        if (!cancelled) {
+          setPlaylistsError("Could not load playlists.");
+          setPlaylistsLoading(false);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isAuthenticated, isDemoMode]);
+
   // Filter out tracks that are already in the playlist
   const visibleTracks = tracks.filter(
     (track) =>
@@ -128,25 +250,222 @@ function App() {
     setPlaylistName(event.target.value);
   }
 
-  // Save the playlist to Spotify
-  async function savePlaylist() {
-    const trackURIs = playlistTracks.map((track) => track.uri);
+  /** Resets the Playlist editor to a blank "create new" state. */
+  function startNewPlaylist() {
+    setSelectedPlaylistId(null);
+    setPlaylistName("My Playlist");
+    setPlaylistTracks([]);
+    // Clear the snapshot — there is nothing to compare against for a new playlist.
+    setInitialPlaylistName(null);
+    setInitialPlaylistTracks(null);
+  }
 
-    if (trackURIs.length === 0) return;
+  /**
+   * Opens the delete confirmation modal for the given playlist.
+   * Actual deletion happens in confirmDelete() after the user confirms.
+   */
+  function handleDeletePlaylist(playlistId) {
+    const meta = playlists.find((p) => p.id === playlistId);
+    if (!meta) return;
+    setPendingDeleteId(playlistId);
+  }
+
+  /** Called when the user clicks "Delete" inside the confirmation modal. */
+  async function confirmDelete() {
+    const playlistId = pendingDeleteId;
+    setPendingDeleteId(null); // close modal immediately
+
+    const meta = playlists.find((p) => p.id === playlistId);
+    if (!meta) return;
 
     try {
-      await spotifyService.savePlaylist(playlistName, trackURIs);
-      setPlaylistTracks([]);
-      setPlaylistName("My Playlist");
+      if (isDemoMode) {
+        deleteDemoPlaylist(playlistId);
+      } else {
+        await Spotify.deletePlaylist(playlistId);
+      }
+    } catch (err) {
+      console.error("confirmDelete:", err);
+      toast.error("Could not delete playlist. Please try again.");
+      return; // leave UI unchanged on failure
+    }
+
+    // Remove from list state immediately — no need to refresh from Spotify.
+    setPlaylists((prev) => prev.filter((p) => p.id !== playlistId));
+
+    // If the deleted playlist was open in the editor, reset to a blank state
+    // and return to the browser so the user can see the updated list.
+    if (selectedPlaylistId === playlistId) {
+      startNewPlaylist();
+      setPlaylistPanelView("browser");
+    }
+
+    toast.success(`"${meta.name}" deleted.`);
+  }
+
+  /** Called when the user cancels the confirmation modal. */
+  function cancelDelete() {
+    setPendingDeleteId(null);
+  }
+
+  /**
+   * Reverts the editor to the snapshot captured when the playlist was loaded.
+   * Does not call any API or touch localStorage — local state only.
+   * After this, hasChanges becomes false and the Update button disappears.
+   */
+  function revertPlaylist() {
+    if (initialPlaylistName === null || initialPlaylistTracks === null) return;
+    setPlaylistName(initialPlaylistName);
+    setPlaylistTracks(initialPlaylistTracks);
+  }
+
+  /**
+   * Loads an existing playlist into the editor for editing.
+   * Fetches tracks from the appropriate source (localStorage for demo,
+   * Spotify API for real mode) then populates the editor state.
+   */
+  async function handleSelectPlaylist(playlistId) {
+    // Clicking the already-selected playlist has no effect
+    if (playlistId === selectedPlaylistId) return;
+
+    const meta = playlists.find((p) => p.id === playlistId);
+
+    if (!meta || !meta.isOwned) return;
+
+    try {
+      let loadedTracks;
 
       if (isDemoMode) {
-        toast.success("Playlist saved to your library");
+        const raw = loadDemoPlaylists().find((p) => p.id === playlistId);
+        loadedTracks = raw?.tracks ?? [];
       } else {
-        toast.success("Playlist saved to Spotify");
+        loadedTracks = await Spotify.getPlaylistTracks(playlistId);
+      }
+
+      setPlaylistName(meta.name);
+      setPlaylistTracks(loadedTracks);
+      setSelectedPlaylistId(playlistId);
+      // Capture a snapshot of the just-loaded state (full track objects) so we
+      // can both detect dirty changes and revert without touching the API.
+      setInitialPlaylistName(meta.name);
+      setInitialPlaylistTracks(loadedTracks);
+    } catch (err) {
+      // Distinguish Spotify's access-denied 403 from generic failures.
+      if (err.message?.startsWith("PLAYLIST_ACCESS_DENIED")) {
+        toast.error(
+          "Tracks cannot be loaded — Spotify only allows this for playlists you own or collaborate on.",
+        );
+      } else {
+        console.error("handleSelectPlaylist:", err);
+        toast.error("Could not load playlist tracks. Please try again.");
+      }
+    }
+  }
+
+  // Save or update the playlist
+  async function savePlaylist() {
+    const trackURIs = playlistTracks.map((track) => track.uri);
+    if (trackURIs.length === 0) return;
+
+    // newPlaylistId is set only when creating a new real-Spotify playlist,
+    // so we can add an optimistic entry while Spotify's index catches up.
+    // editedPlaylistId is captured before startNewPlaylist() clears selectedPlaylistId
+    // so Phase 2 can still apply the correct count to the refreshed list.
+    let newPlaylistId = null;
+    let editedPlaylistId = null;
+
+    // --- Phase 1: persist the playlist (show error if this fails) ---
+    try {
+      if (isDemoMode) {
+        if (isEditingExisting && selectedPlaylistId) {
+          updateDemoPlaylist(selectedPlaylistId, {
+            name: playlistName,
+            tracks: playlistTracks,
+          });
+          toast.success("Playlist updated");
+        } else {
+          createDemoPlaylist(playlistName, playlistTracks);
+          toast.success("Playlist saved");
+        }
+      } else {
+        if (isEditingExisting && selectedPlaylistId) {
+          editedPlaylistId = selectedPlaylistId;
+          await Spotify.updatePlaylistDetails(selectedPlaylistId, playlistName);
+          await Spotify.replacePlaylistTracks(selectedPlaylistId, trackURIs);
+          toast.success("Playlist updated on Spotify");
+        } else {
+          // savePlaylist() returns the newly created playlist's ID
+          newPlaylistId = await Spotify.savePlaylist(playlistName, trackURIs);
+          toast.success("Playlist saved to Spotify");
+        }
       }
     } catch (error) {
-      console.error(error);
+      console.error("savePlaylist failed:", error);
       toast.error("Failed to save playlist. Please try again.");
+      return; // do not reset the editor if the save itself failed
+    }
+
+    // --- Phase 2: reset editor and refresh the list (best-effort) ---
+    // A refresh failure is non-fatal — the playlist was already saved.
+    //
+    // Optimistic UI update strategy:
+    //  • Edit  → patch the existing entry immediately so the user sees the
+    //            correct name & track count before the Spotify refresh lands.
+    //  • Create → insert a placeholder with the correct count; Spotify's index
+    //            is eventually-consistent so live-refresh would show 0 tracks
+    //            for a newly created playlist.
+    const trackCount = trackURIs.length;
+
+    if (editedPlaylistId) {
+      setPlaylists((prev) =>
+        prev.map((p) =>
+          p.id === editedPlaylistId
+            ? { ...p, name: playlistName, trackCount }
+            : p,
+        ),
+      );
+    } else if (!isDemoMode && newPlaylistId) {
+      // Insert a provisional entry with a correct track count.
+      // The subsequent refresh will replace it with the real Spotify data
+      // (including the cover image, exact snapshot_id, etc.).
+      setPlaylists((prev) => [
+        ...prev,
+        {
+          id: newPlaylistId,
+          name: playlistName,
+          trackCount,
+          imageUrl: null,
+          isOwned: true,
+        },
+      ]);
+    }
+
+    startNewPlaylist();
+    setPlaylistPanelView("home");
+    try {
+      const refreshed = await loadPlaylistsFromSource(isDemoMode);
+      // Spotify's /me/playlists response is eventually consistent: the track
+      // count may still reflect the pre-save value immediately after a create
+      // or replace operation. Preserve our locally-computed count for the
+      // affected playlist whenever Spotify returns a stale value.
+      setPlaylists(
+        refreshed.map((p) => {
+          if (
+            editedPlaylistId &&
+            p.id === editedPlaylistId &&
+            p.trackCount !== trackCount
+          ) {
+            return { ...p, name: playlistName, trackCount };
+          }
+          if (newPlaylistId && p.id === newPlaylistId && p.trackCount === 0) {
+            return { ...p, trackCount };
+          }
+          return p;
+        }),
+      );
+    } catch (err) {
+      console.warn("savePlaylist: could not refresh playlist list:", err);
+      // Keep the optimistically-patched list rather than clearing it.
     }
   }
 
@@ -164,6 +483,8 @@ function App() {
     setPlaylistTracks([]);
     setSearchTerm("");
     setHasSearched(false);
+    setPlaylists([]);
+    setSelectedPlaylistId(null);
   }
 
   // Search for tracks based on the search term
@@ -206,6 +527,17 @@ function App() {
   return (
     <>
       <Toaster position="top-right" richColors theme="dark" duration={4000} />
+
+      {pendingDeleteId && (
+        <DeleteConfirmModal
+          playlistName={
+            playlists.find((p) => p.id === pendingDeleteId)?.name ?? ""
+          }
+          onConfirm={confirmDelete}
+          onCancel={cancelDelete}
+        />
+      )}
+
       <a
         className="skipLink"
         href="#main-content"
@@ -341,18 +673,69 @@ function App() {
 
             <section
               className={`playlist ${
-                playlistTracks.length === 0 ? "isEmpty" : ""
+                playlistPanelView === "editor" &&
+                playlistTracks.length === 0 &&
+                !isEditingExisting
+                  ? "isEmpty"
+                  : ""
               }`}
-              aria-labelledby="playlist-heading"
+              aria-label="Playlist panel"
             >
-              <Playlist
-                playlistName={playlistName}
-                playlistTracks={playlistTracks}
-                removeTrack={removeTrack}
-                playlistNameChange={playlistNameChange}
-                savePlaylist={savePlaylist}
-                formattedDuration={formattedDuration}
-              />
+              {playlistPanelView === "home" ? (
+                <PlaylistHome
+                  onNewPlaylist={() => {
+                    startNewPlaylist();
+                    setPlaylistPanelView("editor");
+                  }}
+                  onMyPlaylists={() => setPlaylistPanelView("browser")}
+                />
+              ) : playlistPanelView === "browser" ? (
+                <UserPlaylists
+                  playlists={playlists}
+                  isLoading={playlistsLoading}
+                  error={playlistsError}
+                  selectedPlaylistId={selectedPlaylistId}
+                  onSelectPlaylist={(id) => {
+                    handleSelectPlaylist(id);
+                    setPlaylistPanelView("editor");
+                  }}
+                  onDeletePlaylist={handleDeletePlaylist}
+                  onStartNew={() => {
+                    startNewPlaylist();
+                    setPlaylistPanelView("editor");
+                  }}
+                  onBack={() =>
+                    setPlaylistPanelView(selectedPlaylistId ? "editor" : "home")
+                  }
+                  isEditingExisting={isEditingExisting}
+                />
+              ) : (
+                <Playlist
+                  playlistName={playlistName}
+                  playlistTracks={playlistTracks}
+                  removeTrack={removeTrack}
+                  playlistNameChange={playlistNameChange}
+                  savePlaylist={savePlaylist}
+                  formattedDuration={formattedDuration}
+                  saveButtonText={
+                    isEditingExisting
+                      ? "Update playlist"
+                      : isDemoMode
+                        ? "Save playlist"
+                        : "Save to Spotify"
+                  }
+                  isEditingExisting={isEditingExisting}
+                  hasChanges={hasChanges}
+                  onStartNew={startNewPlaylist}
+                  onShowBrowser={() => setPlaylistPanelView("browser")}
+                  onRevert={hasChanges ? revertPlaylist : undefined}
+                  onDeleteCurrentPlaylist={
+                    isEditingExisting
+                      ? () => handleDeletePlaylist(selectedPlaylistId)
+                      : undefined
+                  }
+                />
+              )}
             </section>
           </div>
         </main>

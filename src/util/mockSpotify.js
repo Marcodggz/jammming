@@ -6,6 +6,7 @@ import {
   getAlbumsByArtist,
   getTracksByAlbum,
 } from "./mockMusicData.js";
+import { loadDemoPlaylists } from "./demoPlaylists.js";
 
 // Get the mock tracks from our curated dataset
 const mockTracks = getFlattenedTracks();
@@ -155,6 +156,32 @@ async function savePlaylist(playlistName, trackUris) {
   };
 }
 
+/**
+ * Returns all demo playlists from localStorage in the same shape
+ * as the real Spotify.getUserPlaylists() so App.jsx can treat both identically.
+ */
+async function getUserPlaylists() {
+  await simulateDelay();
+
+  return loadDemoPlaylists().map((p) => ({
+    id: p.id,
+    name: p.name,
+    trackCount: p.tracks.length,
+    imageUrl: null,
+    isOwned: true, // all demo playlists belong to the user
+  }));
+}
+
+/**
+ * Returns the full track list for a demo playlist stored in localStorage.
+ */
+async function getPlaylistTracks(playlistId) {
+  await simulateDelay();
+
+  const found = loadDemoPlaylists().find((p) => p.id === playlistId);
+  return found ? found.tracks : [];
+}
+
 function hasValidSession() {
   // In demo mode, we're always "authenticated"
   return true;
@@ -173,6 +200,8 @@ const MockSpotify = {
   getAccessToken,
   search,
   savePlaylist,
+  getUserPlaylists,
+  getPlaylistTracks,
   hasValidSession,
   login,
 };

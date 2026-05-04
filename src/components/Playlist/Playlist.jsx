@@ -1,6 +1,11 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
+import {
+  faBars,
+  faRotateLeft,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 import TrackList from "../TrackList/TrackList";
 import "./Playlist.css";
 
@@ -13,9 +18,30 @@ function Playlist({
   playlistNameChange,
   savePlaylist,
   formattedDuration,
+  saveButtonText = "Save to Spotify",
+  isEditingExisting = false,
+  hasChanges = false,
+  onStartNew,
+  onShowBrowser,
+  onRevert,
+  onDeleteCurrentPlaylist,
 }) {
   const playlistInputRef = useRef(null);
   const [isEditingTitle, setIsEditingTitle] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef(null);
+
+  // Close the navigation menu when the user clicks or taps outside it.
+  useEffect(() => {
+    if (!menuOpen) return;
+    function handleClickOutside(e) {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setMenuOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [menuOpen]);
 
   const handleEditTitle = () => {
     setIsEditingTitle(true);
@@ -51,6 +77,18 @@ function Playlist({
       aria-labelledby="playlist-heading"
     >
       <header className="playlistHeader">
+        {/* Row 1: contextual label — EDITING badge only when editing an existing
+            playlist. No navigation here — navigation lives in the menu. */}
+        {isEditingExisting && (
+          <div
+            className="editingBadge"
+            aria-label="Currently editing an existing playlist"
+          >
+            Editing
+          </div>
+        )}
+
+        {/* Row 2: title fills available width */}
         <div className="playlistTitleWrapper">
           {isEditingTitle ? (
             <div>
@@ -69,7 +107,6 @@ function Playlist({
                 onBlur={() => setIsEditingTitle(false)}
                 onKeyDown={handleTitleKeyDown}
                 onFocus={(e) => {
-                  // Ensure text is selected when focused
                   const length = e.target.value.length;
                   e.target.setSelectionRange(0, length);
                 }}
@@ -105,16 +142,93 @@ function Playlist({
           </button>
         </div>
 
-        {playlistTracks.length > 0 && (
-          <div
-            className="playlistDuration"
-            role="status"
-            tabIndex="0"
-            aria-label={`Total playlist duration: ${formattedDuration}`}
-          >
-            {formattedDuration}
+        {/* Row 3: duration (left, passive) + all actions (right).
+            Duration is metadata — styled as plain text, not interactive.
+            Actions: revert (conditional), delete (conditional), menu (always). */}
+        <div className="playlistActionsRow">
+          {playlistTracks.length > 0 && (
+            <span
+              className="playlistDuration"
+              role="status"
+              tabIndex="0"
+              aria-label={`Total playlist duration: ${formattedDuration}`}
+            >
+              {formattedDuration}
+            </span>
+          )}
+
+          <div className="playlistActions">
+            {onRevert && (
+              <button
+                type="button"
+                className="revertButton"
+                onClick={onRevert}
+                aria-label="Revert changes"
+                title="Revert changes"
+              >
+                <FontAwesomeIcon icon={faRotateLeft} aria-hidden="true" />
+              </button>
+            )}
+            {onDeleteCurrentPlaylist && (
+              <button
+                type="button"
+                className="editorDeleteButton"
+                onClick={onDeleteCurrentPlaylist}
+                aria-label="Delete this playlist"
+                title="Delete this playlist"
+              >
+                <FontAwesomeIcon icon={faTrash} aria-hidden="true" />
+              </button>
+            )}
+
+            {/* Navigation menu — always available in the editor.
+                Contents vary: "My playlists" always; "New playlist" only
+                when editing an existing playlist (not redundant otherwise). */}
+            <div className="menuContainer" ref={menuRef}>
+              <button
+                type="button"
+                className="menuButton"
+                onClick={() => setMenuOpen((open) => !open)}
+                aria-label="Navigation menu"
+                aria-expanded={menuOpen}
+                aria-haspopup="menu"
+                title="Menu"
+              >
+                <FontAwesomeIcon icon={faBars} aria-hidden="true" />
+              </button>
+              {menuOpen && (
+                <div className="menuDropdown" role="menu">
+                  {onShowBrowser && (
+                    <button
+                      type="button"
+                      role="menuitem"
+                      className="menuItem"
+                      onClick={() => {
+                        onShowBrowser();
+                        setMenuOpen(false);
+                      }}
+                    >
+                      My playlists
+                    </button>
+                  )}
+                  {isEditingExisting && onStartNew && (
+                    <button
+                      type="button"
+                      role="menuitem"
+                      className="menuItem"
+                      onClick={() => {
+                        onStartNew();
+                        setMenuOpen(false);
+                      }}
+                    >
+                      New playlist
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
-        )}
+        </div>
       </header>
 
       <div
@@ -144,14 +258,31 @@ function Playlist({
 
       {playlistTracks.length > 0 && (
         <div className="saveContainer">
-          <button
-            type="button"
-            className="saveButton"
-            onClick={savePlaylist}
-            aria-label={`Save "${playlistName}" playlist with ${playlistTracks.length} track${playlistTracks.length === 1 ? "" : "s"} to Spotify`}
-          >
-            <span>Save To Spotify</span>
-          </button>
+          {isEditingExisting ? (
+            hasChanges ? (
+              <button
+                type="button"
+                className="saveButton"
+                onClick={savePlaylist}
+                aria-label={`${saveButtonText} — "${playlistName}" with ${playlistTracks.length} track${playlistTracks.length === 1 ? "" : "s"}`}
+              >
+                <span>{saveButtonText}</span>
+              </button>
+            ) : (
+              <p className="noChangesText" aria-live="polite">
+                No changes yet
+              </p>
+            )
+          ) : (
+            <button
+              type="button"
+              className="saveButton"
+              onClick={savePlaylist}
+              aria-label={`${saveButtonText} — "${playlistName}" with ${playlistTracks.length} track${playlistTracks.length === 1 ? "" : "s"}`}
+            >
+              <span>{saveButtonText}</span>
+            </button>
+          )}
         </div>
       )}
     </section>
