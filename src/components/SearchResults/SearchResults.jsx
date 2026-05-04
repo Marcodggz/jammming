@@ -12,6 +12,7 @@ function SearchResults({
   hasSearched,
   isLoading,
   allTracksAdded = false,
+  hasActivePlaylist = true,
 }) {
   const resultsHeadingRef = useRef(null);
 
@@ -99,6 +100,7 @@ function SearchResults({
             showRemoveButton={showRemoveButton}
             searchTracks={searchTracks}
             searchTerm={searchTerm}
+            hasActivePlaylist={hasActivePlaylist}
           />
         ) : allTracksAdded ? (
           <div

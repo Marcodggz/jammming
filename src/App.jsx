@@ -17,6 +17,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpotify } from "@fortawesome/free-brands-svg-icons";
 import { Toaster, toast } from "sonner";
 import DeleteConfirmModal from "./components/DeleteConfirmModal/DeleteConfirmModal";
+import DestinationSelector from "./components/DestinationSelector/DestinationSelector";
 
 /**
  * Pure helper — loads the user's playlist list from the correct source.
@@ -87,6 +88,16 @@ function App() {
 
   // Delete confirmation modal state — holds the id of the playlist pending deletion
   const [pendingDeleteId, setPendingDeleteId] = useState(null);
+
+  // Destination selector state — shown when the user clicks "+" without an active playlist.
+  // pendingTrackToAdd: the track object waiting to be routed to a playlist.
+  // isDestinationSelectorOpen: controls the selector UI visibility independently,
+  //   so the pending track survives when the user navigates to the browser panel.
+  // selectorAnchorElement: the "+" button element that triggered the popover (for positioning).
+  const [pendingTrackToAdd, setPendingTrackToAdd] = useState(null);
+  const [isDestinationSelectorOpen, setIsDestinationSelectorOpen] =
+    useState(false);
+  const [selectorAnchorElement, setSelectorAnchorElement] = useState(null);
 
   // Snapshot of the playlist state at the moment it was loaded for editing.
   // Stores full track objects (not just URIs) so we can both detect changes
@@ -234,7 +245,14 @@ function App() {
         ? `${minutes}m ${formattedSeconds}s`
         : `${formattedSeconds}s`;
 
-  function addTrack(track) {
+  function addTrack(track, buttonElement) {
+    // If no playlist is active, open the destination selector instead of adding.
+    if (!hasActivePlaylist) {
+      setPendingTrackToAdd(track);
+      setSelectorAnchorElement(buttonElement || null);
+      setIsDestinationSelectorOpen(true);
+      return;
+    }
     if (!playlistTracks.find((savedTrack) => savedTrack.id === track.id)) {
       setPlaylistTracks((prevTracks) => [...prevTracks, track]);
     }
@@ -258,6 +276,38 @@ function App() {
     // Clear the snapshot — there is nothing to compare against for a new playlist.
     setInitialPlaylistName(null);
     setInitialPlaylistTracks(null);
+  }
+
+  /**
+   * Destination selector — "New playlist" chosen.
+   * Opens a fresh editor and seeds it with the pending track immediately.
+   */
+  function handleSelectorNewPlaylist() {
+    const track = pendingTrackToAdd;
+    setPendingTrackToAdd(null);
+    setIsDestinationSelectorOpen(false);
+    startNewPlaylist();
+    if (track) {
+      setPlaylistTracks([track]);
+    }
+    setPlaylistPanelView("editor");
+  }
+
+  /**
+   * Destination selector — "My playlists" chosen.
+   * Closes the selector overlay and opens the browser panel.
+   * The pending track is intentionally kept — it will be consumed
+   * when the user picks a playlist in handleSelectPlaylist().
+   */
+  function handleSelectorMyPlaylists() {
+    setIsDestinationSelectorOpen(false);
+    setPlaylistPanelView("browser");
+  }
+
+  /** Destination selector — cancelled (Escape or backdrop click). */
+  function handleSelectorCancel() {
+    setPendingTrackToAdd(null);
+    setIsDestinationSelectorOpen(false);
   }
 
   /**
@@ -341,6 +391,17 @@ function App() {
       } else {
         loadedTracks = await Spotify.getPlaylistTracks(playlistId);
       }
+
+      // If there is a pending track waiting (from the destination selector flow),
+      // append it now — but only if it is not already in the loaded playlist.
+      if (
+        pendingTrackToAdd &&
+        !loadedTracks.find((t) => t.id === pendingTrackToAdd.id)
+      ) {
+        loadedTracks = [...loadedTracks, pendingTrackToAdd];
+      }
+      // Always clear the pending track once a playlist has been chosen.
+      setPendingTrackToAdd(null);
 
       setPlaylistName(meta.name);
       setPlaylistTracks(loadedTracks);
@@ -524,6 +585,11 @@ function App() {
     setHasSearched(true);
   }
 
+  // True when the editor is open (new or existing playlist).
+  // Single source of truth for "playlist context is active".
+  // Controls the enabled/disabled state of "+" buttons in search results.
+  const hasActivePlaylist = playlistPanelView === "editor";
+
   return (
     <>
       <Toaster position="top-right" richColors theme="dark" duration={4000} />
@@ -535,6 +601,16 @@ function App() {
           }
           onConfirm={confirmDelete}
           onCancel={cancelDelete}
+        />
+      )}
+
+      {isDestinationSelectorOpen && pendingTrackToAdd && (
+        <DestinationSelector
+          trackName={pendingTrackToAdd.name}
+          anchorElement={selectorAnchorElement}
+          onNewPlaylist={handleSelectorNewPlaylist}
+          onMyPlaylists={handleSelectorMyPlaylists}
+          onCancel={handleSelectorCancel}
         />
       )}
 
@@ -672,7 +748,7 @@ function App() {
             </section>
 
             <section
-              className={`playlist ${
+              className={`playlist ${playlistPanelView === "home" ? "isHome" : ""} ${
                 playlistPanelView === "editor" &&
                 playlistTracks.length === 0 &&
                 !isEditingExisting

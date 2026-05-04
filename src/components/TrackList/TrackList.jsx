@@ -7,6 +7,7 @@ function TrackList({
   removeTrack,
   showRemoveButton,
   searchTracks,
+  hasActivePlaylist = true,
 }) {
   const listLabel = showAddButton
     ? `Search results: ${tracks.length} track${tracks.length === 1 ? "" : "s"} found`
@@ -29,6 +30,7 @@ function TrackList({
           showRemoveButton={showRemoveButton}
           searchTracks={searchTracks}
           durationMs={track.durationMs}
+          hasActivePlaylist={hasActivePlaylist}
         />
       ))}
     </ul>

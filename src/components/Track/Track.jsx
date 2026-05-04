@@ -1,7 +1,12 @@
-import { Fragment } from "react";
+import { Fragment, useState, useEffect } from "react";
 import "./Track.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMusic, faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
+import {
+  faMusic,
+  faPlus,
+  faMinus,
+  faCheck,
+} from "@fortawesome/free-solid-svg-icons";
 
 function Track({
   name,
@@ -17,31 +22,31 @@ function Track({
   searchTracks,
   durationMs,
 }) {
-  // Handle add/remove with robust blur strategy to prevent focus transfer
-  const handleAddTrack = (e) => {
-    // Blur BEFORE state change to prevent focus transfer during re-render
-    e.currentTarget.blur();
-    addTrack({ name, artists, album, albumImage, id, uri, durationMs });
+  // State for microinteractions
+  const [showSuccessFeedback, setShowSuccessFeedback] = useState(false);
 
-    // Additional safety: blur after React processes the state change
-    setTimeout(() => {
-      if (document.activeElement?.closest?.(".trackActions")) {
-        document.activeElement.blur();
-      }
-    }, 0);
+  // Auto-revert success feedback after 700ms
+  useEffect(() => {
+    if (showSuccessFeedback) {
+      const timer = setTimeout(() => {
+        setShowSuccessFeedback(false);
+      }, 700);
+      return () => clearTimeout(timer);
+    }
+  }, [showSuccessFeedback]);
+
+  const handleAddTrack = (e) => {
+    e.currentTarget.blur();
+    setShowSuccessFeedback(true);
+    addTrack(
+      { name, artists, album, albumImage, id, uri, durationMs },
+      e.currentTarget,
+    );
   };
 
   const handleRemoveTrack = (e) => {
-    // Blur BEFORE state change to prevent focus transfer during re-render
     e.currentTarget.blur();
     removeTrack({ id });
-
-    // Additional safety: blur after React processes the state change
-    setTimeout(() => {
-      if (document.activeElement?.closest?.(".trackActions")) {
-        document.activeElement.blur();
-      }
-    }, 0);
   };
   const handleSearchTracks = (query, displayTerm) => {
     searchTracks(query, true, displayTerm);
@@ -142,10 +147,15 @@ function Track({
           {showAddButton && (
             <button
               type="button"
+              className={`addButton${showSuccessFeedback ? " isSuccess" : ""}`}
               onClick={handleAddTrack}
               aria-label={`Add ${name} by ${artistNames} to playlist`}
+              disabled={showSuccessFeedback}
             >
-              <FontAwesomeIcon icon={faPlus} aria-hidden="true" />
+              <FontAwesomeIcon
+                icon={showSuccessFeedback ? faCheck : faPlus}
+                aria-hidden="true"
+              />
             </button>
           )}
 

@@ -189,7 +189,9 @@
     box-shadow 180ms ease,
     border-color 180ms ease,
     transform 180ms ease,
-    background 180ms ease;
+    background 180ms ease,
+    color 180ms ease;
+  will-change: transform, box-shadow, background, color;
 }
 
 .trackActions button::before,
@@ -211,8 +213,39 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
+/* Press effect — snappy and tactile */
 .trackActions button:active {
-  transform: scale(0.95);
+  transform: scale(0.92);
+  transition:
+    box-shadow 100ms ease,
+    border-color 100ms ease,
+    transform 100ms ease,
+    background 100ms ease,
+    color 100ms ease;
+}
+
+/* Success state — temporary feedback after track added */
+.trackActions button.isSuccess {
+  background: linear-gradient(
+    145deg,
+    rgba(34, 197, 94, 0.35) 0%,
+    rgba(17, 24, 17, 0.6) 100%
+  );
+  border-color: rgba(94, 255, 149, 0.5);
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.2),
+    0 0 16px rgba(94, 255, 149, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  cursor: not-allowed;
+}
+
+.trackActions button.isSuccess:hover {
+  transform: scale(1);
+}
+
+.trackActions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.8;
 }
 
 /* Prevent focus/active persistence on touch devices */
@@ -300,6 +333,35 @@ html[data-keyboard] .trackActions button:focus {
     0 4px 12px rgba(0, 0, 0, 0.25),
     0 0 12px rgba(255, 107, 107, 0.15),
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* Disabled add button -- shown when no playlist is active.
+   Uses aria-disabled (not the disabled attr) so the native title tooltip
+   still appears on hover. Hover/active effects are suppressed manually. */
+
+.trackActions button.addButtonDisabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Suppress all hover/active visual changes on disabled button */
+@media (hover: hover) and (pointer: fine) {
+  .trackActions button.addButtonDisabled:hover {
+    border-color: rgba(94, 255, 149, 0.2);
+    background: linear-gradient(
+      145deg,
+      rgba(34, 197, 94, 0.18) 0%,
+      rgba(17, 24, 17, 0.5) 100%
+    );
+    transform: none;
+    box-shadow: none;
+    opacity: 0.35;
+  }
+}
+
+.trackActions button.addButtonDisabled:active {
+  transform: none;
 }
 
 /* Clickable text */

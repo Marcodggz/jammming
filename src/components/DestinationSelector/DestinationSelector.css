@@ -1,0 +1,262 @@
+/* Destination Selector Popover — contextual popover anchored to "+" button */
+
+/* KEYFRAME ANIMATIONS */
+
+@keyframes popoverEnter {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes popoverExit {
+  from {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.92) translateY(-4px);
+  }
+}
+
+/* Respect prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  @keyframes popoverEnter {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes popoverExit {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+}
+
+/* POPOVER CONTAINER */
+
+.destSelectorPopover {
+  position: fixed;
+  z-index: 1000;
+  background: rgba(20, 25, 20, 0.98);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 10px;
+  min-width: 180px;
+  max-width: 240px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.4),
+    0 2px 8px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  animation: popoverEnter 160ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  will-change: transform, opacity;
+  pointer-events: auto;
+}
+
+.destSelectorPopover.isClosing {
+  animation: popoverExit 120ms cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .destSelectorPopover {
+    animation: popoverEnter 50ms ease-out forwards;
+  }
+
+  .destSelectorPopover.isClosing {
+    animation: popoverExit 50ms ease-out forwards;
+  }
+}
+
+/* CARET (ARROW) — visual anchor to the "+" button */
+
+/* Caret pseudo-element — creates directional arrow pointing to trigger button */
+.destSelectorPopover::before {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  top: var(--caret-top);
+  transform: translateY(-50%);
+  z-index: -1; /* Behind popover so shadow doesn't overlap */
+}
+
+/* Caret on LEFT side (popover is to the right of button) */
+.destSelectorPopover[data-side="right"]::before {
+  left: -8px;
+  border-width: 8px 8px 8px 0;
+  border-color: transparent rgba(20, 25, 20, 0.98) transparent transparent;
+}
+
+/* Caret on RIGHT side (popover is to the left of button) */
+.destSelectorPopover[data-side="left"]::before {
+  right: -8px;
+  border-width: 8px 0 8px 8px;
+  border-color: transparent transparent transparent rgba(20, 25, 20, 0.98);
+}
+
+/* Add subtle border to caret matching popover border */
+.destSelectorPopover[data-side="right"]::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  top: var(--caret-top);
+  transform: translateY(-50%);
+  left: -9px;
+  border-width: 8px 8px 8px 0;
+  border-color: transparent rgba(255, 255, 255, 0.08) transparent transparent;
+  z-index: -1;
+}
+
+.destSelectorPopover[data-side="left"]::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  top: var(--caret-top);
+  transform: translateY(-50%);
+  right: -9px;
+  border-width: 8px 0 8px 8px;
+  border-color: transparent transparent transparent rgba(255, 255, 255, 0.08);
+  z-index: -1;
+}
+
+/* Caret inherits animations from parent */
+.destSelectorPopover::before,
+.destSelectorPopover::after {
+  pointer-events: none; /* Caret doesn't interfere with interactions */
+}
+
+/* LABEL */
+
+.destSelectorLabel {
+  margin: 0 0 8px 0;
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.4);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* ACTIONS CONTAINER */
+
+.destSelectorActions {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* OPTION BUTTONS — microinteractions */
+
+.destOptionButton {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.85);
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    transform 160ms ease,
+    box-shadow 160ms ease;
+  will-change: transform, box-shadow, background;
+}
+
+/* Hover: Lift + Glow (Desktop only) */
+@media (hover: hover) and (pointer: fine) {
+  .destOptionButton:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(29, 185, 84, 0.3);
+    transform: translateY(-2px);
+    box-shadow:
+      0 6px 16px rgba(0, 0, 0, 0.3),
+      0 0 12px rgba(29, 185, 84, 0.12);
+  }
+}
+
+/* Active: Quick press feedback */
+.destOptionButton:active {
+  background: rgba(255, 255, 255, 0.06);
+  transform: scale(0.98);
+  transition:
+    background 100ms ease,
+    border-color 100ms ease,
+    transform 100ms ease,
+    box-shadow 100ms ease;
+}
+
+/* Keyboard focus visible */
+.destOptionButton:focus {
+  outline: none;
+}
+
+.destOptionButton:focus-visible,
+html[data-keyboard] .destOptionButton:focus {
+  outline: 2px solid rgba(29, 185, 84, 0.5);
+  outline-offset: 1px;
+}
+
+/* Touch devices: Reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  .destOptionButton {
+    transition:
+      background 100ms ease,
+      border-color 100ms ease;
+  }
+
+  .destOptionButton:hover {
+    transform: none;
+  }
+
+  .destOptionButton:active {
+    transform: none;
+  }
+}
+
+/* BUTTON TEXT */
+
+.destOptionTitle {
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.2;
+}
+
+/* MOBILE / TOUCH DEVICES */
+
+@media (hover: none), (pointer: coarse) {
+  .destOptionButton {
+    padding: 12px 14px;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .destOptionButton:active {
+    background: rgba(255, 255, 255, 0.1);
+  }
+}
