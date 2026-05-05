@@ -132,43 +132,44 @@ function Track({
           </p>
         </div>
 
-        {/* tabIndex="0" makes the duration reachable via Tab */}
-        {formattedDuration && (
-          <span
-            className="trackDuration"
-            tabIndex="0"
-            aria-label={`Duration: ${formattedDuration}`}
-          >
-            {formattedDuration}
-          </span>
-        )}
-
-        <div className="trackActions">
-          {showAddButton && (
-            <button
-              type="button"
-              className={`addButton${showSuccessFeedback ? " isSuccess" : ""}`}
-              onClick={handleAddTrack}
-              aria-label={`Add ${name} by ${artistNames} to playlist`}
-              disabled={showSuccessFeedback}
+        {/* Right zone: duration + action, grouped and aligned */}
+        <div className="trackRight">
+          {formattedDuration && (
+            <span
+              className="trackDuration"
+              aria-label={`Duration: ${formattedDuration}`}
             >
-              <FontAwesomeIcon
-                icon={showSuccessFeedback ? faCheck : faPlus}
-                aria-hidden="true"
-              />
-            </button>
+              {formattedDuration}
+            </span>
           )}
 
-          {showRemoveButton && (
-            <button
-              type="button"
-              className="removeButton"
-              onClick={handleRemoveTrack}
-              aria-label={`Remove ${name} by ${artistNames} from playlist`}
-            >
-              <FontAwesomeIcon icon={faMinus} aria-hidden="true" />
-            </button>
-          )}
+          <div className="trackActions">
+            {showAddButton && (
+              <button
+                type="button"
+                className={`addButton${showSuccessFeedback ? " isSuccess" : ""}`}
+                onClick={handleAddTrack}
+                aria-label={`Add ${name} by ${artistNames} to playlist`}
+                disabled={showSuccessFeedback}
+              >
+                <FontAwesomeIcon
+                  icon={showSuccessFeedback ? faCheck : faPlus}
+                  aria-hidden="true"
+                />
+              </button>
+            )}
+
+            {showRemoveButton && (
+              <button
+                type="button"
+                className="removeButton"
+                onClick={handleRemoveTrack}
+                aria-label={`Remove ${name} by ${artistNames} from playlist`}
+              >
+                <FontAwesomeIcon icon={faMinus} aria-hidden="true" />
+              </button>
+            )}
+          </div>
         </div>
       </article>
     </li>

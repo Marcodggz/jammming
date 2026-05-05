@@ -12,6 +12,8 @@
   display: flex;
   flex-direction: column;
   list-style: none;
+  gap: 2px;
+  padding: 0;
 }
 
 /* Track layout */
@@ -19,39 +21,42 @@
 .trackInfo {
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
-  justify-content: space-between;
+  align-items: center;
+  justify-content: flex-start;
   gap: 12px;
-  padding: 10px 10px 10px 12px;
-  border-radius: 12px;
-  background: transparent;
-  border-bottom: none;
-  /* No transition by default to prevent stuck states */
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px 6px 8px 12px;
+  border-radius: 6px;
   transition: none;
 }
 
 /* Only apply hover effects on desktop with mouse */
 @media (hover: hover) and (pointer: fine) {
   .trackInfo {
-    transition: background 0.2s ease;
+    transition:
+      background 0.18s ease,
+      box-shadow 0.18s ease;
   }
 
   .trackInfo:hover {
     background: rgba(255, 255, 255, 0.05);
+    box-shadow: none;
+  }
+
+  .trackInfo:active {
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: none;
   }
 }
 
-/* Explicitly prevent any visual feedback on touch devices */
+/* On touch devices, rows are transparent — suppress any stuck hover/active state */
 @media (hover: none), (pointer: coarse) {
-  .trackInfo {
-    background: transparent !important;
-  }
-
-  /* Prevent any touch-based visual feedback */
   .trackInfo:hover,
   .trackInfo:focus,
   .trackInfo:active {
-    background: transparent !important;
+    background: transparent;
+    border-radius: 0;
   }
 }
 
@@ -61,11 +66,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 56px;
-  height: 56px;
-  min-width: 56px;
-  margin-right: 14px;
-  border-radius: 6px;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  margin-right: 10px;
+  border-radius: 5px;
   background: linear-gradient(
     145deg,
     rgba(29, 185, 84, 0.15) 0%,
@@ -81,16 +86,11 @@
 /* Album art hover effects only on desktop */
 @media (hover: hover) and (pointer: fine) {
   .trackArt {
-    transition:
-      transform 0.2s ease,
-      box-shadow 0.2s ease;
+    transition: opacity 0.18s ease;
   }
 
   .trackInfo:hover .trackArt {
-    transform: scale(1.05);
-    box-shadow:
-      0 4px 12px rgba(0, 0, 0, 0.25),
-      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    opacity: 0.92;
   }
 }
 
@@ -118,7 +118,7 @@
 
 .trackDetails h3 {
   font-size: 15px;
-  font-weight: 500;
+  font-weight: 600;
   line-height: 1.3;
   color: #f3f5f3;
   margin: 0;
@@ -133,22 +133,23 @@
 }
 
 .trackDuration {
-  font-size: 11px;
-  font-weight: 500;
-  color: #8aaa8b;
-  flex-shrink: 0;
-  align-self: flex-start;
-  padding: 3px 8px;
-  background: rgba(255, 255, 255, 0.06);
-  border-radius: 10px;
-  letter-spacing: 0.3px;
-  margin-top: 4px;
+  font-size: 12px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.5);
+  width: 42px;
+  min-width: 42px;
+  text-align: right;
+  letter-spacing: 0.2px;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+  cursor: default;
+  user-select: none;
 }
 
 .trackDetails p {
   font-size: 13px;
   line-height: 1.4;
-  color: #8a958b;
+  color: rgba(255, 255, 255, 0.42);
   margin: 0;
   white-space: normal;
   word-wrap: break-word;
@@ -157,41 +158,49 @@
 
 /* Actions */
 
-.trackActions {
-  margin-left: 0;
+/* Right zone — fixed grid: [42px duration] [6px gap] [24px action slot] */
+/* margin-left: auto pins the group to the far right of the row            */
+.trackRight {
+  display: grid;
+  grid-template-columns: 42px 24px;
+  align-items: center;
+  column-gap: 6px;
   flex-shrink: 0;
-  align-self: flex-start;
-  margin-top: 4px;
+  margin-left: auto;
 }
 
+/* Action slot — always 24×24, invisible at rest, slot never collapses */
+.trackActions {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Base — ghost icon, consistent across devices */
 .trackActions button {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 30px;
-  height: 30px;
+  width: 24px;
+  height: 24px;
   aspect-ratio: 1 / 1;
   box-sizing: border-box;
   padding: 0;
-  border: 1px solid rgba(94, 255, 149, 0.2);
-  border-radius: 8px;
+  border: none;
+  border-radius: 50%;
   cursor: pointer;
-  background: linear-gradient(
-    145deg,
-    rgba(34, 197, 94, 0.18) 0%,
-    rgba(17, 24, 17, 0.5) 100%
-  );
-  box-shadow:
-    0 2px 8px rgba(0, 0, 0, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  background: transparent;
+  box-shadow: none;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 12px;
   transition:
-    box-shadow 180ms ease,
-    border-color 180ms ease,
-    transform 180ms ease,
-    background 180ms ease,
-    color 180ms ease;
-  will-change: transform, box-shadow, background, color;
+    color 150ms ease,
+    opacity 150ms ease,
+    transform 150ms ease,
+    background 150ms ease;
 }
 
 .trackActions button::before,
@@ -199,44 +208,64 @@
   display: none;
 }
 
-.trackActions button:hover {
-  border-color: rgba(94, 255, 149, 0.4);
-  background: linear-gradient(
-    145deg,
-    rgba(34, 197, 94, 0.28) 0%,
-    rgba(17, 24, 17, 0.6) 100%
-  );
-  transform: scale(1.08);
-  box-shadow:
-    0 4px 12px rgba(0, 0, 0, 0.25),
-    0 0 12px rgba(94, 255, 149, 0.15),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+/* Desktop — scaled down + invisible at rest; scale in on row hover */
+@media (hover: hover) and (pointer: fine) {
+  .trackActions button {
+    opacity: 0;
+    transform: scale(0.95);
+    pointer-events: none;
+  }
+
+  .trackInfo:hover .trackActions button {
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto;
+  }
+
+  /* Add — near-white, neutral surface */
+  .trackActions button.addButton:hover {
+    color: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.08);
+    transform: scale(1.08);
+  }
+
+  /* Remove — muted red, neutral surface */
+  .trackActions button.removeButton:hover {
+    color: rgba(255, 90, 90, 0.9);
+    background: rgba(255, 255, 255, 0.08);
+    transform: scale(1.08);
+  }
+
+  .trackActions button:active {
+    transform: scale(0.9);
+    transition: transform 80ms ease;
+  }
+
+  /* Keyboard focus — always visible, slot always reserved */
+  .trackActions button:focus-visible,
+  html[data-keyboard] .trackActions button:focus {
+    opacity: 1;
+    pointer-events: auto;
+    outline: 2px solid rgba(255, 255, 255, 0.35);
+    outline-offset: 3px;
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .trackActions button.removeButton:focus-visible,
+  html[data-keyboard] .trackActions button.removeButton:focus {
+    outline-color: rgba(220, 80, 80, 0.5);
+    color: rgba(225, 90, 90, 0.9);
+  }
 }
 
-/* Press effect — snappy and tactile */
-.trackActions button:active {
-  transform: scale(0.92);
-  transition:
-    box-shadow 100ms ease,
-    border-color 100ms ease,
-    transform 100ms ease,
-    background 100ms ease,
-    color 100ms ease;
-}
-
-/* Success state — temporary feedback after track added */
+/* Success state — green feedback is earned here, always visible */
 .trackActions button.isSuccess {
-  background: linear-gradient(
-    145deg,
-    rgba(34, 197, 94, 0.35) 0%,
-    rgba(17, 24, 17, 0.6) 100%
-  );
-  border-color: rgba(94, 255, 149, 0.5);
-  box-shadow:
-    0 2px 8px rgba(0, 0, 0, 0.2),
-    0 0 16px rgba(94, 255, 149, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  opacity: 1 !important;
+  color: rgba(29, 185, 84, 0.9);
+  background: rgba(29, 185, 84, 0.1);
+  box-shadow: none;
   cursor: not-allowed;
+  border: none;
 }
 
 .trackActions button.isSuccess:hover {
@@ -245,118 +274,50 @@
 
 .trackActions button:disabled {
   cursor: not-allowed;
-  opacity: 0.8;
 }
 
-/* Prevent focus/active persistence on touch devices */
+/* Touch devices — always visible at rest, modest opacity */
 @media (hover: none), (pointer: coarse) {
   .trackActions button {
+    opacity: 1;
+    color: rgba(255, 255, 255, 0.5);
     -webkit-tap-highlight-color: transparent;
-    outline: none;
-    /* Prevent text selection which can interfere with focus */
     -webkit-user-select: none;
     user-select: none;
   }
 
-  /* Allow active visual feedback but ensure it doesn't persist */
+  .trackActions button.removeButton {
+    color: rgba(220, 90, 90, 0.6);
+  }
+
   .trackActions button:active {
-    transform: scale(0.95);
-    /* No transition on touch to prevent stuck states */
+    transform: scale(0.92);
     transition: none;
   }
 
-  /* Aggressively reset focus state */
   .trackActions button:focus,
   .trackActions button:focus-within {
     outline: none;
     transform: scale(1);
   }
 
-  /* Force reset any button that shouldn't be active */
   .trackActions button:not(:active) {
     transform: scale(1);
   }
 }
 
-/* Preserve accessibility on desktop */
-@media (hover: hover) and (pointer: fine) {
-  .trackActions button:focus-visible,
-  html[data-keyboard] .trackActions button:focus {
-    outline: 2px solid rgba(29, 185, 84, 0.5);
-    outline-offset: 3px;
-  }
-}
-html[data-keyboard] .trackActions button:focus {
-  outline: 2px solid rgba(29, 185, 84, 0.5);
-  outline-offset: 3px;
-}
-
-.trackActions button svg {
-  font-size: 13px;
-  color: #7ddf9b;
-  transition: color 180ms ease;
-}
-
-.trackActions button.removeButton svg {
-  font-size: 13px;
-  color: #ff8a8a;
-  transition: color 180ms ease;
-}
-
-.trackActions button:hover svg {
-  color: #a8f0be;
-}
-
-.trackActions button.removeButton:hover svg {
-  color: #ffb3b3;
-}
-
-/* Remove button specific */
-
-.trackActions button.removeButton {
-  border-color: rgba(255, 120, 120, 0.2);
-  background: linear-gradient(
-    145deg,
-    rgba(255, 107, 107, 0.15) 0%,
-    rgba(50, 17, 17, 0.5) 100%
-  );
-}
-
-.trackActions button.removeButton:hover {
-  border-color: rgba(255, 120, 120, 0.4);
-  background: linear-gradient(
-    145deg,
-    rgba(255, 107, 107, 0.25) 0%,
-    rgba(50, 17, 17, 0.6) 100%
-  );
-  box-shadow:
-    0 4px 12px rgba(0, 0, 0, 0.25),
-    0 0 12px rgba(255, 107, 107, 0.15),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
-}
-
-/* Disabled add button -- shown when no playlist is active.
-   Uses aria-disabled (not the disabled attr) so the native title tooltip
-   still appears on hover. Hover/active effects are suppressed manually. */
-
+/* Disabled add button — no playlist active */
 .trackActions button.addButtonDisabled {
-  opacity: 0.35;
+  opacity: 0.28 !important;
   cursor: not-allowed;
-  box-shadow: none;
 }
 
-/* Suppress all hover/active visual changes on disabled button */
 @media (hover: hover) and (pointer: fine) {
   .trackActions button.addButtonDisabled:hover {
-    border-color: rgba(94, 255, 149, 0.2);
-    background: linear-gradient(
-      145deg,
-      rgba(34, 197, 94, 0.18) 0%,
-      rgba(17, 24, 17, 0.5) 100%
-    );
+    color: rgba(255, 255, 255, 0.5);
+    background: transparent;
     transform: none;
-    box-shadow: none;
-    opacity: 0.35;
+    opacity: 0.28 !important;
   }
 }
 
@@ -459,10 +420,9 @@ html[data-keyboard] .clickable:focus {
   .trackInfo {
     padding: 14px 12px;
     border-radius: 12px;
-    background: rgba(255, 255, 255, 0.03);
+    background: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.06);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
-    margin-bottom: 10px;
     align-items: flex-start;
     gap: 12px;
   }
@@ -560,7 +520,7 @@ html[data-keyboard] .clickable:focus {
   }
 
   .tracksContainer {
-    gap: 10px;
+    gap: 8px;
   }
 }
 

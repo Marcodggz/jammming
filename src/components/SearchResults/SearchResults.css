@@ -43,38 +43,16 @@
   flex: 1;
   overflow-y: auto;
   padding-bottom: 10px;
-  padding-right: 2px;
   min-height: 0;
+  scrollbar-gutter: stable;
+  /* Firefox — hide scrollbar, keep scrolling functional */
+  scrollbar-width: none;
 }
 
-/* Scrollbar styling for search content */
+/* WebKit — hide scrollbar visually, zero layout footprint */
 .searchContent::-webkit-scrollbar {
-  width: 6px;
-}
-
-.searchContent::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.04);
-  border-radius: 3px;
-  margin: 8px 0;
-}
-
-.searchContent::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 3px;
-}
-
-.searchContent::-webkit-scrollbar-thumb:hover {
-  background: rgba(29, 185, 84, 0.4);
-}
-
-.searchContent::-webkit-scrollbar-thumb:active {
-  background: rgba(29, 185, 84, 0.55);
-}
-
-/* Firefox scrollbar */
-.searchContent {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.15) rgba(255, 255, 255, 0.04);
+  width: 0;
+  background: transparent;
 }
 
 /* Empty state shared icon */
