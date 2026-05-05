@@ -12,30 +12,57 @@
   position: relative;
 }
 
-/* Header */
+/* Playlist header — two rows: [title + menu] / [metadata] */
 
 .playlistHeader {
   display: flex;
   flex-direction: column;
+  gap: 6px;
+  padding: 0 14px 14px 14px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+/* Row 1: title + edit icon (left) | ghost menu (right) */
+
+.playlistHeaderRow1 {
+  display: flex;
+  align-items: center;
   gap: 8px;
-  padding-bottom: 14px;
-  margin-bottom: 12px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  min-width: 0;
 }
 
-/* Row 1 — context label: only visible when editing an existing playlist.
-   Standalone — no navigation mixed in. */
+/* Title + edit icon — fills available space */
 
-.editingBadge {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  color: rgba(29, 185, 84, 0.75);
+.playlistTitleWrapper {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+  gap: 8px;
 }
 
-/* Shown in place of the update button when no changes have been made to an
-   existing playlist. Purely informational — no interactive affordance. */
+/* Row 2: song count + duration */
+
+.playlistHeaderMeta {
+  display: flex;
+  align-items: center;
+}
+
+/* Duration — readable secondary text below title */
+
+.playlistDuration {
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1;
+  color: rgba(195, 210, 198, 0.58);
+  letter-spacing: 0.05px;
+  cursor: default;
+  user-select: none;
+  white-space: nowrap;
+}
+
+/* Shown in place of the update button when no changes have been made */
 
 .noChangesText {
   margin: 0;
@@ -47,75 +74,56 @@
   user-select: none;
 }
 
-/* Row 2 — title */
-
-.playlistTitleWrapper {
-  display: flex;
-  align-items: center;
-  min-width: 0;
-  gap: 8px;
-}
-
-/* Row 3 — duration (left, passive metadata) + actions group (right).
-   Uses margin-left:auto on .playlistActions to push all icon buttons right
-   while leaving duration naturally left-aligned. */
-
-.playlistActionsRow {
-  display: flex;
-  align-items: center;
-  min-height: 26px;
-}
-
-/* Duration: plain text, not interactive — no background, no border */
-
-.playlistDuration {
-  font-size: 12px;
-  font-weight: 400;
-  line-height: 1;
-  color: rgba(255, 255, 255, 0.35);
-  cursor: default;
-  user-select: none;
-}
-
-/* Actions group: right-aligned, gap between buttons — no borders between them */
-
-.playlistActions {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-left: auto;
-}
-
-/* Navigation menu trigger */
+/* Navigation menu — rightmost item in the header row */
 
 .menuContainer {
   position: relative;
+  flex-shrink: 0;
 }
 
 .menuButton {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 26px;
-  height: 26px;
+  width: 38px;
+  height: 38px;
   background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 4px;
+  border: none;
+  border-radius: 8px;
   cursor: pointer;
-  color: rgba(255, 255, 255, 0.42);
-  font-size: 11px;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 18px;
   padding: 0;
   flex-shrink: 0;
+  font-family:
+    Inter,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
   transition:
-    color 0.15s ease,
-    background 0.15s ease,
-    border-color 0.15s ease;
+    color 0.16s ease,
+    transform 0.16s ease;
 }
 
 .menuButton:hover {
-  color: #c8cdc8;
-  background: rgba(255, 255, 255, 0.07);
-  border-color: rgba(255, 255, 255, 0.24);
+  color: #ffffff;
+  background: transparent;
+  transform: scale(1.08);
+}
+
+.menuButton:active {
+  transform: scale(0.94);
+  background: transparent;
+}
+
+@media (hover: none) {
+  .menuButton:hover {
+    color: rgba(255, 255, 255, 0.75);
+    background: transparent;
+    transform: none;
+  }
 }
 
 .menuButton:focus {
@@ -178,89 +186,32 @@ html[data-keyboard] .menuItem:focus {
   border-radius: 5px;
 }
 
-/* Revert button — icon only, shown only when there are unsaved changes */
+/* Thin rule separating navigation items from destructive actions */
 
-.revertButton {
+.menuDivider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+  margin: 4px 4px;
+}
+
+/* Danger menu item — delete playlist. Subtle red, not alarming at rest */
+
+.menuItemDanger {
   display: flex;
   align-items: center;
-  justify-content: center;
-  width: 26px;
-  height: 26px;
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 4px;
-  cursor: pointer;
-  color: rgba(255, 255, 255, 0.42);
-  font-size: 11px;
-  padding: 0;
-  flex-shrink: 0;
-  transition:
-    color 0.15s ease,
-    background 0.15s ease,
-    border-color 0.15s ease;
+  gap: 8px;
+  color: rgba(224, 90, 90, 0.7);
 }
 
-.revertButton:hover {
-  color: #c8cdc8;
-  background: rgba(255, 255, 255, 0.07);
-  border-color: rgba(255, 255, 255, 0.24);
+.menuItemDanger:hover {
+  background: rgba(224, 90, 90, 0.1);
+  color: rgb(224, 90, 90);
 }
 
-.revertButton:focus {
-  outline: none;
-}
-
-.revertButton:focus-visible,
-html[data-keyboard] .revertButton:focus {
-  outline: 2px solid rgba(29, 185, 84, 0.5);
-  outline-offset: 2px;
-}
-
-/* Delete (trash) button — icon only, right side of header, visible when editing */
-
-.editorDeleteButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 26px;
-  height: 26px;
-  background: transparent;
-  /* Persistent muted red border — signals destructive intent at a glance */
-  border: 1px solid rgba(224, 90, 90, 0.28);
-  border-radius: 4px;
-  cursor: pointer;
-  /* Persistent muted red icon — clearly a danger action, not hidden */
-  color: rgba(224, 90, 90, 0.55);
-  font-size: 11px;
-  padding: 0;
-  flex-shrink: 0;
-  transition:
-    color 0.15s ease,
-    background 0.15s ease,
-    border-color 0.15s ease;
-}
-
-.editorDeleteButton:hover {
-  color: #e05a5a;
-  background: rgba(224, 90, 90, 0.12);
-  border-color: rgba(224, 90, 90, 0.5);
-}
-
-.editorDeleteButton:focus {
-  outline: none;
-}
-
-.editorDeleteButton:focus-visible,
-html[data-keyboard] .editorDeleteButton:focus {
+.menuItemDanger:focus-visible,
+html[data-keyboard] .menuItemDanger:focus {
   outline: 2px solid rgba(224, 90, 90, 0.5);
-  outline-offset: 2px;
-}
-
-.playlistDuration:focus-visible,
-html[data-keyboard] .playlistDuration:focus {
-  outline: 2px solid rgba(29, 185, 84, 0.4);
-  outline-offset: 3px;
-  border-radius: 2px;
+  outline-offset: -2px;
 }
 
 /* Title */
@@ -383,43 +334,21 @@ html[data-keyboard] .editButton:focus {
   flex: 1;
   overflow-y: auto;
   padding-bottom: 10px;
-  padding-right: 2px;
   min-height: 0;
+  scrollbar-gutter: stable;
+  /* Firefox — hide scrollbar, keep scrolling functional */
+  scrollbar-width: none;
 }
 
 /* Only add bottom padding when save container is present */
 .playlistContent.hasTracks {
-  padding-bottom: 50px;
+  padding-bottom: 44px;
 }
 
-/* Ensure consistent scrollbar styling for playlistContent */
+/* WebKit — hide scrollbar visually, zero layout footprint */
 .playlistContent::-webkit-scrollbar {
-  width: 6px;
-}
-
-.playlistContent::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.04);
-  border-radius: 3px;
-  margin: 8px 0;
-}
-
-.playlistContent::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 3px;
-}
-
-.playlistContent::-webkit-scrollbar-thumb:hover {
-  background: rgba(29, 185, 84, 0.4);
-}
-
-.playlistContent::-webkit-scrollbar-thumb:active {
-  background: rgba(29, 185, 84, 0.55);
-}
-
-/* Firefox scrollbar */
-.playlistContent {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.15) rgba(255, 255, 255, 0.04);
+  width: 0;
+  background: transparent;
 }
 
 /* Save button area */
@@ -434,13 +363,13 @@ html[data-keyboard] .editButton:focus {
   align-items: center;
   justify-content: flex-end;
   gap: 8px;
-  padding: 16px 14px 10px 14px;
+  padding: 10px 14px 12px 14px;
   margin: 0;
   background: linear-gradient(
     to bottom,
     rgba(10, 12, 10, 0) 0%,
-    rgba(10, 12, 10, 0.9) 35%,
-    rgba(10, 12, 10, 1) 55%,
+    rgba(10, 12, 10, 0.82) 42%,
+    rgba(10, 12, 10, 0.97) 62%,
     rgba(10, 12, 10, 1) 100%
   );
   pointer-events: none;
@@ -455,30 +384,42 @@ html[data-keyboard] .editButton:focus {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 24px;
-  height: 34px;
+  padding: 0 32px;
+  height: 36px;
   border-radius: 10px;
   appearance: none;
   -webkit-appearance: none;
-  background: rgba(255, 255, 255, 0.07);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  color: #c8cdc8;
+  background: linear-gradient(
+    135deg,
+    rgba(30, 80, 50, 0.45) 0%,
+    rgba(10, 20, 15, 0.65) 100%
+  );
+  border: 1px solid rgba(100, 255, 150, 0.15);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: rgba(255, 255, 255, 0.88);
   font-size: 13px;
   font-weight: 500;
+  letter-spacing: 0.4px;
   font-family: inherit;
   cursor: pointer;
-  transition:
-    background 0.18s ease,
-    border-color 0.18s ease,
-    color 0.18s ease;
+  transition: all 0.25s ease;
   width: 100%;
-  max-width: 200px;
+  max-width: 240px;
 }
 
 .saveButton:hover {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.22);
-  color: #f3f5f3;
+  background: linear-gradient(
+    135deg,
+    rgba(40, 110, 65, 0.55) 0%,
+    rgba(15, 35, 22, 0.72) 100%
+  );
+  border-color: rgba(100, 255, 150, 0.26);
+  color: #ffffff;
+  box-shadow:
+    0 0 10px rgba(100, 255, 150, 0.15),
+    0 4px 20px rgba(0, 0, 0, 0.3);
+  transform: translateY(-1px);
 }
 
 .saveButton:focus {
@@ -492,13 +433,20 @@ html[data-keyboard] .saveButton:focus {
 }
 
 .saveButton:active {
-  background: rgba(255, 255, 255, 0.04);
+  background: linear-gradient(
+    135deg,
+    rgba(22, 55, 35, 0.45) 0%,
+    rgba(8, 16, 12, 0.65) 100%
+  );
+  box-shadow: 0 0 6px rgba(100, 255, 150, 0.08);
+  transform: scale(0.97);
 }
 
 .saveButton span {
   color: inherit;
   font-size: 13px;
   font-weight: 500;
+  letter-spacing: inherit;
 }
 
 /* Empty state shared icon */
@@ -556,10 +504,9 @@ html[data-keyboard] .saveButton:focus {
 
 @media (max-width: 480px) {
   .playlistHeader {
-    padding-bottom: 12px;
-    margin-bottom: 10px;
-    flex-wrap: wrap;
-    gap: 8px;
+    padding: 0 10px 12px 10px;
+    margin-bottom: 8px;
+    gap: 4px;
   }
 
   .playlistTitleWrapper {
@@ -573,7 +520,7 @@ html[data-keyboard] .saveButton:focus {
   }
 
   .playlistDuration {
-    font-size: 11px;
+    font-size: 12px;
   }
 
   .editButton svg,
@@ -618,7 +565,7 @@ html[data-keyboard] .saveButton:focus {
 
   .saveButton {
     height: 32px;
-    padding: 0 18px;
+    padding: 0 22px;
     border-radius: 8px;
     max-width: 180px;
   }

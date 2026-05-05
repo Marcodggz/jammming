@@ -359,17 +359,6 @@ function App() {
   }
 
   /**
-   * Reverts the editor to the snapshot captured when the playlist was loaded.
-   * Does not call any API or touch localStorage — local state only.
-   * After this, hasChanges becomes false and the Update button disappears.
-   */
-  function revertPlaylist() {
-    if (initialPlaylistName === null || initialPlaylistTracks === null) return;
-    setPlaylistName(initialPlaylistName);
-    setPlaylistTracks(initialPlaylistTracks);
-  }
-
-  /**
    * Loads an existing playlist into the editor for editing.
    * Fetches tracks from the appropriate source (localStorage for demo,
    * Spotify API for real mode) then populates the editor state.
@@ -804,7 +793,6 @@ function App() {
                   hasChanges={hasChanges}
                   onStartNew={startNewPlaylist}
                   onShowBrowser={() => setPlaylistPanelView("browser")}
-                  onRevert={hasChanges ? revertPlaylist : undefined}
                   onDeleteCurrentPlaylist={
                     isEditingExisting
                       ? () => handleDeletePlaylist(selectedPlaylistId)
