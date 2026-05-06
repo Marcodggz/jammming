@@ -1,7 +1,7 @@
 // Mock Spotify service for demo mode
 // Maintains the same interface as the real Spotify service
 
-import {
+import mockMusicCatalog, {
   getFlattenedTracks,
   getAlbumsByArtist,
   getTracksByAlbum,
@@ -10,6 +10,9 @@ import { loadDemoPlaylists } from "./demoPlaylists.js";
 
 // Get the mock tracks from our curated dataset
 const mockTracks = getFlattenedTracks();
+
+// Unique artist names from the catalog — used for artist suggestions.
+const mockArtistNames = Object.values(mockMusicCatalog).map((d) => d.artist);
 
 // Simulate search delay like a real API
 const simulateDelay = () => new Promise((resolve) => setTimeout(resolve, 500));
@@ -196,9 +199,52 @@ function login() {
   // Demo mode — no authentication needed
 }
 
+// Returns up to 6 mixed suggestions (artists first, then tracks) from the mock
+// catalog. No artificial delay so the dropdown feels instant.
+// Returns [] immediately if the trimmed term has fewer than 2 characters.
+async function getSuggestions(term) {
+  const trimmed = term.trim();
+  if (trimmed.length < 2) return [];
+  const lower = trimmed.toLowerCase();
+
+  // Artist suggestions: up to 2, matched by partial name
+  const artistSuggestions = mockArtistNames
+    .filter((name) => name.toLowerCase().includes(lower))
+    .slice(0, 2)
+    .map((name) => ({
+      type: "artist",
+      id: `mock-artist-${name}`,
+      name,
+      subtitle: "Artist",
+      image: null,
+      query: `artist:"${name}"`,
+    }));
+
+  // Track suggestions: up to 4, matched by name, artist, or album
+  const trackSuggestions = mockTracks
+    .filter(
+      (t) =>
+        t.name.toLowerCase().includes(lower) ||
+        t.artists.some((a) => a.toLowerCase().includes(lower)) ||
+        t.album.toLowerCase().includes(lower),
+    )
+    .slice(0, 4)
+    .map((t) => ({
+      type: "track",
+      id: t.id,
+      name: t.name,
+      subtitle: t.artists.join(", "),
+      image: t.albumImage,
+      query: t.name,
+    }));
+
+  return [...artistSuggestions, ...trackSuggestions];
+}
+
 const MockSpotify = {
   getAccessToken,
   search,
+  getSuggestions,
   savePlaylist,
   getUserPlaylists,
   getPlaylistTracks,

@@ -194,6 +194,25 @@ async function getAccessToken() {
   return null;
 }
 
+// Maps a raw Spotify track object to the app's track shape.
+// Album artwork: Spotify provides images in 3 sizes (640px, 300px, 64px).
+// We prefer the medium size (index 1, 300px) with fallbacks.
+function mapSpotifyTrack(track) {
+  return {
+    id: track.id,
+    name: track.name,
+    artists: track.artists.map((artist) => artist.name),
+    album: track.album.name,
+    albumImage:
+      track.album.images[1]?.url ||
+      track.album.images[2]?.url ||
+      track.album.images[0]?.url ||
+      null,
+    uri: track.uri,
+    durationMs: track.duration_ms,
+  };
+}
+
 // Search Spotify tracks
 async function search(term) {
   const token = await getAccessToken();
@@ -213,22 +232,54 @@ async function search(term) {
     throw new Error("Spotify search request failed.");
   }
 
-  return json.tracks.items.map((track) => ({
-    id: track.id,
-    name: track.name,
-    artists: track.artists.map((artist) => artist.name),
-    album: track.album.name,
-    // Album artwork: Spotify provides images in 3 sizes (640px, 300px, 64px)
-    // We use the medium size (index 1, 300px) for good quality on desktop
-    // with fallbacks to other sizes if unavailable
-    albumImage:
-      track.album.images[1]?.url ||
-      track.album.images[2]?.url ||
-      track.album.images[0]?.url ||
-      null,
-    uri: track.uri,
-    durationMs: track.duration_ms,
+  return json.tracks.items.map(mapSpotifyTrack);
+}
+
+// Returns up to 6 mixed suggestions (artists first, then tracks) for the given
+// term. Uses a single search request with type=track,artist to minimize
+// round-trips. Returns [] immediately if the trimmed term is shorter than 2
+// characters. Does not affect the existing search() function.
+async function getSuggestions(term) {
+  if (term.trim().length < 2) return [];
+
+  const token = await getAccessToken();
+  if (!token) return [];
+
+  // limit=4 gives Spotify room to return up to 4 per type.
+  // We then slice to 2 artists + 4 tracks (6 total max).
+  const url = `https://api.spotify.com/v1/search?type=track,artist&q=${encodeURIComponent(term.trim())}&limit=4`;
+
+  const response = await fetch(url, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  if (!response.ok) return [];
+
+  const json = await response.json();
+
+  const artists = (json.artists?.items ?? []).slice(0, 2).map((a) => ({
+    type: "artist",
+    id: a.id,
+    name: a.name,
+    subtitle: "Artist",
+    image: a.images?.[0]?.url || a.images?.[1]?.url || null,
+    query: `artist:"${a.name}"`,
   }));
+
+  const tracks = (json.tracks?.items ?? []).slice(0, 4).map((t) => ({
+    type: "track",
+    id: t.id,
+    name: t.name,
+    subtitle: t.artists.map((a) => a.name).join(", "),
+    image:
+      t.album.images?.[1]?.url ||
+      t.album.images?.[2]?.url ||
+      t.album.images?.[0]?.url ||
+      null,
+    query: t.name,
+  }));
+
+  return [...artists, ...tracks];
 }
 
 // Save playlist to user's Spotify account
@@ -595,6 +646,7 @@ async function deletePlaylist(playlistId) {
 const Spotify = {
   getAccessToken,
   search,
+  getSuggestions,
   savePlaylist,
   getCurrentUser,
   getUserPlaylists,

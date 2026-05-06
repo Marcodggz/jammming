@@ -711,6 +711,7 @@ function App() {
             setSearchTerm={setSearchTerm}
             hasPrevSearch={prevSearchStack.length > 0}
             onGoBack={goBack}
+            getSuggestions={spotifyService.getSuggestions}
           />
 
           <div className="mainContainer">
