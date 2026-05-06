@@ -581,3 +581,138 @@ html[data-keyboard] .saveButton:focus {
     border-radius: 8px;
   }
 }
+
+/* Unsaved-changes banner — scoped overlay anchored to playlistContainer.
+   playlistContainer has position: relative, so this overlay is clipped to
+   the playlist panel. Rendered above the save button area (z-index: 20). */
+
+.unsavedBannerOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 20;
+  display: flex;
+  align-items: flex-end;
+}
+
+.unsavedBannerDialog {
+  background: #1a1f1b;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.5);
+  padding: 20px 20px 18px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.unsavedBannerText {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: #f3f5f3;
+  letter-spacing: 0.01em;
+}
+
+.unsavedBannerActions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.unsavedBannerDiscardButton,
+.unsavedBannerSaveButton {
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition:
+    background 0.18s ease,
+    color 0.18s ease,
+    border-color 0.18s ease,
+    transform 0.12s ease;
+  border: 1px solid transparent;
+  outline: none;
+}
+
+.unsavedBannerDiscardButton:focus-visible,
+.unsavedBannerSaveButton:focus-visible,
+html[data-keyboard] .unsavedBannerDiscardButton:focus,
+html[data-keyboard] .unsavedBannerSaveButton:focus {
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.35);
+}
+
+/* Discard — ghost, matching deleteModalCancelButton */
+.unsavedBannerDiscardButton {
+  background: transparent;
+  color: #8a948b;
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.unsavedBannerDiscardButton:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #d1d5d1;
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+.unsavedBannerDiscardButton:active {
+  transform: scale(0.97);
+}
+
+/* Save — green-tinted, matching app save button palette */
+.unsavedBannerSaveButton {
+  background: rgba(29, 185, 84, 0.14);
+  color: #1db954;
+  border-color: rgba(29, 185, 84, 0.35);
+}
+
+.unsavedBannerSaveButton:hover:not(:disabled) {
+  background: rgba(29, 185, 84, 0.26);
+  color: #24d65e;
+  border-color: rgba(29, 185, 84, 0.55);
+}
+
+.unsavedBannerSaveButton:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.unsavedBannerSaveButton:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Mobile — anchor dialog to bottom of the panel */
+@media (max-width: 480px) {
+  .unsavedBannerDialog {
+    padding: 18px 16px 16px;
+  }
+}
+
+/* High contrast */
+@media (prefers-contrast: high) {
+  .unsavedBannerOverlay {
+    background: rgba(0, 0, 0, 0.8);
+  }
+
+  .unsavedBannerDialog {
+    background: #000000;
+    border-top: 1px solid #ffffff;
+  }
+
+  .unsavedBannerText {
+    color: #ffffff;
+  }
+
+  .unsavedBannerDiscardButton {
+    border-color: #ffffff;
+    color: #ffffff;
+  }
+
+  .unsavedBannerSaveButton {
+    background: #00cc44;
+    border-color: #00cc44;
+    color: #000000;
+  }
+}

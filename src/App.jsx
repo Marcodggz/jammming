@@ -123,15 +123,29 @@ function App() {
   const [initialPlaylistName, setInitialPlaylistName] = useState(null);
   const [initialPlaylistTracks, setInitialPlaylistTracks] = useState(null);
 
-  // True when the current editor state differs from the snapshot captured on load.
-  // Always false for new (unsaved) playlists — no snapshot exists to compare against.
-  // Must be computed AFTER the snapshot state declarations above.
-  const hasChanges = hasPlaylistChanges(
-    initialPlaylistName,
-    initialPlaylistTracks,
-    playlistName,
-    playlistTracks,
-  );
+  // Unsaved-changes banner state.
+  // pendingActionRef: the navigation/action the user attempted before being shown the banner.
+  // showUnsavedBanner: controls banner visibility.
+  // isSaving: prevents duplicate save calls triggered from the banner.
+  const pendingActionRef = useRef(null);
+  const [showUnsavedBanner, setShowUnsavedBanner] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+
+  // For a new (not yet saved) playlist, dirty = tracks added or non-default name.
+  // For an existing playlist, dirty = snapshot comparison via hasPlaylistChanges.
+  // Must be computed AFTER all snapshot / editor state declarations above.
+  const isNewPlaylistDirty =
+    !isEditingExisting &&
+    (playlistTracks.length > 0 || playlistName.trim() !== "My Playlist");
+
+  const hasChanges =
+    isNewPlaylistDirty ||
+    hasPlaylistChanges(
+      initialPlaylistName,
+      initialPlaylistTracks,
+      playlistName,
+      playlistTracks,
+    );
 
   // Controls which view fills the right panel: "home" (default), "editor", or "browser".
   const [playlistPanelView, setPlaylistPanelView] = useState("home");
@@ -293,6 +307,71 @@ function App() {
     // Clear the snapshot — there is nothing to compare against for a new playlist.
     setInitialPlaylistName(null);
     setInitialPlaylistTracks(null);
+    // Dismiss any active unsaved-changes banner and drop the pending action.
+    pendingActionRef.current = null;
+    setShowUnsavedBanner(false);
+  }
+
+  /**
+   * Guards any navigation action that would discard unsaved playlist changes.
+   *
+   * - If there are no unsaved changes: runs nextAction immediately.
+   * - If there are unsaved changes: stores nextAction as pending and shows the
+   *   unsaved-changes banner. The user must then choose Save or Discard.
+   */
+  function guardUnsavedChanges(nextAction) {
+    if (!hasChanges) {
+      nextAction();
+      return;
+    }
+    pendingActionRef.current = nextAction;
+    setShowUnsavedBanner(true);
+  }
+
+  /**
+   * Banner — "Discard" clicked.
+   * Restores the editor to its last saved state (or clears it for new playlists),
+   * then executes the originally-intended navigation action.
+   */
+  function handleBannerDiscard() {
+    const action = pendingActionRef.current;
+    pendingActionRef.current = null;
+    setShowUnsavedBanner(false);
+
+    // Restore editor to the last-saved snapshot, or clear for a new playlist.
+    if (initialPlaylistName !== null && initialPlaylistTracks !== null) {
+      setPlaylistName(initialPlaylistName);
+      setPlaylistTracks(initialPlaylistTracks);
+    } else {
+      setPlaylistName("My Playlist");
+      setPlaylistTracks([]);
+    }
+
+    if (action) action();
+  }
+
+  /**
+   * Banner — "Save" clicked.
+   * Persists the playlist via the existing save logic, then executes the
+   * originally-intended navigation action on success.
+   * If save fails the banner stays open and the pending action is preserved.
+   */
+  async function handleBannerSave() {
+    if (isSaving) return;
+    setIsSaving(true);
+    const action = pendingActionRef.current;
+    try {
+      const success = await savePlaylist(action);
+      if (success) {
+        // The snapshot was already synced inside savePlaylist (before afterSave ran).
+        // Just clean up the banner state here.
+        pendingActionRef.current = null;
+        setShowUnsavedBanner(false);
+      }
+      // On failure savePlaylist already shows an error toast; banner stays open.
+    } finally {
+      setIsSaving(false);
+    }
   }
 
   /**
@@ -437,10 +516,16 @@ function App() {
     }
   }
 
-  // Save or update the playlist
-  async function savePlaylist() {
+  // Save or update the playlist.
+  // afterSave: optional callback invoked instead of the default home navigation
+  //   when the call originates from the unsaved-changes banner. The banner
+  //   handler passes the originally-intended action so the user lands where
+  //   they tried to go after saving.
+  // Returns true on success, false on failure (so the banner handler can decide
+  //   whether to close the banner or keep it open for error recovery).
+  async function savePlaylist(afterSave = null) {
     const trackURIs = playlistTracks.map((track) => track.uri);
-    if (trackURIs.length === 0) return;
+    if (trackURIs.length === 0) return false;
 
     // newPlaylistId is set only when creating a new real-Spotify playlist,
     // so we can add an optimistic entry while Spotify's index catches up.
@@ -453,6 +538,9 @@ function App() {
     try {
       if (isDemoMode) {
         if (isEditingExisting && selectedPlaylistId) {
+          // Capture editedPlaylistId here (same as the Spotify branch) so the
+          // optimistic update and refresh stale-count fix both run for demo mode.
+          editedPlaylistId = selectedPlaylistId;
           updateDemoPlaylist(selectedPlaylistId, {
             name: playlistName,
             tracks: playlistTracks,
@@ -477,7 +565,7 @@ function App() {
     } catch (error) {
       console.error("savePlaylist failed:", error);
       toast.error("Failed to save playlist. Please try again.");
-      return; // do not reset the editor if the save itself failed
+      return false; // do not reset the editor if the save itself failed
     }
 
     // --- Phase 2: reset editor and refresh the list (best-effort) ---
@@ -486,6 +574,8 @@ function App() {
     // Optimistic UI update strategy:
     //  • Edit  → patch the existing entry immediately so the user sees the
     //            correct name & track count before the Spotify refresh lands.
+    //            For demo mode this also updates the artwork collage so the
+    //            browser list stays in sync with the just-saved tracks.
     //  • Create → insert a placeholder with the correct count; Spotify's index
     //            is eventually-consistent so live-refresh would show 0 tracks
     //            for a newly created playlist.
@@ -493,11 +583,16 @@ function App() {
 
     if (editedPlaylistId) {
       setPlaylists((prev) =>
-        prev.map((p) =>
-          p.id === editedPlaylistId
-            ? { ...p, name: playlistName, trackCount }
-            : p,
-        ),
+        prev.map((p) => {
+          if (p.id !== editedPlaylistId) return p;
+          const patch = { ...p, name: playlistName, trackCount };
+          // Demo playlists store a pre-computed artwork collage; update it now
+          // so the browser list reflects any track additions or removals.
+          if (isDemoMode) {
+            patch.artworkImages = getArtworkImages(playlistTracks);
+          }
+          return patch;
+        }),
       );
     } else if (!isDemoMode && newPlaylistId) {
       // Insert a provisional entry with a correct track count.
@@ -515,8 +610,30 @@ function App() {
       ]);
     }
 
-    startNewPlaylist();
-    setPlaylistPanelView("home");
+    // Navigate: when called from the unsaved-changes banner the caller supplies
+    // the originally-intended action; otherwise fall back to the default
+    // "reset editor and go home" behaviour.
+    if (typeof afterSave === "function") {
+      if (editedPlaylistId) {
+        // Existing playlist saved via banner.
+        // Sync the snapshot to the saved values so hasChanges evaluates to false.
+        // If afterSave calls startNewPlaylist(), its null-setters are queued after
+        // ours (last-write wins in a React batch) and correctly clear the snapshot.
+        setInitialPlaylistName(playlistName);
+        setInitialPlaylistTracks([...playlistTracks]);
+      } else {
+        // New playlist created via banner.
+        // Reset the editor completely: isNewPlaylistDirty uses playlistName and
+        // playlistTracks directly (not just the snapshot), so only startNewPlaylist
+        // can reliably bring hasChanges back to false for a new playlist.
+        startNewPlaylist();
+      }
+      afterSave();
+    } else {
+      startNewPlaylist();
+      setPlaylistPanelView("home");
+    }
+
     try {
       const refreshed = await loadPlaylistsFromSource(isDemoMode);
       // Spotify's /me/playlists response is eventually consistent: the track
@@ -542,6 +659,8 @@ function App() {
       console.warn("savePlaylist: could not refresh playlist list:", err);
       // Keep the optimistically-patched list rather than clearing it.
     }
+
+    return true;
   }
 
   // Demo mode handlers
@@ -723,7 +842,7 @@ function App() {
               <span className="demoBannerText">Sample data mode</span>
               <button
                 className="exitDemoButton"
-                onClick={exitDemoMode}
+                onClick={() => guardUnsavedChanges(exitDemoMode)}
                 aria-label="Exit demo mode and connect to Spotify"
               >
                 Exit
@@ -787,13 +906,17 @@ function App() {
                   error={playlistsError}
                   selectedPlaylistId={selectedPlaylistId}
                   onSelectPlaylist={(id) => {
-                    handleSelectPlaylist(id);
-                    setPlaylistPanelView("editor");
+                    guardUnsavedChanges(() => {
+                      handleSelectPlaylist(id);
+                      setPlaylistPanelView("editor");
+                    });
                   }}
                   onDeletePlaylist={handleDeletePlaylist}
                   onStartNew={() => {
-                    startNewPlaylist();
-                    setPlaylistPanelView("editor");
+                    guardUnsavedChanges(() => {
+                      startNewPlaylist();
+                      setPlaylistPanelView("editor");
+                    });
                   }}
                   onBack={() =>
                     setPlaylistPanelView(selectedPlaylistId ? "editor" : "home")
@@ -817,13 +940,25 @@ function App() {
                   }
                   isEditingExisting={isEditingExisting}
                   hasChanges={hasChanges}
-                  onStartNew={startNewPlaylist}
-                  onShowBrowser={() => setPlaylistPanelView("browser")}
+                  onStartNew={() =>
+                    guardUnsavedChanges(() => {
+                      startNewPlaylist();
+                      setPlaylistPanelView("editor");
+                    })
+                  }
+                  onShowBrowser={() =>
+                    guardUnsavedChanges(() => setPlaylistPanelView("browser"))
+                  }
                   onDeleteCurrentPlaylist={
                     isEditingExisting
                       ? () => handleDeletePlaylist(selectedPlaylistId)
                       : undefined
                   }
+                  unsavedBannerVisible={showUnsavedBanner}
+                  onBannerDiscard={handleBannerDiscard}
+                  onBannerSave={handleBannerSave}
+                  isSaving={isSaving}
+                  canSave={playlistTracks.length > 0}
                 />
               )}
             </section>

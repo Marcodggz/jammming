@@ -20,6 +20,12 @@ function Playlist({
   onStartNew,
   onShowBrowser,
   onDeleteCurrentPlaylist,
+  // Unsaved-changes banner
+  unsavedBannerVisible = false,
+  onBannerDiscard,
+  onBannerSave,
+  isSaving = false,
+  canSave = true,
 }) {
   const playlistInputRef = useRef(null);
   const [isEditingTitle, setIsEditingTitle] = useState(false);
@@ -259,6 +265,34 @@ function Playlist({
               <span>{saveButtonText}</span>
             </button>
           )}
+        </div>
+      )}
+
+      {unsavedBannerVisible && (
+        <div className="unsavedBannerOverlay">
+          <div className="unsavedBannerDialog" role="status" aria-live="polite">
+            <p className="unsavedBannerText">You have unsaved changes.</p>
+            <div className="unsavedBannerActions">
+              <button
+                type="button"
+                className="unsavedBannerDiscardButton"
+                onClick={onBannerDiscard}
+              >
+                Discard
+              </button>
+              {canSave && (
+                <button
+                  type="button"
+                  className="unsavedBannerSaveButton"
+                  onClick={onBannerSave}
+                  disabled={isSaving}
+                  aria-busy={isSaving}
+                >
+                  {isSaving ? "Saving..." : "Save"}
+                </button>
+              )}
+            </div>
+          </div>
         </div>
       )}
     </section>
