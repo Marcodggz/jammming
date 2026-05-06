@@ -12,6 +12,7 @@ import {
   createDemoPlaylist,
   updateDemoPlaylist,
   deleteDemoPlaylist,
+  seedDemoPlaylists,
 } from "./util/demoPlaylists";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpotify } from "@fortawesome/free-brands-svg-icons";
@@ -54,15 +55,31 @@ function hasPlaylistChanges(
 
 async function loadPlaylistsFromSource(isDemo) {
   if (isDemo) {
+    seedDemoPlaylists();
     return loadDemoPlaylists().map((p) => ({
       id: p.id,
       name: p.name,
       trackCount: p.tracks.length,
       imageUrl: null,
       isOwned: true,
+      artworkImages: getArtworkImages(p.tracks),
     }));
   }
   return Spotify.getUserPlaylists();
+}
+
+/** Collects up to 4 unique album-cover URLs from a track list. */
+function getArtworkImages(tracks) {
+  const seen = new Set();
+  const images = [];
+  for (const track of tracks) {
+    if (track.albumImage && !seen.has(track.albumImage)) {
+      seen.add(track.albumImage);
+      images.push(track.albumImage);
+      if (images.length === 4) break;
+    }
+  }
+  return images;
 }
 
 function App() {

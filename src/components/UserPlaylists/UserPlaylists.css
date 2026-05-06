@@ -283,17 +283,6 @@ html[data-keyboard] .userPlaylistDeleteButton:focus {
   overflow: hidden;
 }
 
-.userPlaylistThumbnailImg {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.userPlaylistThumbnailIcon {
-  font-size: 11px;
-  color: rgba(255, 255, 255, 0.25);
-}
-
 /* ── Name — truncate if too long ─────────────────────────────── */
 
 .userPlaylistItemName {

@@ -5,7 +5,9 @@
  * Kept separate from mockSpotify.js so it can be imported by both
  * mockSpotify.js and App.jsx without coupling concerns.
  *
- * localStorage key: "demo_playlists"
+ * localStorage keys:
+ *   "demo_playlists"        — persisted playlist array
+ *   "demo_playlists_seeded" — written once after the initial seed is applied
  *
  * Stored shape per playlist:
  * {
@@ -17,7 +19,10 @@
  * }
  */
 
+import { getFlattenedTracks } from "./mockMusicData.js";
+
 const DEMO_PLAYLISTS_KEY = "demo_playlists";
+const DEMO_PLAYLISTS_SEEDED_KEY = "demo_playlists_seeded";
 
 /** Generates a stable, unique local ID. */
 function generateId() {
@@ -93,13 +98,79 @@ function updateDemoPlaylist(id, { name, tracks }) {
   return updated;
 }
 
-export {
-  DEMO_PLAYLISTS_KEY,
-  loadDemoPlaylists,
-  createDemoPlaylist,
-  updateDemoPlaylist,
-  deleteDemoPlaylist,
-};
+/**
+ * Track IDs for each curated seed playlist.
+ * IDs must match entries in the mock music catalog.
+ */
+const SEED_DEFINITIONS = [
+  {
+    name: "Late Night Drive",
+    trackIds: [
+      "weeknd-ah-01",
+      "weeknd-ah-05",
+      "weeknd-df-09",
+      "lana-btd-04",
+      "lana-btd-07",
+      "frank-bl-07",
+      "frank-bl-09",
+    ],
+  },
+  {
+    name: "Pop Energy",
+    trackIds: [
+      "weeknd-ah-09",
+      "weeknd-sb-01",
+      "dua-fn-02",
+      "dua-fn-05",
+      "dua-fn-04",
+      "dua-ro-02",
+      "billie-ww-01",
+      "gaga-tfm-01",
+    ],
+  },
+  {
+    name: "Focus Mix",
+    trackIds: [
+      "tyler-ig-02",
+      "tyler-ig-03",
+      "tyler-fb-04",
+      "frank-bl-01",
+      "frank-bl-03",
+      "frank-bl-10",
+      "billie-hte-01",
+      "billie-hte-08",
+    ],
+  },
+];
+
+/**
+ * Seeds the demo playlists into localStorage on first use.
+ *
+ * Seeding is skipped when:
+ *   - the seeded flag is already set, or
+ *   - the user already has playlists in localStorage (pre-existing data).
+ *
+ * After seeding, the flag "demo_playlists_seeded" is written so the seed
+ * is never applied again, even if the user later deletes all seeded playlists.
+ */
+function seedDemoPlaylists() {
+  if (localStorage.getItem(DEMO_PLAYLISTS_SEEDED_KEY)) return;
+
+  const existing = loadDemoPlaylists();
+  if (existing.length > 0) {
+    localStorage.setItem(DEMO_PLAYLISTS_SEEDED_KEY, "1");
+    return;
+  }
+
+  const trackIndex = new Map(getFlattenedTracks().map((t) => [t.id, t]));
+
+  SEED_DEFINITIONS.forEach(({ name, trackIds }) => {
+    const tracks = trackIds.map((id) => trackIndex.get(id)).filter(Boolean);
+    createDemoPlaylist(name, tracks);
+  });
+
+  localStorage.setItem(DEMO_PLAYLISTS_SEEDED_KEY, "1");
+}
 
 /**
  * Removes a demo playlist from localStorage by ID.
@@ -109,3 +180,11 @@ function deleteDemoPlaylist(id) {
   const existing = loadDemoPlaylists();
   persistDemoPlaylists(existing.filter((p) => p.id !== id));
 }
+
+export {
+  loadDemoPlaylists,
+  createDemoPlaylist,
+  updateDemoPlaylist,
+  deleteDemoPlaylist,
+  seedDemoPlaylists,
+};

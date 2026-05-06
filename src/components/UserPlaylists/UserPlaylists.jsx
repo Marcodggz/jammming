@@ -1,11 +1,11 @@
 import { useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faMusic,
   faLock,
   faTrash,
   faArrowLeft,
 } from "@fortawesome/free-solid-svg-icons";
+import PlaylistArtwork from "../PlaylistArtwork/PlaylistArtwork";
 import "./UserPlaylists.css";
 
 /**
@@ -115,7 +115,12 @@ function UserPlaylists({
                   role="listitem"
                   aria-label={`${playlist.name}, read-only, ${playlist.trackCount} track${playlist.trackCount === 1 ? "" : "s"}`}
                 >
-                  <PlaylistThumbnail imageUrl={playlist.imageUrl} />
+                  <PlaylistArtwork
+                    imageUrl={playlist.imageUrl}
+                    artworkImages={playlist.artworkImages}
+                    name={playlist.name}
+                    className="userPlaylistThumbnail"
+                  />
                   <span className="userPlaylistItemName">{playlist.name}</span>
                   <span className="userPlaylistItemMeta">
                     {playlist.trackCount}{" "}
@@ -147,7 +152,12 @@ function UserPlaylists({
                   aria-pressed={isSelected}
                   aria-label={`${playlist.name}, ${playlist.trackCount} track${playlist.trackCount === 1 ? "" : "s"}${isSelected ? ", currently editing" : ""}`}
                 >
-                  <PlaylistThumbnail imageUrl={playlist.imageUrl} />
+                  <PlaylistArtwork
+                    imageUrl={playlist.imageUrl}
+                    artworkImages={playlist.artworkImages}
+                    name={playlist.name}
+                    className="userPlaylistThumbnail"
+                  />
                   <span className="userPlaylistItemName">{playlist.name}</span>
                   <span className="userPlaylistItemMeta">
                     {playlist.trackCount}{" "}
@@ -172,25 +182,6 @@ function UserPlaylists({
             );
           })}
       </div>
-    </div>
-  );
-}
-
-/** Small thumbnail with a fallback music icon. */
-function PlaylistThumbnail({ imageUrl }) {
-  return (
-    <div className="userPlaylistThumbnail" aria-hidden="true">
-      {imageUrl ? (
-        <img
-          src={imageUrl}
-          alt=""
-          className="userPlaylistThumbnailImg"
-          loading="lazy"
-          decoding="async"
-        />
-      ) : (
-        <FontAwesomeIcon icon={faMusic} className="userPlaylistThumbnailIcon" />
-      )}
     </div>
   );
 }
