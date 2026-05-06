@@ -398,24 +398,32 @@ function App() {
         loadedTracks = await Spotify.getPlaylistTracks(playlistId);
       }
 
+      // Capture the baseline from the raw loaded tracks before any pending
+      // additions are applied. This ensures dirty-state detection compares
+      // against the playlist as it exists in storage, not the modified state.
+      const baselineTracks = loadedTracks;
+
       // If there is a pending track waiting (from the destination selector flow),
       // append it now — but only if it is not already in the loaded playlist.
+      let editorTracks = baselineTracks;
       if (
         pendingTrackToAdd &&
-        !loadedTracks.find((t) => t.id === pendingTrackToAdd.id)
+        !baselineTracks.find((t) => t.id === pendingTrackToAdd.id)
       ) {
-        loadedTracks = [...loadedTracks, pendingTrackToAdd];
+        editorTracks = [...baselineTracks, pendingTrackToAdd];
       }
       // Always clear the pending track once a playlist has been chosen.
       setPendingTrackToAdd(null);
 
       setPlaylistName(meta.name);
-      setPlaylistTracks(loadedTracks);
+      setPlaylistTracks(editorTracks);
       setSelectedPlaylistId(playlistId);
       // Capture a snapshot of the just-loaded state (full track objects) so we
       // can both detect dirty changes and revert without touching the API.
+      // Use baselineTracks (not editorTracks) so pending additions are
+      // treated as user changes, not part of the original playlist state.
       setInitialPlaylistName(meta.name);
-      setInitialPlaylistTracks(loadedTracks);
+      setInitialPlaylistTracks(baselineTracks);
     } catch (err) {
       // Distinguish Spotify's access-denied 403 from generic failures.
       if (err.message?.startsWith("PLAYLIST_ACCESS_DENIED")) {
