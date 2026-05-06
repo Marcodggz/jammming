@@ -281,6 +281,7 @@
   .trackActions button {
     opacity: 1;
     color: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.04);
     -webkit-tap-highlight-color: transparent;
     -webkit-user-select: none;
     user-select: none;
@@ -288,6 +289,7 @@
 
   .trackActions button.removeButton {
     color: rgba(220, 90, 90, 0.6);
+    background: rgba(220, 90, 90, 0.04);
   }
 
   .trackActions button:active {
@@ -355,20 +357,20 @@ html[data-keyboard] .clickable:focus {
   color: #ebe6eeb7;
 }
 
-/* Tablet + mobile */
+/* Tablet + mobile (≤ 1024px) */
 
 @media (max-width: 1024px) {
   .trackInfo {
-    padding: 10px 8px 10px 10px;
-    align-items: flex-start;
+    padding: 10px 4px 10px 10px;
     gap: 10px;
+    /* Keep align-items: center — do not override */
   }
 
   .trackArt {
-    width: 52px;
-    height: 52px;
-    min-width: 52px;
-    margin-right: 12px;
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    margin-right: 10px;
     border-radius: 6px;
   }
 
@@ -386,26 +388,29 @@ html[data-keyboard] .clickable:focus {
     line-height: 1.4;
   }
 
+  /* trackDuration — keep desktop style, reduce font size only */
   .trackDuration {
     font-size: 11px;
-    padding: 3px 8px;
+  }
+
+  /* Widen action slot to give touch targets room */
+  .trackRight {
+    grid-template-columns: 42px 40px;
+    column-gap: 10px;
   }
 
   .trackActions {
-    margin-top: 0;
+    width: 40px;
+    height: 40px;
   }
 
   .trackActions button {
-    width: 34px;
-    height: 34px;
+    width: 28px;
+    height: 28px;
   }
 
   .trackActions button svg {
-    font-size: 13px;
-  }
-
-  .trackActions button.removeButton svg {
-    font-size: 13px;
+    font-size: 12px;
   }
 
   .clickable {
@@ -414,39 +419,36 @@ html[data-keyboard] .clickable:focus {
   }
 }
 
-/* Mobile */
+/* Mobile (≤ 480px) */
 
 @media (max-width: 480px) {
   .trackInfo {
-    padding: 14px 12px;
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
-    align-items: flex-start;
-    gap: 12px;
+    padding: 10px 4px 10px 10px;
+    border-radius: 6px;
+    gap: 10px;
+    /* No card background — rows stay transparent like desktop */
   }
 
   .trackArt {
-    width: 52px;
-    height: 52px;
-    min-width: 52px;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
     margin-right: 10px;
-    border-radius: 8px;
+    border-radius: 6px;
     flex-shrink: 0;
   }
 
   .trackDetails {
     flex: 1;
-    gap: 5px;
+    gap: 4px;
     min-width: 0;
   }
 
   .trackDetails h3 {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 600;
-    margin-bottom: 0;
     line-height: 1.3;
+    margin-bottom: 0;
   }
 
   .trackDetails p {
@@ -454,7 +456,7 @@ html[data-keyboard] .clickable:focus {
     flex-direction: column;
     gap: 1px;
     margin: 0;
-    /* font-size: 0 collapses the bare " • " text node between the two spans
+    /* font-size: 0 collapses the bare separator text node between the two spans
        without touching the DOM — standard CSS technique for this pattern */
     font-size: 0;
     overflow: hidden;
@@ -463,9 +465,9 @@ html[data-keyboard] .clickable:focus {
   .trackDetails .artist-info,
   .trackDetails .album-info {
     display: block;
-    font-size: 13px;
+    font-size: 12px;
     line-height: 1.4;
-    color: #a6b1a7;
+    color: rgba(255, 255, 255, 0.42);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -473,7 +475,7 @@ html[data-keyboard] .clickable:focus {
   }
 
   /* Apply truncation directly to the inner button/span so it works
-     reliably — text-overflow on the parent doesn't reach inside inline-block buttons */
+     reliably — text-overflow on the parent does not reach inside inline-block buttons */
   .trackDetails .artist-info .clickable,
   .trackDetails .artist-info > span,
   .trackDetails .album-info .clickable,
@@ -486,41 +488,46 @@ html[data-keyboard] .clickable:focus {
     vertical-align: bottom;
   }
 
+  /* trackDuration — match desktop: plain right-aligned text, no pill */
   .trackDuration {
-    font-size: 12px;
-    padding: 4px 8px;
-    border-radius: 8px;
-    background: rgba(29, 185, 84, 0.12);
-    color: #8aaa8b;
-    align-self: flex-start;
+    font-size: 11px;
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.5);
+    align-self: auto;
     letter-spacing: 0.2px;
   }
 
+  /* 44px tap target; 30px visual circle */
+  .trackRight {
+    grid-template-columns: 42px 44px;
+    column-gap: 10px;
+  }
+
   .trackActions {
+    width: 44px;
+    height: 44px;
     margin-left: 0;
     flex-shrink: 0;
-    align-self: flex-start;
+    align-self: auto;
     margin-top: 0;
   }
 
   .trackActions button {
-    width: 38px;
-    height: 38px;
-    border-radius: 10px;
-    min-width: 38px;
-    min-height: 38px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    min-width: 30px;
+    min-height: 30px;
   }
 
   .trackActions button svg {
-    font-size: 15px;
-  }
-
-  .trackActions button.removeButton svg {
-    font-size: 15px;
+    font-size: 13px;
   }
 
   .tracksContainer {
-    gap: 8px;
+    gap: 4px;
   }
 }
 

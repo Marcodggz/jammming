@@ -520,7 +520,14 @@ html[data-keyboard] .saveButton:focus {
   }
 
   .playlistDuration {
-    font-size: 12px;
+    font-size: 13px;
+  }
+
+  /* Align duration row with the title text's left edge.
+     On mobile the title has padding-left: 6px, so add the same
+     offset to the meta row to keep both rows visually flush. */
+  .playlistHeaderMeta {
+    padding-left: 6px;
   }
 
   .editButton svg,
@@ -531,6 +538,11 @@ html[data-keyboard] .saveButton:focus {
   .playlistContent {
     padding-right: 2px;
     padding-bottom: 8px;
+  }
+
+  /* Match save container height (18px top + 40px button + 12px bottom = 70px) */
+  .playlistContent.hasTracks {
+    padding-bottom: 70px;
   }
 
   .emptyPlaylist {
@@ -560,14 +572,14 @@ html[data-keyboard] .saveButton:focus {
   }
 
   .saveContainer {
-    padding: 12px 10px 10px 10px;
+    padding: 18px 14px 12px 14px;
   }
 
   .saveButton {
-    height: 32px;
-    padding: 0 22px;
-    border-radius: 8px;
-    max-width: 180px;
+    height: 40px;
+    padding: 0 26px;
+    border-radius: 10px;
+    max-width: 220px;
   }
 
   .saveButton span {
@@ -579,6 +591,15 @@ html[data-keyboard] .saveButton:focus {
     padding: 8px 12px;
     font-size: 13px;
     border-radius: 8px;
+  }
+}
+
+/* Touch devices at tablet portrait — ensure save button meets minimum tap target.
+   Mobile (≤ 480px) is handled separately above with a proportionate 40px height. */
+@media (hover: none) and (min-width: 481px),
+  (pointer: coarse) and (min-width: 481px) {
+  .saveButton {
+    height: 44px;
   }
 }
 
