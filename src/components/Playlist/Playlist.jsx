@@ -20,6 +20,7 @@ function Playlist({
   formattedDuration,
   saveButtonText = "Save to Spotify",
   isEditingExisting = false,
+  isLoadingExistingPlaylist = false,
   hasChanges = false,
   onStartNew,
   onShowBrowser,
@@ -220,7 +221,16 @@ function Playlist({
       <div
         className={`playlistContent ${playlistTracks.length > 0 ? "hasTracks" : ""}`}
       >
-        {playlistTracks.length === 0 ? (
+        {isLoadingExistingPlaylist ? (
+          <div
+            className="loadingState"
+            role="status"
+            aria-label="Loading playlist"
+          >
+            <span className="loadingSpinner" aria-hidden="true"></span>
+            <p className="loadingMessage">Loading playlist...</p>
+          </div>
+        ) : playlistTracks.length === 0 ? (
           <div
             className="emptyPlaylist"
             role="status"

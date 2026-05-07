@@ -103,6 +103,13 @@ function App() {
   const [selectedPlaylistId, setSelectedPlaylistId] = useState(null);
   const isEditingExisting = selectedPlaylistId !== null;
 
+  // Loading state for an existing playlist being loaded into the editor.
+  // This prevents the "My Playlist / No tracks yet" flicker when switching
+  // to an existing playlist while its tracks are being fetched.
+  // Remains true from when handleSelectPlaylist is called until tracks are loaded.
+  const [isLoadingExistingPlaylist, setIsLoadingExistingPlaylist] =
+    useState(false);
+
   // Delete confirmation modal state — holds the id of the playlist pending deletion
   const [pendingDeleteId, setPendingDeleteId] = useState(null);
 
@@ -320,6 +327,8 @@ function App() {
     // Clear the snapshot — there is nothing to compare against for a new playlist.
     setInitialPlaylistName(null);
     setInitialPlaylistTracks(null);
+    // Clear the loading state — not loading an existing playlist anymore.
+    setIsLoadingExistingPlaylist(false);
     // Dismiss any active unsaved-changes banner and drop the pending action.
     pendingActionRef.current = null;
     setShowUnsavedBanner(false);
@@ -485,6 +494,9 @@ function App() {
     // GET /playlists/{id}/items unless the user owns or collaborates on it.
     if (!meta || !meta.isOwned) return;
 
+    // Begin loading state — prevents the "My Playlist / No tracks yet" flicker.
+    setIsLoadingExistingPlaylist(true);
+
     try {
       let loadedTracks;
 
@@ -531,6 +543,9 @@ function App() {
         console.error("handleSelectPlaylist:", err);
         toast.error("Could not load playlist tracks. Please try again.");
       }
+    } finally {
+      // End loading state — loading is complete (success or failure).
+      setIsLoadingExistingPlaylist(false);
     }
   }
 
@@ -958,6 +973,7 @@ function App() {
                 <Playlist
                   playlistName={playlistName}
                   playlistTracks={playlistTracks}
+                  isLoadingExistingPlaylist={isLoadingExistingPlaylist}
                   removeTrack={removeTrack}
                   playlistNameChange={playlistNameChange}
                   savePlaylist={savePlaylist}
