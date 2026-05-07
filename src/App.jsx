@@ -131,6 +131,11 @@ function App() {
   const [showUnsavedBanner, setShowUnsavedBanner] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
+  // Tracks the last successfully executed search query (normalized: trimmed, lower-cased).
+  // Used to prevent redundant re-searches when the user clicks the same artist/album link
+  // or submits the same search term a second time.
+  const lastExecutedSearchRef = useRef("");
+
   // For a new (not yet saved) playlist, dirty = tracks added or non-default name.
   // For an existing playlist, dirty = snapshot comparison via hasPlaylistChanges.
   // Must be computed AFTER all snapshot / editor state declarations above.
@@ -679,11 +684,19 @@ function App() {
     setHasSearched(false);
     setPlaylists([]);
     setSelectedPlaylistId(null);
+    lastExecutedSearchRef.current = "";
   }
 
   // Search for tracks based on the search term
   async function searchTracks(term, isDrillDown = false, displayTerm = null) {
-    if (term.trim()) {
+    const trimmedTerm = term.trim();
+    if (trimmedTerm) {
+      // Deduplicate: skip the search if the normalized query matches the last one executed.
+      const normalizedTerm = trimmedTerm.toLowerCase();
+      if (normalizedTerm === lastExecutedSearchRef.current) {
+        return;
+      }
+
       if (isDrillDown) {
         setPrevSearchStack((prev) => [...prev, { term: searchTerm, tracks }]);
       } else {
@@ -692,11 +705,16 @@ function App() {
       setSearchTerm(displayTerm ?? term);
       setHasSearched(true);
       setIsLoading(true);
+      // Record this query as executed before the async call so that
+      // any re-render triggered by state updates above cannot race.
+      lastExecutedSearchRef.current = normalizedTerm;
 
       try {
         const results = await spotifyService.search(term);
         setTracks(results);
       } catch (error) {
+        // Reset so the same query can be retried after an error.
+        lastExecutedSearchRef.current = "";
         console.error(error);
         toast.error("Something went wrong while searching. Please try again.");
       } finally {
@@ -706,6 +724,7 @@ function App() {
       setTracks([]);
       setHasSearched(false);
       setIsLoading(false);
+      lastExecutedSearchRef.current = "";
     }
   }
 
