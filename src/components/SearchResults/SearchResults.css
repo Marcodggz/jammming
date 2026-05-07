@@ -63,11 +63,13 @@
   justify-content: center;
   width: 48px;
   height: 48px;
-  font-size: 24px;
-  margin-bottom: 16px;
-  background: rgba(29, 185, 84, 0.08);
-  border: 1px solid rgba(29, 185, 84, 0.12);
+  font-size: 18px;
+  margin-bottom: 14px;
+  background: rgba(29, 185, 84, 0.04);
+  border: 1px solid rgba(29, 185, 84, 0.1);
   border-radius: 50%;
+  color: rgba(29, 185, 84, 0.45);
+  transition: all 0.2s ease;
 }
 
 /* Welcome state */
@@ -78,16 +80,18 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 48px 32px;
+  padding: 40px 28px;
   margin: auto 0;
   flex: 1;
   max-width: 100%;
   width: auto;
   align-self: center;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(20, 30, 20, 0.45);
+  border: 1px solid rgba(29, 185, 84, 0.15);
   border-radius: 16px;
   box-sizing: border-box;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 .welcome h3 {
@@ -106,39 +110,6 @@
   line-height: 1.5;
 }
 
-/* Loading state */
-
-.loadingState {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 60px 0;
-  flex: 1;
-}
-
-.loadingSpinner {
-  width: 32px;
-  height: 32px;
-  border: 3px solid rgba(255, 255, 255, 0.08);
-  border-top-color: rgba(29, 185, 84, 0.9);
-  border-radius: 50%;
-  animation: spin 0.7s linear infinite;
-}
-
-.loadingMessage {
-  text-align: center;
-  margin: 16px 0 0;
-  color: #a6b1a7;
-  font-size: 15px;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 /* No results state */
 
 .searchResults .noResults {
@@ -147,16 +118,18 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 48px 32px;
+  padding: 40px 28px;
   margin: auto 0;
   flex: 1;
   max-width: 100%;
   width: auto;
   align-self: center;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(20, 30, 20, 0.45);
+  border: 1px solid rgba(29, 185, 84, 0.15);
   border-radius: 16px;
   box-sizing: border-box;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 .noResults h4 {
@@ -181,16 +154,18 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 48px 32px;
+  padding: 40px 28px;
   margin: auto 0;
   flex: 1;
   max-width: 100%;
   width: auto;
   align-self: center;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(20, 30, 20, 0.45);
+  border: 1px solid rgba(29, 185, 84, 0.15);
   border-radius: 16px;
   box-sizing: border-box;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 .allAddedState h4 {
@@ -205,6 +180,44 @@
   font-size: 14px;
   line-height: 1.5;
   margin: 0;
+}
+
+/* Loading state */
+
+.loadingState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px 28px;
+  margin: auto 0;
+  flex: 1;
+  max-width: 100%;
+  width: auto;
+  align-self: center;
+}
+
+.loadingMessage {
+  color: #8a958b;
+  font-size: 16px;
+  font-weight: 500;
+  margin-top: 16px;
+}
+
+.loadingSpinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid rgba(29, 185, 84, 0.2);
+  border-top-color: #1db954;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Mobile styles */
@@ -255,7 +268,7 @@
   .emptyStateIcon {
     width: 40px;
     height: 40px;
-    font-size: 20px;
+    font-size: 16px;
     margin-bottom: 12px;
   }
 

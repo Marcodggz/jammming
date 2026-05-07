@@ -457,11 +457,13 @@ html[data-keyboard] .saveButton:focus {
   justify-content: center;
   width: 48px;
   height: 48px;
-  font-size: 24px;
-  margin-bottom: 16px;
-  background: rgba(29, 185, 84, 0.08);
-  border: 1px solid rgba(29, 185, 84, 0.12);
+  font-size: 18px;
+  margin-bottom: 14px;
+  background: rgba(29, 185, 84, 0.04);
+  border: 1px solid rgba(29, 185, 84, 0.1);
   border-radius: 50%;
+  color: rgba(29, 185, 84, 0.45);
+  transition: all 0.2s ease;
 }
 
 /* Empty state */
@@ -478,10 +480,12 @@ html[data-keyboard] .saveButton:focus {
   max-width: 100%;
   width: auto;
   align-self: center;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(20, 30, 20, 0.45);
+  border: 1px solid rgba(29, 185, 84, 0.15);
   border-radius: 16px;
   box-sizing: border-box;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 .emptyPlaylist h4 {
@@ -567,7 +571,7 @@ html[data-keyboard] .saveButton:focus {
   .emptyStateIcon {
     width: 40px;
     height: 40px;
-    font-size: 20px;
+    font-size: 16px;
     margin-bottom: 12px;
   }
 

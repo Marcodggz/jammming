@@ -1,7 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare } from "@fortawesome/free-regular-svg-icons";
-import { faEllipsis, faTrash } from "@fortawesome/free-solid-svg-icons";
+import {
+  faEllipsis,
+  faTrash,
+  faMusic,
+} from "@fortawesome/free-solid-svg-icons";
 import TrackList from "../TrackList/TrackList";
 import "./Playlist.css";
 
@@ -222,9 +226,9 @@ function Playlist({
             role="status"
             aria-labelledby="empty-playlist-heading"
           >
-            <span className="emptyStateIcon" aria-hidden="true">
-              🎵
-            </span>
+            <div className="emptyStateIcon" aria-hidden="true">
+              <FontAwesomeIcon icon={faMusic} />
+            </div>
             <h4 id="empty-playlist-heading">No tracks yet</h4>
             <p>Search for songs and add them with the + button</p>
           </div>

@@ -1,4 +1,6 @@
 import { useEffect, useRef } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMagnifyingGlass, faCheck } from "@fortawesome/free-solid-svg-icons";
 import TrackList from "../TrackList/TrackList";
 import "./SearchResults.css";
 
@@ -75,9 +77,9 @@ function SearchResults({
             role="region"
             aria-labelledby="welcome-heading"
           >
-            <span className="emptyStateIcon" aria-hidden="true">
-              🔍
-            </span>
+            <div className="emptyStateIcon" aria-hidden="true">
+              <FontAwesomeIcon icon={faMagnifyingGlass} />
+            </div>
             <h3 id="welcome-heading">Search for tracks</h3>
             <p>
               Find songs, artists, or albums to build your perfect playlist.
@@ -108,9 +110,9 @@ function SearchResults({
             role="status"
             aria-labelledby="all-added-heading"
           >
-            <span className="emptyStateIcon" aria-hidden="true">
-              ✅
-            </span>
+            <div className="emptyStateIcon" aria-hidden="true">
+              <FontAwesomeIcon icon={faCheck} />
+            </div>
             <h4 id="all-added-heading">All added</h4>
             <p>These tracks are already in your playlist.</p>
           </div>
@@ -120,9 +122,9 @@ function SearchResults({
             role="status"
             aria-labelledby="no-results-heading"
           >
-            <span className="emptyStateIcon" aria-hidden="true">
-              😕
-            </span>
+            <div className="emptyStateIcon" aria-hidden="true">
+              <FontAwesomeIcon icon={faMagnifyingGlass} />
+            </div>
             <h4 id="no-results-heading">No results</h4>
             <p>Try different keywords or check your spelling.</p>
           </div>
