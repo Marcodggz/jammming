@@ -520,6 +520,30 @@ html[data-keyboard] .saveButton:focus {
   transform: scale(0.97);
 }
 
+.saveButton:disabled {
+  background: linear-gradient(
+    135deg,
+    rgba(20, 50, 35, 0.35) 0%,
+    rgba(8, 16, 12, 0.5) 100%
+  );
+  border-color: rgba(100, 255, 150, 0.08);
+  color: rgba(255, 255, 255, 0.5);
+  cursor: not-allowed;
+  box-shadow: 0 0 4px rgba(100, 255, 150, 0.05);
+}
+
+.saveButton:disabled:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(20, 50, 35, 0.35) 0%,
+    rgba(8, 16, 12, 0.5) 100%
+  );
+  border-color: rgba(100, 255, 150, 0.08);
+  color: rgba(255, 255, 255, 0.5);
+  transform: none;
+  box-shadow: 0 0 4px rgba(100, 255, 150, 0.05);
+}
+
 .saveButton span {
   color: inherit;
   font-size: 13px;

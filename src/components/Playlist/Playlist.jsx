@@ -23,6 +23,7 @@ function Playlist({
   isEditingExisting = false,
   isLoadingExistingPlaylist = false,
   hasChanges = false,
+  isSavingPlaylist = false,
   onStartNew,
   onShowBrowser,
   onDeleteCurrentPlaylist,
@@ -303,6 +304,8 @@ function Playlist({
                 type="button"
                 className="saveButton"
                 onClick={savePlaylist}
+                disabled={isSavingPlaylist}
+                aria-busy={isSavingPlaylist}
                 aria-label={`${saveButtonText} — "${playlistName}" with ${playlistTracks.length} track${playlistTracks.length === 1 ? "" : "s"}`}
               >
                 <span>{saveButtonText}</span>
@@ -317,6 +320,8 @@ function Playlist({
               type="button"
               className="saveButton"
               onClick={savePlaylist}
+              disabled={isSavingPlaylist}
+              aria-busy={isSavingPlaylist}
               aria-label={`${saveButtonText} — "${playlistName}" with ${playlistTracks.length} track${playlistTracks.length === 1 ? "" : "s"}`}
             >
               <span>{saveButtonText}</span>

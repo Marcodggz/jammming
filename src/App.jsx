@@ -142,9 +142,11 @@ function App() {
   // pendingActionRef: the navigation/action the user attempted before being shown the banner.
   // showUnsavedBanner: controls banner visibility.
   // isSaving: prevents duplicate save calls triggered from the banner.
+  // isSavingPlaylist: tracks whether a save/update is in progress (for save button feedback).
   const pendingActionRef = useRef(null);
   const [showUnsavedBanner, setShowUnsavedBanner] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [isSavingPlaylist, setIsSavingPlaylist] = useState(false);
 
   // Tracks the last successfully executed search query (normalized: trimmed, lower-cased).
   // Used to prevent redundant re-searches when the user clicks the same artist/album link
@@ -580,11 +582,21 @@ function App() {
   //   when the call originates from the unsaved-changes banner. The banner
   //   handler passes the originally-intended action so the user lands where
   //   they tried to go after saving.
+  // showFeedback: when true, updates isSavingPlaylist for button text feedback.
   // Returns true on success, false on failure (so the banner handler can decide
   //   whether to close the banner or keep it open for error recovery).
-  async function savePlaylist(afterSave = null) {
+  async function savePlaylist(afterSave = null, showFeedback = false) {
+    if (showFeedback) {
+      setIsSavingPlaylist(true);
+    }
+
     const trackURIs = playlistTracks.map((track) => track.uri);
-    if (trackURIs.length === 0) return false;
+    if (trackURIs.length === 0) {
+      if (showFeedback) {
+        setIsSavingPlaylist(false);
+      }
+      return false;
+    }
 
     // newPlaylistId is set only when creating a new real-Spotify playlist,
     // so we can add an optimistic entry while Spotify's index catches up.
@@ -624,6 +636,9 @@ function App() {
     } catch (error) {
       console.error("savePlaylist failed:", error);
       toast.error("Failed to save playlist. Please try again.");
+      if (showFeedback) {
+        setIsSavingPlaylist(false);
+      }
       return false; // do not reset the editor if the save itself failed
     }
 
@@ -715,6 +730,9 @@ function App() {
       // Keep the optimistically-patched list rather than clearing it.
     }
 
+    if (showFeedback) {
+      setIsSavingPlaylist(false);
+    }
     return true;
   }
 
@@ -738,6 +756,15 @@ function App() {
     // Clear optimistic playlist data when switching modes to avoid applying
     // stale optimistic data from a different session/mode.
     optimisticPlaylistsRef.current = {};
+  }
+
+  /**
+   * Wrapper for direct save from the Playlist component (main save button).
+   * Enables loading feedback and prevents duplicate clicks.
+   */
+  async function handleSavePlaylistClick() {
+    if (isSavingPlaylist) return; // prevent duplicate clicks
+    await savePlaylist(null, true); // true = show feedback
   }
 
   // Search for tracks based on the search term
@@ -1006,17 +1033,22 @@ function App() {
                   isLoadingExistingPlaylist={isLoadingExistingPlaylist}
                   removeTrack={removeTrack}
                   playlistNameChange={playlistNameChange}
-                  savePlaylist={savePlaylist}
+                  savePlaylist={handleSavePlaylistClick}
                   formattedDuration={formattedDuration}
                   saveButtonText={
-                    isEditingExisting
-                      ? "Update playlist"
-                      : isDemoMode
-                        ? "Save playlist"
-                        : "Save to Spotify"
+                    isSavingPlaylist
+                      ? isEditingExisting
+                        ? "Updating..."
+                        : "Saving..."
+                      : isEditingExisting
+                        ? "Update playlist"
+                        : isDemoMode
+                          ? "Save playlist"
+                          : "Save to Spotify"
                   }
                   isEditingExisting={isEditingExisting}
                   hasChanges={hasChanges}
+                  isSavingPlaylist={isSavingPlaylist}
                   onStartNew={() =>
                     guardUnsavedChanges(() => {
                       startNewPlaylist();
