@@ -5,6 +5,7 @@ import {
   faEllipsis,
   faTrash,
   faMusic,
+  faArrowLeft,
 } from "@fortawesome/free-solid-svg-icons";
 import TrackList from "../TrackList/TrackList";
 import "./Playlist.css";
@@ -25,6 +26,7 @@ function Playlist({
   onStartNew,
   onShowBrowser,
   onDeleteCurrentPlaylist,
+  onBack,
   // Unsaved-changes banner
   unsavedBannerVisible = false,
   onBannerDiscard,
@@ -48,6 +50,14 @@ function Playlist({
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [menuOpen]);
+
+  // Clean up UI state (menu, title editing) on unmount to prevent stale UI.
+  useEffect(() => {
+    return () => {
+      setMenuOpen(false);
+      setIsEditingTitle(false);
+    };
+  }, []);
 
   const handleEditTitle = () => {
     setIsEditingTitle(true);
@@ -83,137 +93,170 @@ function Playlist({
       aria-labelledby="playlist-heading"
     >
       <header className="playlistHeader">
-        {/* Row 1: title + edit (left) | menu (right) */}
-        <div className="playlistHeaderRow1">
-          <div className="playlistTitleWrapper">
-            {isEditingTitle ? (
-              <div>
-                <label htmlFor="playlist-title-input" className="srOnly">
-                  Edit playlist title
-                </label>
-                <input
-                  id="playlist-title-input"
-                  ref={playlistInputRef}
-                  className="playlistTitle"
-                  value={playlistName}
-                  onChange={(event) => {
-                    const value = event.target.value.slice(0, 25);
-                    playlistNameChange({ target: { value } });
-                  }}
-                  onBlur={() => setIsEditingTitle(false)}
-                  onKeyDown={handleTitleKeyDown}
-                  onFocus={(e) => {
-                    const length = e.target.value.length;
-                    e.target.setSelectionRange(0, length);
-                  }}
-                  aria-label="Playlist title"
-                  aria-describedby="playlist-title-help"
-                  maxLength="25"
-                  autoComplete="off"
-                  type="text"
-                  inputMode="text"
-                  autoFocus
-                />
-                <div id="playlist-title-help" className="srOnly">
-                  Press Enter to save, Escape to cancel. Maximum 25 characters.
-                </div>
-              </div>
-            ) : (
-              <h2 id="playlist-heading" className="playlistTitleText">
-                {playlistName}
-              </h2>
-            )}
+        {/* Three-column header layout:
+            [nav] [content] [actions]
+            - nav: back button
+            - content: title + metadata (aligned together)
+            - actions: edit + menu buttons
+        */}
 
+        {/* Navigation column — back button */}
+        <div className="playlistHeaderNav">
+          {isEditingExisting && onBack && (
             <button
               type="button"
-              className="editButton"
-              onClick={handleEditTitle}
-              aria-label={`Edit playlist title "${playlistName}"`}
+              className="playlistBackButton"
+              onClick={onBack}
+              aria-label="Back to playlists"
+              title="Back to My playlists"
             >
-              <FontAwesomeIcon
-                icon={faPenToSquare}
-                className="editIcon"
-                aria-hidden="true"
-              />
+              <FontAwesomeIcon icon={faArrowLeft} aria-hidden="true" />
             </button>
+          )}
+        </div>
+
+        {/* Content column — title + metadata */}
+        <div className="playlistHeaderContent">
+          {/* Title section */}
+          <div className="playlistHeaderTitleRow">
+            <div className="playlistTitleWrapper">
+              {isEditingTitle ? (
+                <div>
+                  <label htmlFor="playlist-title-input" className="srOnly">
+                    Edit playlist title
+                  </label>
+                  <input
+                    id="playlist-title-input"
+                    ref={playlistInputRef}
+                    className="playlistTitle"
+                    value={playlistName}
+                    onChange={(event) => {
+                      const value = event.target.value.slice(0, 25);
+                      playlistNameChange({ target: { value } });
+                    }}
+                    onBlur={() => setIsEditingTitle(false)}
+                    onKeyDown={handleTitleKeyDown}
+                    onFocus={(e) => {
+                      const length = e.target.value.length;
+                      e.target.setSelectionRange(0, length);
+                    }}
+                    aria-label="Playlist title"
+                    aria-describedby="playlist-title-help"
+                    maxLength="25"
+                    autoComplete="off"
+                    type="text"
+                    inputMode="text"
+                    autoFocus
+                  />
+                  <div id="playlist-title-help" className="srOnly">
+                    Press Enter to save, Escape to cancel. Maximum 25
+                    characters.
+                  </div>
+                </div>
+              ) : (
+                <h2 id="playlist-heading" className="playlistTitleText">
+                  {playlistName}
+                </h2>
+              )}
+
+              {!isLoadingExistingPlaylist && (
+                <button
+                  type="button"
+                  className="editButton"
+                  onClick={handleEditTitle}
+                  aria-label={`Edit playlist title "${playlistName}"`}
+                >
+                  <FontAwesomeIcon
+                    icon={faPenToSquare}
+                    className="editIcon"
+                    aria-hidden="true"
+                  />
+                </button>
+              )}
+            </div>
           </div>
 
-          <div className="menuContainer" ref={menuRef}>
-            <button
-              type="button"
-              className="menuButton"
-              onClick={() => setMenuOpen((open) => !open)}
-              aria-label="Navigation menu"
-              aria-expanded={menuOpen}
-              aria-haspopup="menu"
-              title="Menu"
-            >
-              <FontAwesomeIcon icon={faEllipsis} aria-hidden="true" />
-            </button>
-            {menuOpen && (
-              <div className="menuDropdown" role="menu">
-                {onShowBrowser && (
-                  <button
-                    type="button"
-                    role="menuitem"
-                    className="menuItem"
-                    onClick={() => {
-                      onShowBrowser();
-                      setMenuOpen(false);
-                    }}
-                  >
-                    My playlists
-                  </button>
-                )}
-                {isEditingExisting && onStartNew && (
-                  <button
-                    type="button"
-                    role="menuitem"
-                    className="menuItem"
-                    onClick={() => {
-                      onStartNew();
-                      setMenuOpen(false);
-                    }}
-                  >
-                    New playlist
-                  </button>
-                )}
-                {isEditingExisting && onDeleteCurrentPlaylist && (
-                  <>
-                    <div
-                      className="menuDivider"
-                      role="separator"
-                      aria-hidden="true"
-                    />
+          {/* Metadata section — only when tracks exist */}
+          {playlistTracks.length > 0 && (
+            <div className="playlistHeaderMeta">
+              <span
+                className="playlistDuration"
+                aria-label={`${playlistTracks.length} song${playlistTracks.length !== 1 ? "s" : ""}, total duration: ${formattedDuration}`}
+              >
+                {playlistTracks.length} song
+                {playlistTracks.length !== 1 ? "s" : ""}, {formattedDuration}
+              </span>
+            </div>
+          )}
+        </div>
+
+        {/* Actions column — edit + menu buttons */}
+        {!isLoadingExistingPlaylist && (
+          <div className="playlistHeaderActions">
+            <div className="menuContainer" ref={menuRef}>
+              <button
+                type="button"
+                className="menuButton"
+                onClick={() => setMenuOpen((open) => !open)}
+                aria-label="Navigation menu"
+                aria-expanded={menuOpen}
+                aria-haspopup="menu"
+                title="Menu"
+              >
+                <FontAwesomeIcon icon={faEllipsis} aria-hidden="true" />
+              </button>
+              {menuOpen && (
+                <div className="menuDropdown" role="menu">
+                  {onShowBrowser && !isEditingExisting && (
                     <button
                       type="button"
                       role="menuitem"
-                      className="menuItem menuItemDanger"
+                      className="menuItem"
                       onClick={() => {
-                        onDeleteCurrentPlaylist();
+                        onShowBrowser();
                         setMenuOpen(false);
                       }}
                     >
-                      <FontAwesomeIcon icon={faTrash} aria-hidden="true" />
-                      Delete playlist
+                      My playlists
                     </button>
-                  </>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Row 2: metadata — only when tracks exist */}
-        {playlistTracks.length > 0 && (
-          <div className="playlistHeaderMeta">
-            <span
-              className="playlistDuration"
-              aria-label={`${playlistTracks.length} song${playlistTracks.length !== 1 ? "s" : ""}, total duration: ${formattedDuration}`}
-            >
-              {playlistTracks.length} song
-              {playlistTracks.length !== 1 ? "s" : ""}, {formattedDuration}
-            </span>
+                  )}
+                  {isEditingExisting && onStartNew && (
+                    <button
+                      type="button"
+                      role="menuitem"
+                      className="menuItem"
+                      onClick={() => {
+                        onStartNew();
+                        setMenuOpen(false);
+                      }}
+                    >
+                      New playlist
+                    </button>
+                  )}
+                  {isEditingExisting && onDeleteCurrentPlaylist && (
+                    <>
+                      <div
+                        className="menuDivider"
+                        role="separator"
+                        aria-hidden="true"
+                      />
+                      <button
+                        type="button"
+                        role="menuitem"
+                        className="menuItem menuItemDanger"
+                        onClick={() => {
+                          onDeleteCurrentPlaylist();
+                          setMenuOpen(false);
+                        }}
+                      >
+                        <FontAwesomeIcon icon={faTrash} aria-hidden="true" />
+                        Delete playlist
+                      </button>
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         )}
       </header>

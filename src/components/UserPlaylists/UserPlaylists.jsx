@@ -25,7 +25,6 @@ import "./UserPlaylists.css";
  *   onDeletePlaylist   – (id: string) => void
  *   onStartNew         – () => void            (parent also switches view)
  *   onBack             – () => void            (switch back to editor)
- *   isEditingExisting  – boolean
  */
 function UserPlaylists({
   playlists,
@@ -36,7 +35,6 @@ function UserPlaylists({
   onDeletePlaylist,
   onStartNew,
   onBack,
-  isEditingExisting,
 }) {
   // Escape key returns to the editor view.
   useEffect(() => {
@@ -65,17 +63,15 @@ function UserPlaylists({
           <h2 className="playlistBrowserTitle">My playlists</h2>
         </div>
 
-        {/* New playlist — only shown when an existing one is loaded */}
-        {isEditingExisting && (
-          <button
-            type="button"
-            className="startNewButton"
-            onClick={onStartNew}
-            aria-label="Discard current edits and start a new playlist"
-          >
-            New playlist
-          </button>
-        )}
+        {/* New playlist — always visible for quick access */}
+        <button
+          type="button"
+          className="startNewButton"
+          onClick={onStartNew}
+          aria-label="Create a new playlist"
+        >
+          New playlist
+        </button>
       </div>
 
       {/* ── Scrollable playlist list ─────────────────────────────── */}

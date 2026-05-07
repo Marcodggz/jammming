@@ -12,24 +12,101 @@
   position: relative;
 }
 
-/* Playlist header — two rows: [title + menu] / [metadata] */
+/* Playlist header — three-column grid layout */
 
 .playlistHeader {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: start;
+  gap: 8px;
   padding: 0 14px 14px 14px;
   margin-bottom: 10px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.07);
 }
 
-/* Row 1: title + edit icon (left) | ghost menu (right) */
+/* Navigation column — back button
+   Aligns with the baseline of the playlist title text.
+   The back button is 28px, and the title text needs 3px top padding
+   to account for line-height: 1 on the h2 and the visual baseline. */
 
-.playlistHeaderRow1 {
+.playlistHeaderNav {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  flex-shrink: 0;
+  padding-top: 3px;
+}
+
+/* Content column — title + metadata (vertically stacked, no gap) */
+
+.playlistHeaderContent {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+/* Title section — contains title + edit button */
+
+.playlistHeaderTitleRow {
   display: flex;
   align-items: center;
   gap: 8px;
   min-width: 0;
+}
+
+/* Metadata section — aligned with title */
+
+.playlistHeaderMeta {
+  display: flex;
+  align-items: center;
+}
+
+/* Actions column — edit + menu buttons */
+
+.playlistHeaderActions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+/* Back button — navigates to My playlists */
+
+.playlistBackButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  cursor: pointer;
+  color: #8a948b;
+  font-size: 12px;
+  padding: 0;
+  flex-shrink: 0;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.playlistBackButton:hover {
+  background: rgba(255, 255, 255, 0.09);
+  color: #f3f5f3;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.playlistBackButton:focus {
+  outline: none;
+}
+
+.playlistBackButton:focus-visible,
+html[data-keyboard] .playlistBackButton:focus {
+  outline: 2px solid rgba(29, 185, 84, 0.5);
+  outline-offset: 2px;
 }
 
 /* Title + edit icon — fills available space */
@@ -40,6 +117,7 @@
   flex: 1;
   min-width: 0;
   gap: 8px;
+  line-height: 1;
 }
 
 /* Row 2: song count + duration */
@@ -275,7 +353,7 @@ html[data-keyboard] .playlistTitle:focus {
   letter-spacing: -0.3px;
   line-height: 1;
   margin: 0;
-  padding: 0;
+  padding: 4px 0;
   border: none;
   background: transparent;
 }

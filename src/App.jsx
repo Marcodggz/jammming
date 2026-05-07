@@ -335,14 +335,26 @@ function App() {
   }
 
   /**
+   * Cleans up editor state when navigating away.
+   * Ensures no stale UI or pending operations remain.
+   */
+  function cleanupEditorState() {
+    // Clear any pending navigation action to prevent stale callbacks.
+    pendingActionRef.current = null;
+    // Close any unsaved banner.
+    setShowUnsavedBanner(false);
+  }
+
+  /**
    * Guards any navigation action that would discard unsaved playlist changes.
    *
-   * - If there are no unsaved changes: runs nextAction immediately.
+   * - If there are no unsaved changes: cleans up editor state and runs nextAction immediately.
    * - If there are unsaved changes: stores nextAction as pending and shows the
    *   unsaved-changes banner. The user must then choose Save or Discard.
    */
   function guardUnsavedChanges(nextAction) {
     if (!hasChanges) {
+      cleanupEditorState();
       nextAction();
       return;
     }
@@ -369,6 +381,7 @@ function App() {
       setPlaylistTracks([]);
     }
 
+    // Execute the pending action (navigate, etc.)
     if (action) action();
   }
 
@@ -483,6 +496,11 @@ function App() {
    * Loads an existing playlist into the editor for editing.
    * Fetches tracks from the appropriate source (localStorage for demo,
    * Spotify API for real mode) then populates the editor state.
+   *
+   * Key invariant: snapshots are cleared immediately to ensure hasChanges
+   * never compares against the PREVIOUS playlist's snapshots during loading.
+   * Otherwise, the cleared editor state would appear "dirty" against the
+   * old playlist's data, causing the unsaved-changes banner to appear.
    */
   async function handleSelectPlaylist(playlistId) {
     // Clicking the already-selected playlist has no effect
@@ -495,7 +513,15 @@ function App() {
     if (!meta || !meta.isOwned) return;
 
     // Begin loading state — prevents the "My Playlist / No tracks yet" flicker.
+    // Clear all previous playlist state immediately to avoid:
+    // (1) stale header/metadata in the UI
+    // (2) hasChanges appearing dirty against previous playlist's snapshots
     setIsLoadingExistingPlaylist(true);
+    setPlaylistName(""); // Clear stale name while loading
+    setPlaylistTracks([]); // Clear stale tracks while loading
+    setInitialPlaylistName(null); // Clear old snapshot name
+    setInitialPlaylistTracks(null); // Clear old snapshot tracks
+    setSelectedPlaylistId(playlistId); // Mark as selected while loading
 
     try {
       let loadedTracks;
@@ -524,9 +550,9 @@ function App() {
       // Always clear the pending track once a playlist has been chosen.
       setPendingTrackToAdd(null);
 
+      // Now populate with the loaded data
       setPlaylistName(meta.name);
       setPlaylistTracks(editorTracks);
-      setSelectedPlaylistId(playlistId);
       // Capture a snapshot of the just-loaded state (full track objects) so we
       // can both detect dirty changes and revert without touching the API.
       // Use baselineTracks (not editorTracks) so pending additions are
@@ -950,7 +976,7 @@ function App() {
                   playlists={playlists}
                   isLoading={playlistsLoading}
                   error={playlistsError}
-                  selectedPlaylistId={selectedPlaylistId}
+                  selectedPlaylistId={null}
                   onSelectPlaylist={(id) => {
                     guardUnsavedChanges(() => {
                       handleSelectPlaylist(id);
@@ -964,10 +990,14 @@ function App() {
                       setPlaylistPanelView("editor");
                     });
                   }}
-                  onBack={() =>
-                    setPlaylistPanelView(selectedPlaylistId ? "editor" : "home")
-                  }
-                  isEditingExisting={isEditingExisting}
+                  onBack={() => {
+                    // My playlists back arrow always returns to home view.
+                    // Do not reopen the previously selected playlist.
+                    // Clear all stale state to prevent navigation loops or frozen UI.
+                    cleanupEditorState();
+                    setSelectedPlaylistId(null);
+                    setPlaylistPanelView("home");
+                  }}
                 />
               ) : (
                 <Playlist
@@ -994,6 +1024,9 @@ function App() {
                     })
                   }
                   onShowBrowser={() =>
+                    guardUnsavedChanges(() => setPlaylistPanelView("browser"))
+                  }
+                  onBack={() =>
                     guardUnsavedChanges(() => setPlaylistPanelView("browser"))
                   }
                   onDeleteCurrentPlaylist={
