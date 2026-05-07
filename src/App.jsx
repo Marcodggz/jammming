@@ -123,6 +123,14 @@ function App() {
   const [initialPlaylistName, setInitialPlaylistName] = useState(null);
   const [initialPlaylistTracks, setInitialPlaylistTracks] = useState(null);
 
+  // Track optimistic playlist summaries after create/update to prevent stale
+  // Spotify data from overwriting correct local track counts.
+  // Maps playlistId -> { name, trackCount, artworkImages? }
+  // Entries are added on successful create/update and consulted when refreshing
+  // the playlist list. This ensures multiple creates/updates in one session all
+  // keep their correct counts even if Spotify returns eventual-consistency delays.
+  const optimisticPlaylistsRef = useRef({});
+
   // Unsaved-changes banner state.
   // pendingActionRef: the navigation/action the user attempted before being shown the banner.
   // showUnsavedBanner: controls banner visibility.
@@ -444,6 +452,9 @@ function App() {
     // Remove from list state immediately — no need to refresh from Spotify.
     setPlaylists((prev) => prev.filter((p) => p.id !== playlistId));
 
+    // Clean up any optimistic data for this playlist to avoid memory leaks.
+    delete optimisticPlaylistsRef.current[playlistId];
+
     // If the deleted playlist was open in the editor, reset to a blank state
     // and return to the browser so the user can see the updated list.
     if (selectedPlaylistId === playlistId) {
@@ -575,26 +586,29 @@ function App() {
       return false; // do not reset the editor if the save itself failed
     }
 
-    // --- Phase 2: reset editor and refresh the list (best-effort) ---
-    // A refresh failure is non-fatal — the playlist was already saved.
-    //
-    // Optimistic UI update strategy:
-    //  • Edit  → patch the existing entry immediately so the user sees the
-    //            correct name & track count before the Spotify refresh lands.
-    //            For demo mode this also updates the artwork collage so the
-    //            browser list stays in sync with the just-saved tracks.
-    //  • Create → insert a placeholder with the correct count; Spotify's index
-    //            is eventually-consistent so live-refresh would show 0 tracks
-    //            for a newly created playlist.
+    // --- Phase 2: record optimistic state and reset editor ---
+    // Store the correct summary in optimisticPlaylistsRef so the refresh
+    // can preserve it. This handles eventual consistency delays from Spotify.
     const trackCount = trackURIs.length;
+    const affectedId = editedPlaylistId || newPlaylistId;
 
+    if (affectedId) {
+      optimisticPlaylistsRef.current[affectedId] = {
+        name: playlistName,
+        trackCount,
+        ...(isDemoMode && { artworkImages: getArtworkImages(playlistTracks) }),
+      };
+    }
+
+    // Apply optimistic UI update immediately so the user sees the correct
+    // name & track count before the Spotify refresh lands.
+    // For demo mode this also updates the artwork collage so the browser list
+    // stays in sync with the just-saved tracks.
     if (editedPlaylistId) {
       setPlaylists((prev) =>
         prev.map((p) => {
           if (p.id !== editedPlaylistId) return p;
           const patch = { ...p, name: playlistName, trackCount };
-          // Demo playlists store a pre-computed artwork collage; update it now
-          // so the browser list reflects any track additions or removals.
           if (isDemoMode) {
             patch.artworkImages = getArtworkImages(playlistTracks);
           }
@@ -602,9 +616,9 @@ function App() {
         }),
       );
     } else if (!isDemoMode && newPlaylistId) {
-      // Insert a provisional entry with a correct track count.
-      // The subsequent refresh will replace it with the real Spotify data
-      // (including the cover image, exact snapshot_id, etc.).
+      // Insert a provisional entry with the correct track count for a new playlist.
+      // The subsequent refresh will replace it with real Spotify data, but this
+      // optimistic entry ensures the count stays correct if Spotify is delayed.
       setPlaylists((prev) => [
         ...prev,
         {
@@ -641,23 +655,16 @@ function App() {
       setPlaylistPanelView("home");
     }
 
+    // --- Phase 3: refresh from source and merge with optimistic data ---
     try {
       const refreshed = await loadPlaylistsFromSource(isDemoMode);
-      // Spotify's /me/playlists response is eventually consistent: the track
-      // count may still reflect the pre-save value immediately after a create
-      // or replace operation. Preserve our locally-computed count for the
-      // affected playlist whenever Spotify returns a stale value.
       setPlaylists(
         refreshed.map((p) => {
-          if (
-            editedPlaylistId &&
-            p.id === editedPlaylistId &&
-            p.trackCount !== trackCount
-          ) {
-            return { ...p, name: playlistName, trackCount };
-          }
-          if (newPlaylistId && p.id === newPlaylistId && p.trackCount === 0) {
-            return { ...p, trackCount };
+          // If this playlist was just created or updated, consult the
+          // optimistic data to override any stale values from Spotify.
+          const optimistic = optimisticPlaylistsRef.current[p.id];
+          if (optimistic) {
+            return { ...p, ...optimistic };
           }
           return p;
         }),
@@ -687,6 +694,9 @@ function App() {
     setPlaylists([]);
     setSelectedPlaylistId(null);
     lastExecutedSearchRef.current = "";
+    // Clear optimistic playlist data when switching modes to avoid applying
+    // stale optimistic data from a different session/mode.
+    optimisticPlaylistsRef.current = {};
   }
 
   // Search for tracks based on the search term
