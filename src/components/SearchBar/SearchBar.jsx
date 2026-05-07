@@ -48,7 +48,7 @@ function SearchBar({
       } catch {
         setSuggestions([]);
       }
-    }, 250);
+    }, 150);
     return () => clearTimeout(timer);
   }, [searchTerm, getSuggestions]);
 
