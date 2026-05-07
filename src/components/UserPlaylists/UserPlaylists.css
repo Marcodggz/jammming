@@ -221,7 +221,6 @@ html[data-keyboard] .userPlaylistItemSelectButton:focus {
 /* Delete (trash) button — hidden by default, revealed on item hover */
 
 .userPlaylistDeleteButton {
-  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -263,9 +262,32 @@ html[data-keyboard] .userPlaylistDeleteButton:focus {
 
 /* ── Read-only items ─────────────────────────────────────────── */
 
+/* Locked playlists are visible for reference but not interactive.
+   Spotify returns 403 when loading tracks for non-owned / non-collaborative
+   playlists, so opening them is not supported. */
+
 .userPlaylistItemReadOnly {
   color: #4e564f;
   cursor: default;
+  /* No hover state — the row is intentionally not interactive */
+}
+
+/* ── Right-side metadata column (shared by owned + read-only) ── */
+/* Three fixed-width columns: [track count | lock slot | action]  */
+/* All three cells exist in every row — non-owned rows leave the  */
+/* third cell empty, owned rows place the delete button there.    */
+/* This single block sits flush against the row's right padding   */
+/* with no outer gap, so counts and icons pixel-align across all  */
+/* rows regardless of digit count or lock/delete presence.        */
+
+.userPlaylistItemRight {
+  display: grid;
+  /* col 1: track count — 70 px covers "409 tracks" at 11 px tabular-nums
+     col 2: lock icon slot — 16 px gives a slightly larger icon room to breathe
+     col 3: delete / empty action slot — mirrors the 22 px delete button */
+  grid-template-columns: 70px 16px 22px;
+  align-items: center;
+  flex-shrink: 0;
 }
 
 /* ── Thumbnail ───────────────────────────────────────────────── */
@@ -295,13 +317,17 @@ html[data-keyboard] .userPlaylistDeleteButton:focus {
   min-width: 0;
 }
 
-/* ── Track count ─────────────────────────────────────────────── */
+/* ── Track count (grid column 1) ─────────────────────────────── */
 
 .userPlaylistItemMeta {
   font-size: 11px;
   color: #4e564f;
-  flex-shrink: 0;
   white-space: nowrap;
+  overflow: hidden;
+  /* Tabular figures keep digit widths uniform (1 vs 10 vs 100) */
+  font-variant-numeric: tabular-nums;
+  /* Right-align within the fixed-width count column */
+  text-align: right;
 }
 
 .userPlaylistItemOwned:hover .userPlaylistItemMeta,
@@ -309,12 +335,22 @@ html[data-keyboard] .userPlaylistDeleteButton:focus {
   color: #6b756c;
 }
 
-/* ── Read-only lock icon ─────────────────────────────────────── */
+/* ── Lock icon slot (grid column 2) ──────────────────────────── */
+/* Always rendered in every row; only non-owned rows show the    */
+/* icon — owned rows render an empty span so the 16 px column   */
+/* stays reserved and counts stay horizontally anchored.         */
 
 .userPlaylistReadOnlyBadge {
-  font-size: 10px;
-  color: #3a403b;
-  flex-shrink: 0;
+  /* Same font-size as the delete icon so the lock reads clearly,
+     but the muted color and reduced opacity keep it as a status
+     indicator, not a primary action. */
+  font-size: 11px;
+  color: #4e5a56;
+  opacity: 0.75;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Width comes from the parent grid column — no override needed */
 }
 
 /* ── Mobile overrides ────────────────────────────────────────── */

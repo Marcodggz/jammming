@@ -132,7 +132,6 @@ function Playlist({
               />
             </button>
           </div>
-
           <div className="menuContainer" ref={menuRef}>
             <button
               type="button"

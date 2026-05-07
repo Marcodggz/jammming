@@ -470,6 +470,8 @@ function App() {
 
     const meta = playlists.find((p) => p.id === playlistId);
 
+    // Non-owned playlists cannot be loaded — Spotify returns 403 for
+    // GET /playlists/{id}/items unless the user owns or collaborates on it.
     if (!meta || !meta.isOwned) return;
 
     try {

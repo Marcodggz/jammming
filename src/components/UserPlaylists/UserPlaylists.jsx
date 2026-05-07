@@ -105,15 +105,18 @@ function UserPlaylists({
           !error &&
           playlists.map((playlist) => {
             const isSelected = playlist.id === selectedPlaylistId;
+            const trackLabel = `${playlist.trackCount} track${playlist.trackCount === 1 ? "" : "s"}`;
 
-            // Non-owned playlists are read-only — not interactive.
+            // Non-owned playlists: visible but not interactive.
+            // Spotify returns 403 when loading tracks for playlists the user
+            // doesn't own or collaborate on, so opening them is not supported.
             if (!playlist.isOwned) {
               return (
                 <div
                   key={playlist.id}
                   className="userPlaylistItem userPlaylistItemReadOnly"
                   role="listitem"
-                  aria-label={`${playlist.name}, read-only, ${playlist.trackCount} track${playlist.trackCount === 1 ? "" : "s"}`}
+                  aria-label={`${playlist.name}, ${trackLabel} — Spotify only allows loading playlists you own or collaborate on`}
                 >
                   <PlaylistArtwork
                     imageUrl={playlist.imageUrl}
@@ -122,17 +125,21 @@ function UserPlaylists({
                     className="userPlaylistThumbnail"
                   />
                   <span className="userPlaylistItemName">{playlist.name}</span>
-                  <span className="userPlaylistItemMeta">
-                    {playlist.trackCount}{" "}
-                    {playlist.trackCount === 1 ? "track" : "tracks"}
-                  </span>
-                  <span
-                    className="userPlaylistReadOnlyBadge"
-                    aria-hidden="true"
-                    title="You cannot edit this playlist"
-                  >
-                    <FontAwesomeIcon icon={faLock} />
-                  </span>
+
+                  {/* Right-side metadata — 3-column grid: count | lock | action slot */}
+                  {/* The empty third cell reserves the same space as the delete     */}
+                  {/* button on owned rows so both row types share identical layout. */}
+                  <div className="userPlaylistItemRight" aria-hidden="true">
+                    <span className="userPlaylistItemMeta">{trackLabel}</span>
+                    <span
+                      className="userPlaylistReadOnlyBadge"
+                      title="Spotify only allows loading playlists you own or collaborate on"
+                    >
+                      <FontAwesomeIcon icon={faLock} />
+                    </span>
+                    {/* empty action-slot cell — keeps grid identical to owned rows */}
+                    <span />
+                  </div>
                 </div>
               );
             }
@@ -150,7 +157,7 @@ function UserPlaylists({
                   className="userPlaylistItemSelectButton"
                   onClick={() => onSelectPlaylist(playlist.id)}
                   aria-pressed={isSelected}
-                  aria-label={`${playlist.name}, ${playlist.trackCount} track${playlist.trackCount === 1 ? "" : "s"}${isSelected ? ", currently editing" : ""}`}
+                  aria-label={`${playlist.name}, ${trackLabel}${isSelected ? ", currently editing" : ""}`}
                 >
                   <PlaylistArtwork
                     imageUrl={playlist.imageUrl}
@@ -159,25 +166,30 @@ function UserPlaylists({
                     className="userPlaylistThumbnail"
                   />
                   <span className="userPlaylistItemName">{playlist.name}</span>
-                  <span className="userPlaylistItemMeta">
-                    {playlist.trackCount}{" "}
-                    {playlist.trackCount === 1 ? "track" : "tracks"}
-                  </span>
                 </button>
 
-                {/* Delete button — trash icon, revealed on row hover */}
-                <button
-                  type="button"
-                  className="userPlaylistDeleteButton"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onDeletePlaylist(playlist.id);
-                  }}
-                  aria-label={`Delete playlist "${playlist.name}"`}
-                  title="Delete playlist"
-                >
-                  <FontAwesomeIcon icon={faTrash} />
-                </button>
+                {/* Right-side metadata grid — delete button is the third cell */}
+                <div className="userPlaylistItemRight">
+                  <span className="userPlaylistItemMeta" aria-hidden="true">
+                    {trackLabel}
+                  </span>
+                  <span
+                    className="userPlaylistReadOnlyBadge"
+                    aria-hidden="true"
+                  />
+                  <button
+                    type="button"
+                    className="userPlaylistDeleteButton"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onDeletePlaylist(playlist.id);
+                    }}
+                    aria-label={`Delete playlist "${playlist.name}"`}
+                    title="Delete playlist"
+                  >
+                    <FontAwesomeIcon icon={faTrash} />
+                  </button>
+                </div>
               </div>
             );
           })}
