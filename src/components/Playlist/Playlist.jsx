@@ -87,6 +87,28 @@ function Playlist({
     }
   };
 
+  // If loading existing playlist, show only the centered loading state
+  if (isLoadingExistingPlaylist) {
+    return (
+      <section
+        id="playlist"
+        className="playlistContainer"
+        aria-labelledby="playlist-heading"
+      >
+        <div className="playlistContent">
+          <div
+            className="loadingState"
+            role="status"
+            aria-label="Loading playlist"
+          >
+            <span className="loadingSpinner" aria-hidden="true"></span>
+            <p className="loadingMessage">Loading playlist...</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section
       id="playlist"
@@ -265,16 +287,7 @@ function Playlist({
       <div
         className={`playlistContent ${playlistTracks.length > 0 ? "hasTracks" : ""}`}
       >
-        {isLoadingExistingPlaylist ? (
-          <div
-            className="loadingState"
-            role="status"
-            aria-label="Loading playlist"
-          >
-            <span className="loadingSpinner" aria-hidden="true"></span>
-            <p className="loadingMessage">Loading playlist...</p>
-          </div>
-        ) : playlistTracks.length === 0 ? (
+        {playlistTracks.length === 0 ? (
           <div
             className="emptyPlaylist"
             role="status"

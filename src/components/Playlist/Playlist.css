@@ -22,6 +22,7 @@
   padding: 0 14px 14px 14px;
   margin-bottom: 10px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  row-gap: 4px;
 }
 
 /* Navigation column — back button
@@ -296,53 +297,76 @@ html[data-keyboard] .menuItemDanger:focus {
 
 .playlistTitle {
   border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
   background: transparent;
   color: #f3f5f3;
   font-size: 22px;
   font-weight: 600;
   font-family: "inter", sans-serif;
   letter-spacing: -0.3px;
-  padding: 4px 8px;
+  padding: 2px 0;
   margin: 0;
-  min-width: 1ch;
+  min-width: 2ch;
+  width: auto;
+  max-width: 100%;
   field-sizing: content;
   border-radius: 8px;
-  transition:
-    background 0.2s ease,
-    box-shadow 0.2s ease;
+  box-shadow: none;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
   -webkit-user-select: all;
   user-select: all;
   -webkit-touch-callout: none;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease;
 }
 
 .playlistTitle::selection {
   background-color: Highlight;
   color: HighlightText;
-  padding: 8px 12px;
 }
 
 .playlistTitle::-moz-selection {
   background-color: Highlight;
   color: HighlightText;
-  padding: 8px 12px;
 }
 
 .playlistTitle:hover {
-  background: rgba(255, 255, 255, 0.06);
+  border-bottom-color: rgba(255, 255, 255, 0.18);
 }
 
 .playlistTitle:focus {
   outline: none;
-  background: rgba(255, 255, 255, 0.06);
-  box-shadow: 0 0 0 1.5px rgba(29, 185, 84, 0.55);
+  border-bottom-color: rgba(29, 185, 84, 0.38);
+  background: rgba(255, 255, 255, 0.03);
+  box-shadow: 0 0 0 1.5px rgba(29, 185, 84, 0.1);
+  border-radius: 8px;
 }
 
 /* Keyboard / screen reader: same outline as the rest of the app's interactive elements */
+
 html[data-keyboard] .playlistTitle:focus {
-  outline: 2px solid rgba(29, 185, 84, 0.5);
-  outline-offset: 3px;
-  background: rgba(255, 255, 255, 0.08);
-  box-shadow: none;
+  outline: none;
+  border-bottom-color: rgba(29, 185, 84, 0.32);
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: 0 0 0 2px rgba(29, 185, 84, 0.15);
+  border-radius: 8px;
+}
+
+/* Placeholder text — subtle, muted, elegant */
+.playlistTitle::placeholder {
+  color: rgba(255, 255, 255, 0.14);
+  opacity: 1;
+  font-weight: 400;
+  font-style: italic;
+}
+
+.playlistTitle::-moz-placeholder {
+  color: rgba(255, 255, 255, 0.18);
+  opacity: 1;
+  font-weight: 400;
 }
 
 .playlistTitleText {
@@ -356,6 +380,13 @@ html[data-keyboard] .playlistTitle:focus {
   padding: 4px 0;
   border: none;
   background: transparent;
+}
+
+/* Placeholder title — when name is invalid/empty */
+.playlistTitleText.playlistTitlePlaceholder {
+  color: rgba(255, 255, 255, 0.22);
+  font-weight: 500;
+  font-style: italic;
 }
 
 /* Edit button */
@@ -410,32 +441,35 @@ html[data-keyboard] .editButton:focus {
   display: flex;
   flex-direction: column;
   flex: 1;
+  min-height: 0;
+}
+
+/* Scrollable section with track list */
+.playlistContent > .trackList {
+  flex: 1;
   overflow-y: auto;
   padding-bottom: 10px;
-  min-height: 0;
   scrollbar-gutter: stable;
   /* Firefox — hide scrollbar, keep scrolling functional */
   scrollbar-width: none;
 }
 
-/* Only add bottom padding when save container is present */
-.playlistContent.hasTracks {
-  padding-bottom: 44px;
-}
-
 /* WebKit — hide scrollbar visually, zero layout footprint */
-.playlistContent::-webkit-scrollbar {
+.playlistContent > .trackList::-webkit-scrollbar {
   width: 0;
   background: transparent;
+}
+
+/* Empty state and loading state — fill available space */
+.playlistContent > .emptyPlaylist,
+.playlistContent > .loadingState {
+  flex: 1;
+  overflow: hidden;
 }
 
 /* Save button area */
 
 .saveContainer {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -443,19 +477,9 @@ html[data-keyboard] .editButton:focus {
   gap: 8px;
   padding: 10px 14px 12px 14px;
   margin: 0;
-  background: linear-gradient(
-    to bottom,
-    rgba(10, 12, 10, 0) 0%,
-    rgba(10, 12, 10, 0.82) 42%,
-    rgba(10, 12, 10, 0.97) 62%,
-    rgba(10, 12, 10, 1) 100%
-  );
-  pointer-events: none;
+  background: transparent;
+  flex-shrink: 0;
   z-index: 2;
-}
-
-.saveContainer > * {
-  pointer-events: auto;
 }
 
 .saveButton {
@@ -549,6 +573,30 @@ html[data-keyboard] .saveButton:focus {
   font-size: 13px;
   font-weight: 500;
   letter-spacing: inherit;
+}
+
+/* Title validation message — associated with the playlist name field */
+
+.playlistTitleValidationMessage {
+  margin: 0;
+  margin-top: 4px;
+  font-size: 11px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.32);
+  letter-spacing: 0.03px;
+  text-align: left;
+  user-select: none;
+  animation: fadeIn 0.2s ease;
+  grid-column: 2 / 3;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 /* Empty state shared icon */
@@ -660,7 +708,7 @@ html[data-keyboard] .saveButton:focus {
   .playlistTitle,
   .playlistTitleText {
     font-size: 20px;
-    padding: 3px 6px;
+    padding: 4px 0;
   }
 
   .playlistDuration {
@@ -668,10 +716,10 @@ html[data-keyboard] .saveButton:focus {
   }
 
   /* Align duration row with the title text's left edge.
-     On mobile the title has padding-left: 6px, so add the same
+     On mobile the title has padding-left: 4px, so add the same
      offset to the meta row to keep both rows visually flush. */
   .playlistHeaderMeta {
-    padding-left: 6px;
+    padding-left: 4px;
   }
 
   .editButton svg,
@@ -681,12 +729,10 @@ html[data-keyboard] .saveButton:focus {
 
   .playlistContent {
     padding-right: 2px;
-    padding-bottom: 8px;
   }
 
-  /* Match save container height (18px top + 40px button + 12px bottom = 70px) */
-  .playlistContent.hasTracks {
-    padding-bottom: 70px;
+  .playlistContent > .trackList {
+    padding-bottom: 8px;
   }
 
   .emptyPlaylist {
@@ -728,6 +774,11 @@ html[data-keyboard] .saveButton:focus {
 
   .saveButton span {
     font-size: 13px;
+  }
+
+  .playlistTitleValidationMessage {
+    font-size: 10px;
+    margin-top: 3px;
   }
 
   .playlistErrorMessage,
@@ -852,6 +903,157 @@ html[data-keyboard] .unsavedBannerSaveButton:focus {
 @media (max-width: 480px) {
   .unsavedBannerDialog {
     padding: 18px 16px 16px;
+  }
+}
+
+/* Name Required Modal */
+.nameRequiredModalOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 21;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nameRequiredModal {
+  background: #1a1f1b;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+  padding: 28px 24px;
+  max-width: 360px;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.nameRequiredTitle {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #f3f5f3;
+  letter-spacing: 0.01em;
+}
+
+.nameRequiredMessage {
+  margin: 0;
+  font-size: 14px;
+  color: #b3b7b3;
+  line-height: 1.5;
+}
+
+.nameRequiredActions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+.nameRequiredCancelButton,
+.nameRequiredEditButton {
+  padding: 9px 20px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition:
+    background 0.18s ease,
+    color 0.18s ease,
+    border-color 0.18s ease,
+    transform 0.12s ease;
+  border: 1px solid transparent;
+  outline: none;
+}
+
+.nameRequiredCancelButton:focus-visible,
+.nameRequiredEditButton:focus-visible,
+html[data-keyboard] .nameRequiredCancelButton:focus,
+html[data-keyboard] .nameRequiredEditButton:focus {
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.35);
+}
+
+/* Cancel button — ghost style */
+.nameRequiredCancelButton {
+  background: transparent;
+  color: #8a948b;
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.nameRequiredCancelButton:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #d1d5d1;
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+.nameRequiredCancelButton:active {
+  transform: scale(0.97);
+}
+
+/* Edit button — green-tinted action button */
+.nameRequiredEditButton {
+  background: rgba(29, 185, 84, 0.14);
+  color: #1db954;
+  border-color: rgba(29, 185, 84, 0.35);
+}
+
+.nameRequiredEditButton:hover {
+  background: rgba(29, 185, 84, 0.26);
+  color: #24d65e;
+  border-color: rgba(29, 185, 84, 0.55);
+}
+
+.nameRequiredEditButton:active {
+  transform: scale(0.97);
+}
+
+/* High contrast */
+@media (prefers-contrast: high) {
+  .nameRequiredModalOverlay {
+    background: rgba(0, 0, 0, 0.8);
+  }
+
+  .nameRequiredModal {
+    background: #000000;
+    border: 1px solid #ffffff;
+  }
+
+  .nameRequiredTitle {
+    color: #ffffff;
+  }
+
+  .nameRequiredMessage {
+    color: #e0e0e0;
+  }
+
+  .nameRequiredCancelButton {
+    border-color: #ffffff;
+    color: #ffffff;
+  }
+
+  .nameRequiredEditButton {
+    background: #00cc44;
+    border-color: #00cc44;
+    color: #000000;
+  }
+}
+
+/* Mobile — adjust modal size */
+@media (max-width: 480px) {
+  .nameRequiredModal {
+    padding: 24px 20px;
+    max-width: 100%;
+  }
+
+  .nameRequiredTitle {
+    font-size: 15px;
+  }
+
+  .nameRequiredMessage {
+    font-size: 13px;
   }
 }
 
