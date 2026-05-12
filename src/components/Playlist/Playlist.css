@@ -23,6 +23,8 @@
   margin-bottom: 10px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.07);
   row-gap: 4px;
+  /* Allow focus outlines to be visible without clipping */
+  overflow: visible;
 }
 
 /* Navigation column — back button
@@ -158,6 +160,8 @@ html[data-keyboard] .playlistBackButton:focus {
 .menuContainer {
   position: relative;
   flex-shrink: 0;
+  /* Allow focus ring outlines to be fully visible */
+  overflow: visible;
 }
 
 .menuButton {

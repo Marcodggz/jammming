@@ -20,6 +20,7 @@ function SearchBar({
   const [searchFeedback, setSearchFeedback] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [isFocused, setIsFocused] = useState(false);
+  const [highlightedIndex, setHighlightedIndex] = useState(-1);
 
   // Direct DOM manipulation so the keyboard-focus attribute is removed
   // synchronously on mousedown — no React render cycle, no brief flash.
@@ -35,18 +36,22 @@ function SearchBar({
   // Debounce suggestion fetches while the user types.
   // showDropdown already gates on searchTerm.trim().length >= 2, so stale
   // suggestions are never rendered when the term is too short.
+  // Reset highlighted index when suggestions change.
   useEffect(() => {
     const timer = setTimeout(async () => {
       const trimmed = searchTerm.trim();
       if (trimmed.length < 2) {
         setSuggestions([]);
+        setHighlightedIndex(-1);
         return;
       }
       try {
         const results = await getSuggestions(trimmed);
         setSuggestions(results);
+        setHighlightedIndex(-1);
       } catch {
         setSuggestions([]);
+        setHighlightedIndex(-1);
       }
     }, 150);
     return () => clearTimeout(timer);
@@ -91,14 +96,43 @@ function SearchBar({
   };
 
   const handleKeyDown = (event) => {
+    // Arrow Down: move highlight down
+    if (event.key === "ArrowDown" && showDropdown) {
+      event.preventDefault();
+      setHighlightedIndex((prev) =>
+        prev < suggestions.length - 1 ? prev + 1 : 0,
+      );
+      return;
+    }
+
+    // Arrow Up: move highlight up
+    if (event.key === "ArrowUp" && showDropdown) {
+      event.preventDefault();
+      setHighlightedIndex((prev) =>
+        prev > 0 ? prev - 1 : suggestions.length - 1,
+      );
+      return;
+    }
+
+    // Enter: select highlighted suggestion or search
     if (event.key === "Enter") {
       event.preventDefault();
-      handleSearch();
+      if (showDropdown && highlightedIndex >= 0) {
+        handleSuggestionClick(suggestions[highlightedIndex]);
+      } else {
+        handleSearch();
+      }
+      return;
     }
+
+    // Escape: close suggestions
     if (event.key === "Escape") {
       setSuggestions([]);
+      setHighlightedIndex(-1);
       setIsFocused(false);
+      return;
     }
+
     // Clear any existing feedback when user starts typing
     if (searchFeedback) {
       setSearchFeedback("");
@@ -115,6 +149,7 @@ function SearchBar({
     // (e.g. artist:"Taylor Swift").
     searchTracks(suggestion.query, false, suggestion.name);
     setSuggestions([]);
+    setHighlightedIndex(-1);
     setIsFocused(false);
     if (inputRef.current) {
       inputRef.current.blur();
@@ -186,12 +221,21 @@ function SearchBar({
           </div>
 
           {showDropdown && (
-            <div className="suggestionDropdown" aria-label="Search suggestions">
-              {suggestions.map((suggestion) => (
+            <div
+              className="suggestionDropdown"
+              role="listbox"
+              aria-label="Search suggestions"
+              aria-expanded="true"
+            >
+              {suggestions.map((suggestion, index) => (
                 <button
                   key={suggestion.id}
                   type="button"
-                  className="suggestionItem"
+                  className={`suggestionItem ${
+                    index === highlightedIndex ? "highlighted" : ""
+                  }`}
+                  role="option"
+                  aria-selected={index === highlightedIndex}
                   aria-label={
                     suggestion.type === "artist"
                       ? `Artist: ${suggestion.name}`
@@ -201,6 +245,7 @@ function SearchBar({
                     e.preventDefault();
                     handleSuggestionClick(suggestion);
                   }}
+                  onMouseEnter={() => setHighlightedIndex(index)}
                 >
                   {suggestion.type === "artist" ? (
                     suggestion.image ? (

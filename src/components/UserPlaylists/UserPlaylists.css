@@ -19,11 +19,12 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-bottom: 14px;
-  padding-right: 2px;
+  padding: 4px 2px 14px 0;
   margin-bottom: 4px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   flex-shrink: 0;
+  /* Allow focus outlines to be visible without clipping */
+  overflow: visible;
 }
 
 /* Back button — icon only, clear "go back" affordance */
@@ -32,6 +33,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  padding-left: 4px;
 }
 
 .playlistBrowserBackButton {
@@ -100,6 +102,7 @@ html[data-keyboard] .playlistBrowserBackButton:focus {
   white-space: nowrap;
   flex-shrink: 0;
   margin-left: 8px;
+  margin-right: 4px;
 }
 
 .startNewButton:hover {

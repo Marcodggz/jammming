@@ -36,20 +36,38 @@ function Playlist({
   canSave = true,
 }) {
   const playlistInputRef = useRef(null);
+  const menuButtonRef = useRef(null);
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
 
-  // Close the navigation menu when the user clicks or taps outside it.
+  // Close the navigation menu when the user clicks or taps outside it,
+  // or when Escape is pressed. Return focus to the menu button.
   useEffect(() => {
     if (!menuOpen) return;
+
     function handleClickOutside(e) {
       if (menuRef.current && !menuRef.current.contains(e.target)) {
         setMenuOpen(false);
       }
     }
+
+    function handleEscapeKey(e) {
+      if (e.key === "Escape") {
+        setMenuOpen(false);
+        // Return focus to the menu button for keyboard navigation continuity
+        if (menuButtonRef.current) {
+          menuButtonRef.current.focus();
+        }
+      }
+    }
+
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleEscapeKey);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEscapeKey);
+    };
   }, [menuOpen]);
 
   // Clean up UI state (menu, title editing) on unmount to prevent stale UI.
@@ -218,6 +236,7 @@ function Playlist({
           <div className="playlistHeaderActions">
             <div className="menuContainer" ref={menuRef}>
               <button
+                ref={menuButtonRef}
                 type="button"
                 className="menuButton"
                 onClick={() => setMenuOpen((open) => !open)}
