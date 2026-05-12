@@ -10,7 +10,7 @@ import {
 import TrackList from "../TrackList/TrackList";
 import "./Playlist.css";
 
-function Playlist({
+function PlaylistComponent({
   playlistName,
   playlistTracks,
   showAddButton = false,
@@ -40,6 +40,29 @@ function Playlist({
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
+
+  // Derived state: is the playlist name empty or whitespace-only?
+  const isPlaylistNameInvalid =
+    playlistName.trim().length === 0 && !isLoadingExistingPlaylist;
+  const displayName = isPlaylistNameInvalid
+    ? "Untitled playlist"
+    : playlistName;
+
+  const handleEditTitle = () => {
+    setIsEditingTitle(true);
+
+    // Use setTimeout to ensure the input is rendered before focusing
+    setTimeout(() => {
+      if (playlistInputRef.current) {
+        playlistInputRef.current.focus();
+        // Select all text - use setSelectionRange for better mobile compatibility
+        const length = playlistInputRef.current.value.length;
+        playlistInputRef.current.setSelectionRange(0, length);
+        // Fallback to select() for additional compatibility
+        playlistInputRef.current.select();
+      }
+    }, 50);
+  };
 
   // Close the navigation menu when the user clicks or taps outside it,
   // or when Escape is pressed. Return focus to the menu button.
@@ -78,21 +101,8 @@ function Playlist({
     };
   }, []);
 
-  const handleEditTitle = () => {
-    setIsEditingTitle(true);
-
-    // Use setTimeout to ensure the input is rendered before focusing
-    setTimeout(() => {
-      if (playlistInputRef.current) {
-        playlistInputRef.current.focus();
-        // Select all text - use setSelectionRange for better mobile compatibility
-        const length = playlistInputRef.current.value.length;
-        playlistInputRef.current.setSelectionRange(0, length);
-        // Fallback to select() for additional compatibility
-        playlistInputRef.current.select();
-      }
-    }, 50);
-  };
+  // Expose edit trigger for the validation modal
+  // (This is now done via forwardRef imperative handle above)
 
   const handleTitleKeyDown = (event) => {
     if (event.key === "Enter") {
@@ -195,8 +205,11 @@ function Playlist({
                   </div>
                 </div>
               ) : (
-                <h2 id="playlist-heading" className="playlistTitleText">
-                  {playlistName}
+                <h2
+                  id="playlist-heading"
+                  className={`playlistTitleText ${isPlaylistNameInvalid ? "playlistTitlePlaceholder" : ""}`}
+                >
+                  {displayName}
                 </h2>
               )}
 
@@ -205,7 +218,7 @@ function Playlist({
                   type="button"
                   className="editButton"
                   onClick={handleEditTitle}
-                  aria-label={`Edit playlist title "${playlistName}"`}
+                  aria-label={`Edit playlist title "${displayName}"`}
                 >
                   <FontAwesomeIcon
                     icon={faPenToSquare}
@@ -336,9 +349,9 @@ function Playlist({
                 type="button"
                 className="saveButton"
                 onClick={savePlaylist}
-                disabled={isSavingPlaylist}
+                disabled={isSavingPlaylist || isPlaylistNameInvalid}
                 aria-busy={isSavingPlaylist}
-                aria-label={`${saveButtonText} — "${playlistName}" with ${playlistTracks.length} track${playlistTracks.length === 1 ? "" : "s"}`}
+                aria-label={`${saveButtonText} — "${displayName}" with ${playlistTracks.length} track${playlistTracks.length === 1 ? "" : "s"}`}
               >
                 <span>{saveButtonText}</span>
               </button>
@@ -352,9 +365,9 @@ function Playlist({
               type="button"
               className="saveButton"
               onClick={savePlaylist}
-              disabled={isSavingPlaylist}
+              disabled={isSavingPlaylist || isPlaylistNameInvalid}
               aria-busy={isSavingPlaylist}
-              aria-label={`${saveButtonText} — "${playlistName}" with ${playlistTracks.length} track${playlistTracks.length === 1 ? "" : "s"}`}
+              aria-label={`${saveButtonText} — "${displayName}" with ${playlistTracks.length} track${playlistTracks.length === 1 ? "" : "s"}`}
             >
               <span>{saveButtonText}</span>
             </button>
@@ -393,4 +406,4 @@ function Playlist({
   );
 }
 
-export default Playlist;
+export default PlaylistComponent;

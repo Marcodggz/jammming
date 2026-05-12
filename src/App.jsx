@@ -21,6 +21,14 @@ import DeleteConfirmModal from "./components/DeleteConfirmModal/DeleteConfirmMod
 import DestinationSelector from "./components/DestinationSelector/DestinationSelector";
 
 /**
+ * Pure helper — validates that a playlist name is not empty or whitespace-only.
+ * Trims the name before checking so trailing/leading whitespace is ignored.
+ */
+function isValidPlaylistName(name) {
+  return typeof name === "string" && name.trim().length > 0;
+}
+
+/**
  * Pure helper — loads the user's playlist list from the correct source.
  * Defined outside the component so it has no closure dependencies and can
  * be called safely inside useEffect without re-creating on every render.
@@ -586,9 +594,21 @@ function App() {
   // Returns true on success, false on failure (so the banner handler can decide
   //   whether to close the banner or keep it open for error recovery).
   async function savePlaylist(afterSave = null, showFeedback = false) {
+    // Validate playlist name — must not be empty or whitespace-only
+    // If invalid, return false silently (button is already disabled, so this shouldn't happen)
+    if (!isValidPlaylistName(playlistName)) {
+      if (showFeedback) {
+        setIsSavingPlaylist(false);
+      }
+      return false;
+    }
+
     if (showFeedback) {
       setIsSavingPlaylist(true);
     }
+
+    // Trim the name before saving to prevent whitespace-only names
+    const trimmedName = playlistName.trim();
 
     const trackURIs = playlistTracks.map((track) => track.uri);
     if (trackURIs.length === 0) {
@@ -613,23 +633,23 @@ function App() {
           // optimistic update and refresh stale-count fix both run for demo mode.
           editedPlaylistId = selectedPlaylistId;
           updateDemoPlaylist(selectedPlaylistId, {
-            name: playlistName,
+            name: trimmedName,
             tracks: playlistTracks,
           });
           toast.success("Playlist updated");
         } else {
-          createDemoPlaylist(playlistName, playlistTracks);
+          createDemoPlaylist(trimmedName, playlistTracks);
           toast.success("Playlist saved");
         }
       } else {
         if (isEditingExisting && selectedPlaylistId) {
           editedPlaylistId = selectedPlaylistId;
-          await Spotify.updatePlaylistDetails(selectedPlaylistId, playlistName);
+          await Spotify.updatePlaylistDetails(selectedPlaylistId, trimmedName);
           await Spotify.replacePlaylistTracks(selectedPlaylistId, trackURIs);
           toast.success("Playlist updated on Spotify");
         } else {
           // savePlaylist() returns the newly created playlist's ID
-          newPlaylistId = await Spotify.savePlaylist(playlistName, trackURIs);
+          newPlaylistId = await Spotify.savePlaylist(trimmedName, trackURIs);
           toast.success("Playlist saved to Spotify");
         }
       }
@@ -650,7 +670,7 @@ function App() {
 
     if (affectedId) {
       optimisticPlaylistsRef.current[affectedId] = {
-        name: playlistName,
+        name: trimmedName,
         trackCount,
         ...(isDemoMode && { artworkImages: getArtworkImages(playlistTracks) }),
       };
@@ -664,7 +684,7 @@ function App() {
       setPlaylists((prev) =>
         prev.map((p) => {
           if (p.id !== editedPlaylistId) return p;
-          const patch = { ...p, name: playlistName, trackCount };
+          const patch = { ...p, name: trimmedName, trackCount };
           if (isDemoMode) {
             patch.artworkImages = getArtworkImages(playlistTracks);
           }
@@ -679,7 +699,7 @@ function App() {
         ...prev,
         {
           id: newPlaylistId,
-          name: playlistName,
+          name: trimmedName,
           trackCount,
           imageUrl: null,
           isOwned: true,
@@ -696,7 +716,7 @@ function App() {
         // Sync the snapshot to the saved values so hasChanges evaluates to false.
         // If afterSave calls startNewPlaylist(), its null-setters are queued after
         // ours (last-write wins in a React batch) and correctly clear the snapshot.
-        setInitialPlaylistName(playlistName);
+        setInitialPlaylistName(trimmedName);
         setInitialPlaylistTracks([...playlistTracks]);
       } else {
         // New playlist created via banner.
