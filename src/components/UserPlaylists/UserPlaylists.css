@@ -403,6 +403,15 @@ html[data-keyboard] .userPlaylistDeleteButton:focus {
 
 /* ── Mobile overrides ────────────────────────────────────────── */
 
+/* On touch devices there is no reliable hover, so always show the
+   delete button at its revealed opacity for owned playlists.
+   Read-only rows never render the button, so this is safe. */
+@media (hover: none) {
+  .userPlaylistDeleteButton {
+    color: rgba(255, 255, 255, 0.3);
+  }
+}
+
 @media (max-width: 768px) {
   .playlistBrowserHeader {
     padding-bottom: 12px;

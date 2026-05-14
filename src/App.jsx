@@ -816,24 +816,12 @@ function App() {
         <LandingPage onLogin={Spotify.login} onDemo={startDemoMode} />
       ) : (
         <main
-          className="app"
+          className={`app${isDemoMode ? " isDemoMode" : ""}`}
           id="main-content"
           tabIndex="-1"
           aria-label="Jammming Spotify Playlist Builder"
         >
           <h1 className="srOnly">Jammming — Spotify Playlist Builder</h1>
-          {isDemoMode && (
-            <div className="demoModeBanner">
-              <span className="demoBannerText">Sample data mode</span>
-              <button
-                className="exitDemoButton"
-                onClick={() => guardUnsavedChanges(exitDemoMode)}
-                aria-label="Exit demo mode and connect to Spotify"
-              >
-                Exit
-              </button>
-            </div>
-          )}
           <SearchBar
             searchTracks={searchTracks}
             searchTerm={searchTerm}
@@ -844,6 +832,22 @@ function App() {
           />
 
           <div className="mainContainer">
+            {isDemoMode && (
+              <div className="demoModeBanner" role="status">
+                <span className="demoBannerText">
+                  <span className="demoBannerLabel">Demo mode</span>
+                  <span className="demoBannerSub">Sample data only</span>
+                </span>
+                <button
+                  className="exitDemoButton"
+                  onClick={() => guardUnsavedChanges(exitDemoMode)}
+                  aria-label="Exit demo mode and connect to Spotify"
+                >
+                  Exit
+                </button>
+              </div>
+            )}
+
             <section
               className={`results ${
                 !hasSearched
