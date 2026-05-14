@@ -18,7 +18,11 @@ const EXPIRY_KEY = "spotify_token_expiry";
 // invalidated automatically and the user is sent through auth again.
 const SCOPES_KEY = "spotify_token_scopes";
 
-// Generate a random string for the PKCE code_verifier
+// ---------------------------------------------------------------------------
+// PKCE helpers
+// ---------------------------------------------------------------------------
+
+// Generate a cryptographically random string for the PKCE code_verifier.
 function generateRandomString(length) {
   const possible =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -31,12 +35,6 @@ function generateRandomString(length) {
   return text;
 }
 
-// Redirect user to Spotify login
-
-async function login() {
-  await redirectToSpotifyAuth();
-}
-
 // Create SHA-256 hash from the verifier
 async function sha256(plain) {
   const encoder = new TextEncoder();
@@ -44,7 +42,7 @@ async function sha256(plain) {
   return window.crypto.subtle.digest("SHA-256", data);
 }
 
-// Convert hash to base64url format
+// Convert hash to base64url encoding (required by RFC 7636).
 function base64encode(input) {
   return btoa(String.fromCharCode(...new Uint8Array(input)))
     .replace(/=/g, "")
@@ -52,8 +50,25 @@ function base64encode(input) {
     .replace(/\//g, "_");
 }
 
-// Save the access token, its expiry time, and the scopes it was issued for.
+// ---------------------------------------------------------------------------
+// Request header helpers
+// ---------------------------------------------------------------------------
 
+// Returns a Bearer Authorization header for the given access token.
+function authHeaders(token) {
+  return { Authorization: `Bearer ${token}` };
+}
+
+// Returns auth + JSON content-type headers for mutating API requests.
+function jsonHeaders(token) {
+  return { ...authHeaders(token), "Content-Type": "application/json" };
+}
+
+// ---------------------------------------------------------------------------
+// Token management
+// ---------------------------------------------------------------------------
+
+// Save the access token, its expiry time, and the scopes it was issued for.
 function saveToken(token, expiresIn) {
   accessToken = token;
   sessionStorage.setItem(TOKEN_KEY, token);
@@ -98,6 +113,10 @@ function hasValidSession() {
   }
   return !!getStoredToken();
 }
+
+// ---------------------------------------------------------------------------
+// Auth flow
+// ---------------------------------------------------------------------------
 
 // Redirect user to Spotify authorization page
 async function redirectToSpotifyAuth() {
@@ -194,6 +213,15 @@ async function getAccessToken() {
   return null;
 }
 
+// Public entry point for the login flow. Triggers PKCE auth redirect.
+async function login() {
+  await redirectToSpotifyAuth();
+}
+
+// ---------------------------------------------------------------------------
+// Data mapping
+// ---------------------------------------------------------------------------
+
 // Maps a raw Spotify track object to the app's track shape.
 // Album artwork: Spotify provides images in 3 sizes (640px, 300px, 64px).
 // We prefer the medium size (index 1, 300px) with fallbacks.
@@ -213,18 +241,18 @@ function mapSpotifyTrack(track) {
   };
 }
 
-// Search Spotify tracks
+// ---------------------------------------------------------------------------
+// API – Search
+// ---------------------------------------------------------------------------
+
+// Searches Spotify for tracks matching the given query term.
 async function search(term) {
   const token = await getAccessToken();
   if (!token) return [];
 
-  const headers = {
-    Authorization: `Bearer ${token}`,
-  };
-
   const url = `https://api.spotify.com/v1/search?type=track&q=${encodeURIComponent(term)}&limit=10`;
 
-  const response = await fetch(url, { headers });
+  const response = await fetch(url, { headers: authHeaders(token) });
   const json = await response.json();
 
   if (!response.ok) {
@@ -250,7 +278,7 @@ async function getSuggestions(term) {
   const url = `https://api.spotify.com/v1/search?type=track,artist&q=${encodeURIComponent(term.trim())}&limit=4`;
 
   const response = await fetch(url, {
-    headers: { Authorization: `Bearer ${token}` },
+    headers: authHeaders(token),
   });
 
   if (!response.ok) return [];
@@ -282,6 +310,10 @@ async function getSuggestions(term) {
   return [...artists, ...tracks];
 }
 
+// ---------------------------------------------------------------------------
+// API – Playlist
+// ---------------------------------------------------------------------------
+
 // Save playlist to user's Spotify account
 async function savePlaylist(playlistName, trackUris) {
   if (!playlistName || !trackUris.length) {
@@ -294,10 +326,7 @@ async function savePlaylist(playlistName, trackUris) {
     return;
   }
 
-  const headers = {
-    Authorization: `Bearer ${token}`,
-    "Content-Type": "application/json",
-  };
+  const headers = jsonHeaders(token);
 
   // Create a new playlist
   const createPlaylistResponse = await fetch(
@@ -359,7 +388,7 @@ async function getCurrentUser() {
   if (!token) return null;
 
   const response = await fetch("https://api.spotify.com/v1/me", {
-    headers: { Authorization: `Bearer ${token}` },
+    headers: authHeaders(token),
   });
   const data = await response.json();
 
@@ -390,7 +419,7 @@ async function getUserPlaylists() {
   const token = await getAccessToken();
   if (!token) return [];
 
-  const headers = { Authorization: `Bearer ${token}` };
+  const headers = authHeaders(token);
 
   // Fetch the user profile and the first playlist page concurrently.
   // getCurrentUser() failure is non-fatal — we degrade gracefully.
@@ -482,7 +511,7 @@ async function getPlaylistTracks(playlistId) {
   if (!token)
     throw new Error("No access token — cannot fetch playlist tracks.");
 
-  const headers = { Authorization: `Bearer ${token}` };
+  const headers = authHeaders(token);
   const tracks = [];
   let url = `https://api.spotify.com/v1/playlists/${playlistId}/items?limit=100`;
 
@@ -546,10 +575,7 @@ async function updatePlaylistDetails(playlistId, name) {
     `https://api.spotify.com/v1/playlists/${playlistId}`,
     {
       method: "PUT",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
+      headers: jsonHeaders(token),
       body: JSON.stringify({ name }),
     },
   );
@@ -575,10 +601,7 @@ async function replacePlaylistTracks(playlistId, trackUris) {
   const token = await getAccessToken();
   if (!token) return;
 
-  const headers = {
-    Authorization: `Bearer ${token}`,
-    "Content-Type": "application/json",
-  };
+  const headers = jsonHeaders(token);
 
   // PUT atomically replaces the playlist contents with the first 100 URIs.
   const response = await fetch(
@@ -631,7 +654,7 @@ async function deletePlaylist(playlistId) {
     `https://api.spotify.com/v1/playlists/${playlistId}/followers`,
     {
       method: "DELETE",
-      headers: { Authorization: `Bearer ${token}` },
+      headers: authHeaders(token),
     },
   );
 
