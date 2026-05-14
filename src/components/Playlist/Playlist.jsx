@@ -377,8 +377,14 @@ function PlaylistComponent({
 
       {unsavedBannerVisible && (
         <div className="unsavedBannerOverlay">
-          <div className="unsavedBannerDialog" role="region" aria-labelledby="unsaved-banner-msg">
-            <p className="unsavedBannerText" id="unsaved-banner-msg">You have unsaved changes.</p>
+          <div
+            className="unsavedBannerDialog"
+            role="region"
+            aria-labelledby="unsaved-banner-msg"
+          >
+            <p className="unsavedBannerText" id="unsaved-banner-msg">
+              You have unsaved changes.
+            </p>
             <div className="unsavedBannerActions">
               <button
                 type="button"

@@ -57,7 +57,11 @@ export default function DeleteConfirmModal({
           >
             Cancel
           </button>
-          <button type="button" className="deleteModalConfirmButton" onClick={onConfirm}>
+          <button
+            type="button"
+            className="deleteModalConfirmButton"
+            onClick={onConfirm}
+          >
             Delete
           </button>
         </div>
