@@ -8,87 +8,24 @@ import UserPlaylists from "./components/UserPlaylists/UserPlaylists";
 import Spotify from "./util/Spotify";
 import MockSpotify from "./util/mockSpotify";
 import {
-  loadDemoPlaylists,
   createDemoPlaylist,
   updateDemoPlaylist,
   deleteDemoPlaylist,
-  seedDemoPlaylists,
+  loadDemoPlaylists,
 } from "./util/demoPlaylists";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpotify } from "@fortawesome/free-brands-svg-icons";
 import { Toaster, toast } from "sonner";
 import DeleteConfirmModal from "./components/DeleteConfirmModal/DeleteConfirmModal";
 import DestinationSelector from "./components/DestinationSelector/DestinationSelector";
-
-/**
- * Pure helper — validates that a playlist name is not empty or whitespace-only.
- * Trims the name before checking so trailing/leading whitespace is ignored.
- */
-function isValidPlaylistName(name) {
-  return typeof name === "string" && name.trim().length > 0;
-}
-
-/**
- * Pure helper — loads the user's playlist list from the correct source.
- * Defined outside the component so it has no closure dependencies and can
- * be called safely inside useEffect without re-creating on every render.
- *
- * Returned shape per item: { id, name, trackCount, imageUrl, isOwned }
- */
-/**
- * Pure dirty-state helper — compares current editor state against the snapshot
- * captured when the playlist was first loaded.
- *
- * Returns true when the user has made at least one change (name or tracks).
- * Returns false when nothing has changed, or when there is no snapshot yet.
- *
- * Rules:
- *  - Trims both names before comparing so trailing whitespace is ignored.
- *  - Compares URI arrays in order — reordering tracks counts as a change.
- *  - Does not rely on track count alone.
- */
-function hasPlaylistChanges(
-  initialName,
-  initialTracks,
-  currentName,
-  currentTracks,
-) {
-  if (initialName === null || initialTracks === null) return false;
-  if (currentName.trim() !== initialName.trim()) return true;
-  const initialUris = initialTracks.map((t) => t.uri);
-  const currentUris = currentTracks.map((t) => t.uri);
-  if (currentUris.length !== initialUris.length) return true;
-  return currentUris.some((uri, i) => uri !== initialUris[i]);
-}
-
-async function loadPlaylistsFromSource(isDemo) {
-  if (isDemo) {
-    seedDemoPlaylists();
-    return loadDemoPlaylists().map((p) => ({
-      id: p.id,
-      name: p.name,
-      trackCount: p.tracks.length,
-      imageUrl: null,
-      isOwned: true,
-      artworkImages: getArtworkImages(p.tracks),
-    }));
-  }
-  return Spotify.getUserPlaylists();
-}
-
-/** Collects up to 4 unique album-cover URLs from a track list. */
-function getArtworkImages(tracks) {
-  const seen = new Set();
-  const images = [];
-  for (const track of tracks) {
-    if (track.albumImage && !seen.has(track.albumImage)) {
-      seen.add(track.albumImage);
-      images.push(track.albumImage);
-      if (images.length === 4) break;
-    }
-  }
-  return images;
-}
+import {
+  isValidPlaylistName,
+  hasPlaylistChanges,
+  getArtworkImages,
+  loadPlaylistsFromSource,
+  formatPlaylistDuration,
+  getSaveButtonText,
+} from "./util/playlistUtils";
 
 function App() {
   const [tracks, setTracks] = useState([]);
@@ -288,23 +225,7 @@ function App() {
     hasSearched && tracks.length > 0 && visibleTracks.length === 0;
 
   // Calculate the total duration of the playlist
-  const totalDurationMs = playlistTracks.reduce(
-    (total, track) => total + track.durationMs,
-    0,
-  );
-
-  const totalSeconds = Math.floor(totalDurationMs / 1000);
-  const hours = Math.floor(totalSeconds / 3600);
-  const minutes = Math.floor((totalSeconds % 3600) / 60);
-  const seconds = totalSeconds % 60;
-
-  const formattedSeconds = seconds < 10 ? `0${seconds}` : seconds;
-  const formattedDuration =
-    hours > 0
-      ? `${hours}h ${minutes}m`
-      : minutes > 0
-        ? `${minutes}m ${formattedSeconds}s`
-        : `${formattedSeconds}s`;
+  const formattedDuration = formatPlaylistDuration(playlistTracks);
 
   function addTrack(track, buttonElement) {
     // If no playlist is active, open the destination selector instead of adding.
@@ -1055,17 +976,11 @@ function App() {
                   playlistNameChange={playlistNameChange}
                   savePlaylist={handleSavePlaylistClick}
                   formattedDuration={formattedDuration}
-                  saveButtonText={
-                    isSavingPlaylist
-                      ? isEditingExisting
-                        ? "Updating..."
-                        : "Saving..."
-                      : isEditingExisting
-                        ? "Update playlist"
-                        : isDemoMode
-                          ? "Save playlist"
-                          : "Save to Spotify"
-                  }
+                  saveButtonText={getSaveButtonText(
+                    isSavingPlaylist,
+                    isEditingExisting,
+                    isDemoMode,
+                  )}
                   isEditingExisting={isEditingExisting}
                   hasChanges={hasChanges}
                   isSavingPlaylist={isSavingPlaylist}
