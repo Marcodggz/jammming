@@ -382,7 +382,11 @@ function PlaylistComponent({
             role="region"
             aria-labelledby="unsaved-banner-msg"
           >
-            <p className="unsavedBannerText" id="unsaved-banner-msg">
+            <p
+              className="unsavedBannerText"
+              id="unsaved-banner-msg"
+              role="alert"
+            >
               You have unsaved changes.
             </p>
             <div className="unsavedBannerActions">

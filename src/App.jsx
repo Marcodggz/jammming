@@ -33,6 +33,7 @@ function App() {
   const [searchTerm, setSearchTerm] = useState("");
   const [hasSearched, setHasSearched] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [searchError, setSearchError] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isAuthLoading, setIsAuthLoading] = useState(true);
   const [isDemoMode, setIsDemoMode] = useState(false);
@@ -42,6 +43,8 @@ function App() {
   const [playlists, setPlaylists] = useState([]);
   const [playlistsLoading, setPlaylistsLoading] = useState(false);
   const [playlistsError, setPlaylistsError] = useState(null);
+  // Increment to trigger a manual retry of the playlists fetch effect.
+  const [playlistsRetryKey, setPlaylistsRetryKey] = useState(0);
   // null  → creating a new playlist
   // truthy → editing an existing playlist with that ID
   const [selectedPlaylistId, setSelectedPlaylistId] = useState(null);
@@ -211,7 +214,7 @@ function App() {
     return () => {
       cancelled = true;
     };
-  }, [isAuthenticated, isDemoMode]);
+  }, [isAuthenticated, isDemoMode, playlistsRetryKey]);
 
   // Filter out tracks that are already in the playlist
   const visibleTracks = tracks.filter(
@@ -499,6 +502,10 @@ function App() {
         console.error("handleSelectPlaylist:", err);
         toast.error("Could not load playlist tracks. Please try again.");
       }
+      // Reset the editor so the user isn't left with an empty, half-loaded
+      // state. Return them to the browser so they can pick a different playlist.
+      startNewPlaylist();
+      setPlaylistPanelView("browser");
     } finally {
       // End loading state — loading is complete (success or failure).
       setIsLoadingExistingPlaylist(false);
@@ -698,6 +705,11 @@ function App() {
     optimisticPlaylistsRef.current = {};
   }
 
+  /** Triggers a fresh fetch of the user's playlist list. Safe to call any time. */
+  function reloadPlaylists() {
+    setPlaylistsRetryKey((k) => k + 1);
+  }
+
   /**
    * Wrapper for direct save from the Playlist component (main save button).
    * Enables loading feedback and prevents duplicate clicks.
@@ -732,11 +744,12 @@ function App() {
       try {
         const results = await spotifyService.search(term);
         setTracks(results);
+        setSearchError(null);
       } catch (error) {
         // Reset so the same query can be retried after an error.
         lastExecutedSearchRef.current = "";
         console.error(error);
-        toast.error("Something went wrong while searching. Please try again.");
+        setSearchError("Search failed. Check your connection and try again.");
       } finally {
         setIsLoading(false);
       }
@@ -745,6 +758,7 @@ function App() {
       setHasSearched(false);
       setIsLoading(false);
       lastExecutedSearchRef.current = "";
+      setSearchError(null);
     }
   }
 
@@ -755,6 +769,7 @@ function App() {
     setTracks(prev.tracks);
     setPrevSearchStack((stack) => stack.slice(0, -1));
     setHasSearched(true);
+    setSearchError(null);
   }
 
   // True when the editor is open (new or existing playlist).
@@ -848,6 +863,8 @@ function App() {
                 hasSearched={hasSearched}
                 isLoading={isLoading}
                 allTracksAdded={allTracksAdded}
+                searchError={searchError}
+                onRetrySearch={() => searchTracks(searchTerm)}
               />
             </section>
 
@@ -896,6 +913,7 @@ function App() {
                     setSelectedPlaylistId(null);
                     setPlaylistPanelView("home");
                   }}
+                  onRetry={reloadPlaylists}
                 />
               ) : (
                 <Playlist

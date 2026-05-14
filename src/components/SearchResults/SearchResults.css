@@ -110,6 +110,80 @@
   line-height: 1.5;
 }
 
+/* Search error state */
+
+.searchResults .searchErrorState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px 28px;
+  margin: auto 0;
+  flex: 1;
+  max-width: 100%;
+  width: auto;
+  align-self: center;
+  background: rgba(30, 18, 18, 0.5);
+  border: 1px solid rgba(224, 90, 90, 0.2);
+  border-radius: 16px;
+  box-sizing: border-box;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.searchErrorState .emptyStateIcon {
+  background: rgba(224, 90, 90, 0.06);
+  border-color: rgba(224, 90, 90, 0.15);
+  color: rgba(224, 90, 90, 0.55);
+}
+
+.searchErrorState h4 {
+  color: #f3f5f3;
+  font-weight: 600;
+  font-size: 18px;
+  margin: 0 0 8px 0;
+}
+
+.searchErrorState p {
+  color: #8a958b;
+  margin: 0 0 16px 0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.searchRetryButton {
+  background: transparent;
+  border: 1px solid rgba(224, 90, 90, 0.4);
+  color: #e05a5a;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 18px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-family: inherit;
+  transition:
+    background 0.18s ease,
+    color 0.18s ease,
+    border-color 0.18s ease;
+}
+
+.searchRetryButton:hover {
+  background: rgba(224, 90, 90, 0.1);
+  border-color: rgba(224, 90, 90, 0.6);
+  color: #f07070;
+}
+
+.searchRetryButton:focus {
+  outline: none;
+}
+
+.searchRetryButton:focus-visible,
+html[data-keyboard] .searchRetryButton:focus {
+  outline: 2px solid rgba(224, 90, 90, 0.5);
+  outline-offset: 2px;
+}
+
 /* No results state */
 
 .searchResults .noResults {
@@ -242,7 +316,8 @@
 
   .welcome,
   .noResults,
-  .allAddedState {
+  .allAddedState,
+  .searchErrorState {
     padding: 32px 20px;
     margin: auto 0;
     border-radius: 14px;
@@ -253,14 +328,16 @@
 
   .welcome h3,
   .noResults h4,
-  .allAddedState h4 {
+  .allAddedState h4,
+  .searchErrorState h4 {
     font-size: 16px;
     margin-bottom: 6px;
   }
 
   .welcome p,
   .noResults p,
-  .allAddedState p {
+  .allAddedState p,
+  .searchErrorState p {
     font-size: 13px;
     line-height: 1.4;
   }

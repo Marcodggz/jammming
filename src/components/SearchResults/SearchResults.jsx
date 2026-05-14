@@ -15,6 +15,8 @@ function SearchResults({
   isLoading,
   allTracksAdded = false,
   hasActivePlaylist = true,
+  searchError = null,
+  onRetrySearch,
 }) {
   const resultsHeadingRef = useRef(null);
 
@@ -39,6 +41,9 @@ function SearchResults({
 
   const getSearchResultsAnnouncement = () => {
     if (isLoading) return "Searching for tracks, please wait...";
+    // The error container uses role="alert" (assertive) — suppress the polite
+    // live region here to prevent the same message being announced twice.
+    if (searchError) return "";
     if (!hasSearched) return "";
     if (allTracksAdded)
       return `Found ${tracks.length} track${tracks.length === 1 ? "" : "s"}, but all are already in your playlist`;
@@ -93,6 +98,23 @@ function SearchResults({
           >
             <span className="loadingSpinner" aria-hidden="true"></span>
             <p className="loadingMessage">Searching...</p>
+          </div>
+        ) : searchError ? (
+          <div className="searchErrorState" role="alert">
+            <div className="emptyStateIcon" aria-hidden="true">
+              <FontAwesomeIcon icon={faMagnifyingGlass} />
+            </div>
+            <h4>Search failed</h4>
+            <p>{searchError}</p>
+            {onRetrySearch && (
+              <button
+                type="button"
+                className="searchRetryButton"
+                onClick={onRetrySearch}
+              >
+                Try again
+              </button>
+            )}
           </div>
         ) : tracks.length > 0 ? (
           <TrackList

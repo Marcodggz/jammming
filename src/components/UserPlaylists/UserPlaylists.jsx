@@ -25,6 +25,7 @@ import "./UserPlaylists.css";
  *   onDeletePlaylist   – (id: string) => void
  *   onStartNew         – () => void            (parent also switches view)
  *   onBack             – () => void            (switch back to editor)
+ *   onRetry            – () => void            (optional: retry loading playlists)
  */
 function UserPlaylists({
   playlists,
@@ -35,6 +36,7 @@ function UserPlaylists({
   onDeletePlaylist,
   onStartNew,
   onBack,
+  onRetry,
 }) {
   // Escape key returns to the editor view.
   useEffect(() => {
@@ -88,9 +90,20 @@ function UserPlaylists({
         )}
 
         {!isLoading && error && (
-          <p className="userPlaylistsStatus userPlaylistsError" role="alert">
-            {error}
-          </p>
+          <div className="userPlaylistsErrorRow">
+            <p className="userPlaylistsStatus userPlaylistsError" role="alert">
+              {error}
+            </p>
+            {onRetry && (
+              <button
+                type="button"
+                className="userPlaylistsRetryButton"
+                onClick={onRetry}
+              >
+                Try again
+              </button>
+            )}
+          </div>
         )}
 
         {!isLoading && !error && playlists.length === 0 && (
