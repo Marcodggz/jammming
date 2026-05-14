@@ -209,7 +209,7 @@ function DestinationSelector({
         }
       }}
     >
-      <p className="destSelectorLabel">Add to:</p>
+      <p id="dest-selector-title" className="destSelectorLabel">Add to:</p>
 
       <div className="destSelectorActions">
         <button

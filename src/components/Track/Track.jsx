@@ -85,7 +85,6 @@ function Track({
           <h3
             id={`track-name-${id}`}
             className="track-title"
-            tabIndex="0"
             aria-label={`${name} by ${artistNames}, from the album ${album}${formattedDuration ? `, duration ${formattedDuration}` : ""}`}
           >
             {name}

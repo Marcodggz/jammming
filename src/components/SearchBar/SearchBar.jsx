@@ -188,6 +188,16 @@ function SearchBar({
             ref={inputRef}
             id="track-search-input"
             type="search"
+            role="combobox"
+            aria-expanded={showDropdown}
+            aria-controls="search-suggestions"
+            aria-autocomplete="list"
+            aria-haspopup="listbox"
+            aria-activedescendant={
+              showDropdown && highlightedIndex >= 0
+                ? `suggestion-${highlightedIndex}`
+                : undefined
+            }
             placeholder="Search songs..."
             value={searchTerm}
             onChange={(event) => setSearchTerm(event.target.value)}
@@ -222,14 +232,15 @@ function SearchBar({
 
           {showDropdown && (
             <div
+              id="search-suggestions"
               className="suggestionDropdown"
               role="listbox"
               aria-label="Search suggestions"
-              aria-expanded="true"
             >
               {suggestions.map((suggestion, index) => (
                 <button
                   key={suggestion.id}
+                  id={`suggestion-${index}`}
                   type="button"
                   className={`suggestionItem ${
                     index === highlightedIndex ? "highlighted" : ""

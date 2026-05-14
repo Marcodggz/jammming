@@ -31,7 +31,7 @@ export default function DeleteConfirmModal({
   }, [onCancel]);
 
   return (
-    <div className="deleteModalOverlay" onClick={onCancel} aria-hidden="true">
+    <div className="deleteModalOverlay" onClick={onCancel}>
       <div
         className="deleteModalDialog"
         role="dialog"
@@ -51,12 +51,13 @@ export default function DeleteConfirmModal({
         <div className="deleteModalActions">
           <button
             ref={cancelRef}
+            type="button"
             className="deleteModalCancelButton"
             onClick={onCancel}
           >
             Cancel
           </button>
-          <button className="deleteModalConfirmButton" onClick={onConfirm}>
+          <button type="button" className="deleteModalConfirmButton" onClick={onConfirm}>
             Delete
           </button>
         </div>
