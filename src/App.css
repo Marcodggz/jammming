@@ -153,8 +153,6 @@ body {
   }
 }
 
-/* Global focus styles - removed to allow component-specific WCAG-compliant focus styles */
-
 /* App wrapper */
 
 .app {
@@ -419,12 +417,6 @@ body {
 /* Landing page focus management */
 .landingPage {
   isolation: isolate;
-}
-
-/* Improved button hover timing for accessibility */
-.connectButton,
-.searchButton {
-  transition: all 0.2s ease-in-out;
 }
 
 .connectButton:active {

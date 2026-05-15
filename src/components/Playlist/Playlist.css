@@ -784,13 +784,6 @@ html[data-keyboard] .saveButton:focus {
     font-size: 10px;
     margin-top: 3px;
   }
-
-  .playlistErrorMessage,
-  .playlistSuccessMessage {
-    padding: 8px 12px;
-    font-size: 13px;
-    border-radius: 8px;
-  }
 }
 
 /* Touch devices at tablet portrait — ensure save button meets minimum tap target.
