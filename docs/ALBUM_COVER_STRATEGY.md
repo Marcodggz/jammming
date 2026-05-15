@@ -7,7 +7,7 @@ Demo Mode uses a **custom SVG generation system** for album artwork to ensure:
 - **Legal safety** — no commercial artwork, no copyright concerns
 - **Visual consistency** — cohesive design across all albums
 - **Performance** — data URLs load instantly with no external requests
-- **Portfolio readiness** — professional appearance for recruiter showcasing
+- **Portfolio presentation** — polished visuals without relying on copyrighted assets
 
 ---
 
@@ -38,28 +38,13 @@ Each cover is returned as a self-contained `data:image/svg+xml` string — no fi
 
 ### Color Strategy
 
-Each artist has a color palette that reflects their musical identity:
-
-| Artist | Colors | Style |
-|---|---|---|
-| The Weeknd | Dark red & deep blue | Moody R&B |
-| Lady Gaga | Hot pink & black | Bold pop |
-| Harry Styles | Soft blue & light pink | Contemporary pop |
-| Dua Lipa | Vibrant magenta & purple | Dance-pop |
-| Ed Sheeran | Warm orange & green | Acoustic |
-| Billie Eilish | Light yellow & green | Indie / alternative |
-| Feid | Dark green & neon yellow | Reggaeton urbano |
-| Bad Bunny | Vibrant orange & gold | Latin trap |
-| Nathy Peluso | Black & yellow | Neo-urban |
-| Tyler, The Creator | Pink & green | Alternative hip-hop |
-| Olivia Rodrigo | Purple & deep red | Alt-pop |
-| Ariana Grande | Warm beige & light pink | Glamorous pop |
+Each album configuration in `ALBUM_COVER_CONFIGS` includes a `primaryColor`, `accentColor`, and `pattern` chosen to suggest a general mood for each album without imitating official artwork.
 
 ---
 
 ## Adding a New Album
 
-1. **Add a configuration entry** in `albumCoverGenerator.js`:
+1. **Add a configuration entry** to `ALBUM_COVER_CONFIGS` in `albumCoverGenerator.js`:
 
 ```javascript
 new_album: {
@@ -71,17 +56,13 @@ new_album: {
 },
 ```
 
-2. **Export it** in `imageUtils.js`:
-
-```javascript
-new_album: getAlbumCover('new_album'),
-```
-
-3. **Reference it** in `mockMusicData.js`:
+2. **Reference it** in `mockMusicData.js`:
 
 ```javascript
 image: ALBUM_COVERS.new_album,
 ```
+
+`imageUtils.js` does not need to be touched — `generateAllAlbumCovers()` automatically includes every entry in `ALBUM_COVER_CONFIGS`.
 
 ---
 

@@ -1,8 +1,8 @@
 # Accessibility Statement — Jammming
 
 **Conformance target:** WCAG 2.1 Level AA  
-**Last reviewed:** April 2026  
-**Technology stack:** React 18, Vite, CSS custom properties
+**Last reviewed:** May 2026  
+**Technology stack:** React 18, Vite, CSS
 
 ---
 
@@ -74,28 +74,36 @@ A visually hidden "Skip to main content" link is the **first focusable element**
 
 All functionality available with a mouse is equally available via keyboard. No keyboard traps exist (satisfies [WCAG 2.1.2 No Keyboard Trap](https://www.w3.org/WAI/WCAG21/Understanding/no-keyboard-trap)).
 
-| Element | In tab order | Key(s) | Notes |
-|---|---|---|---|
-| Skip link | Yes | `Enter` | First focusable element on the page |
-| Search input | Yes | — | Type to filter tracks |
-| Back arrow button | Yes | `Enter`, `Space` | Appears inside the search bar when a previous search exists; returns to previous results |
-| Search button | Yes | `Enter`, `Space` | Disabled while the input is empty |
-| Artist search buttons | Yes | `Enter`, `Space` | Trigger a new search by artist name |
-| Album search buttons | Yes | `Enter`, `Space` | Trigger a new search by album name |
-| Track title `<h3>` | Yes (`tabIndex="0"`) | — | Read-only; `aria-label` announces full track info |
-| Track duration | Yes (`tabIndex="0"`) | — | Read-only |
-| Add button | Yes | `Enter`, `Space` | Adds track to the playlist |
-| Remove button | Yes | `Enter`, `Space` | Removes track from the playlist |
-| Edit playlist title | Yes | `Enter`, `Space` | Opens the inline title editor |
-| Playlist title input | Yes | `Enter`, `Escape` | `Enter` saves; `Escape` cancels and restores the previous title |
-| Playlist duration | Yes (`tabIndex="0"`) | — | Read-only; updates as tracks are added or removed |
-| Save to Spotify button | Yes | `Enter`, `Space` | Saves the playlist to the user's Spotify account |
+| Element | Key(s) | Notes |
+|---|---|---|
+| Skip link | `Enter` | First focusable element on the page |
+| Search input | — | Type to filter tracks; supports autocomplete suggestions (see §3.1) |
+| Back arrow button | `Enter`, `Space` | Appears when a previous search exists; returns to previous results |
+| Search button | `Enter`, `Space` | Disabled while the input is empty |
+| Artist search buttons | `Enter`, `Space` | Trigger a new search by artist name |
+| Album search buttons | `Enter`, `Space` | Trigger a new search by album name |
+| Add button | `Enter`, `Space` | Adds track to the playlist |
+| Remove button | `Enter`, `Space` | Removes track from the playlist |
+| Edit playlist title | `Enter`, `Space` | Opens the inline title editor |
+| Playlist title input | `Enter`, `Escape` | `Enter` saves; `Escape` cancels and restores the previous title |
+| Save to Spotify button | `Enter`, `Space` | Saves the playlist to the user's Spotify account |
+
+Track titles and durations are read-only text; their full information is exposed to screen readers via `aria-label` on the `<h3>` and the track `<article>`, not via keyboard focus.
+
+### 3.1 Search Autocomplete (ARIA Combobox)
+
+The search input implements the ARIA combobox pattern:
+
+- `role="combobox"` on the `<input>` with `aria-expanded`, `aria-controls="search-suggestions"`, `aria-autocomplete="list"`, and `aria-haspopup="listbox"`
+- `aria-activedescendant` points to the currently highlighted suggestion (`id="suggestion-{index}"`)
+- The suggestion list uses `role="listbox"`; each option uses `role="option"` with `aria-selected`
+- `↓` / `↑` moves highlight; `Enter` selects; `Escape` closes the dropdown and resets focus to the input
 
 ---
 
 ## 4. Focus Indicators
 
-Focus rings are visible **only during keyboard navigation**, never on mouse interaction, preventing visual noise for pointer users while meeting [WCAG 2.4.11 Focus Appearance](https://www.w3.org/WAI/WCAG21/Understanding/focus-appearance-minimum).
+Focus rings are visible **only during keyboard navigation**, never on mouse interaction, preventing visual noise for pointer users while keeping keyboard focus clearly visible.
 
 ### Color token
 
@@ -200,7 +208,7 @@ Live regions are always present in the DOM — never inserted dynamically — so
 | Region | Role / `aria-live` | Content announced |
 |---|---|---|
 | Search status | `role="status"` (`polite`) | Search progress and result count |
-| Toast notifications | `role="alert"` (`assertive`) | Success / error feedback from Spotify API |
+| Toast notifications | Live region / alert pattern | Success / error feedback from Spotify API |
 | Playlist duration | `role="status"` (`polite`) | Total duration as tracks are added or removed |
 
 ### 6.4 Track lists
@@ -218,7 +226,7 @@ The `<ul>` containing tracks carries a dynamically computed `aria-label`:
 
 ### Reduced motion
 
-All CSS transitions and animations are disabled when the user has requested reduced motion:
+Motion-heavy transitions and animations are reduced when the user has requested reduced motion:
 
 ```css
 @media (prefers-reduced-motion: reduce) {
@@ -241,36 +249,35 @@ No information is conveyed exclusively through animation.
 
 ### Colour contrast
 
-| Context | Ratio | WCAG requirement |
-|---|---|---|
-| Body text on dark background | ≥ 4.5 : 1 | AA — normal text (1.4.3) |
-| Large headings | ≥ 3 : 1 | AA — large text (1.4.3) |
-| Focus ring (green on dark) | ≥ 3 : 1 | AA — UI component (1.4.11) |
+The UI uses a dark background with light text designed to maintain readable contrast for normal text and large headings. The Spotify-green focus ring (`rgba(29, 185, 84, 0.5)`) is visible against the dark surfaces used throughout the app. Exact ratios have not been formally audited with a contrast tool.
 
 ---
 
 ## 8. Images & Icons
 
-- **Album art** — `alt=""` (decorative). The containing element carries `aria-hidden="true"` so screen readers skip it entirely; full track information is provided through the `<h3>` `aria-label`.
+- **Track album art** — `alt=""` (decorative). The containing element carries `aria-hidden="true"` so screen readers skip it entirely; full track information is provided through the `<h3>` `aria-label`.
+- **Playlist artwork** — when a real Spotify playlist image is available, `alt={playlistName}` is used so the image is announced meaningfully. In demo mode, the collage tile is wrapped in `aria-hidden="true"` because the playlist name heading already describes the content.
 - **FontAwesome icons** — all rendered with `aria-hidden="true"`. Meaning is conveyed through the parent button's `aria-label`, not the icon glyph.
 
 ---
 
 ## 9. Testing
 
-Manual testing was performed with the following assistive technology / browser combinations:
+### Manual checks performed
 
-| Assistive technology | Browser | Platform |
-|---|---|---|
-| VoiceOver | Safari | macOS |
-| VoiceOver | Safari | iOS |
-| NVDA | Firefox | Windows |
-| Keyboard only | Chrome, Firefox, Safari | macOS / Windows |
+| Method | Environment |
+|---|---|
+| Keyboard-only navigation | Chrome, Firefox, Safari — macOS |
+| VoiceOver | Safari — macOS |
 
-### Automated checks
+### Recommended checks for full coverage
 
-- **[axe DevTools](https://www.deque.com/axe/)** browser extension — zero critical violations
-- **[WAVE](https://wave.webaim.org/)** — zero errors
+The following tools are recommended for anyone doing a broader audit of this project:
+
+- **[axe DevTools](https://www.deque.com/axe/)** browser extension — automated rule checking
+- **[WAVE](https://wave.webaim.org/)** — structural and contrast analysis
+- NVDA + Firefox (Windows) — for Windows screen reader coverage
+- VoiceOver + Safari (iOS) — for mobile screen reader coverage
 
 ---
 

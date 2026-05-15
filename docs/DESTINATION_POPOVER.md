@@ -1,153 +1,117 @@
 # Destination Selector Popover
 
-**Date:** May 4, 2026  
-**Scope:** Contextual popover UI for selecting track destination when no active playlist
+**Date:** May 2026  
+**Scope:** Contextual popover UI for choosing where to add a track when no playlist is active
 
 ---
 
 ## Overview
 
-When users click the "+" button to add a track but have no active playlist, a lightweight popover appears next to the button with two options:
-- **New playlist** — Create and add to a new playlist
-- **My playlists** — Browse existing playlists
+When the user clicks the "+" button without an active playlist, Jammming shows a lightweight popover next to the clicked button.
 
-The popover is anchored to the trigger button with a directional caret, smart viewport positioning, scroll-to-close behavior, and smooth animations.
+The user can choose between:
+
+- **New playlist** — create and add to a new playlist
+- **My playlists** — browse existing playlists before choosing where to add the track
+
+This keeps the flow contextual and avoids interrupting the user with a full modal.
 
 ---
 
 ## Key Design Decisions
 
-### 1. **Popover vs Modal**
-- **Why popover:** Contextual, lightweight, maintains page context, faster perceived performance
-- **Implementation:** `position: fixed` with smart positioning algorithm
-- **Alternative considered:** Centered modal with backdrop (rejected — felt heavy and disconnected)
+### 1. Popover instead of modal
 
-### 2. **Smart Positioning Algorithm**
-- Prefers positioning to the right of the button
-- Falls back to left if right overflows
-- Handles bottom overflow by shifting up
-- Clamps to viewport edges with 8px padding
+A modal would work, but it would feel too heavy for a small destination choice. The popover keeps the user in context and makes the action feel directly connected to the track they clicked.
 
-**Code location:** `DestinationSelector.jsx` — `calculatePosition()` useEffect
+The trade-off is that the component needs positioning logic to stay aligned with the trigger button.
 
-### 3. **Dynamic Caret (Arrow)**
-- CSS pseudo-element (::before for fill, ::after for border)
-- Uses CSS border trick for pure CSS triangle
-- Dynamically positioned to point at button center using `--caret-top` custom property
-- Data attribute `data-side` switches caret side based on popover position
+### 2. Smart positioning
 
-**Why CSS pseudo-elements:** No extra DOM nodes, inherits animations automatically, highly efficient
+The popover is anchored to the clicked "+" button.
 
-### 4. **Close on Scroll**
-- Scroll listener with capture phase catches nested scroll containers
-- Automatically closes popover when user scrolls
-- Prevents visual disconnect (button moves but popover would stay fixed)
-- Gracefully restores user intent
+The positioning logic:
 
-**Code location:** `DestinationSelector.jsx` — scroll useEffect with `isClosing` guard
+1. Reads the trigger button position with `getBoundingClientRect()`.
+2. Tries to place the popover to the right of the button.
+3. Falls back to the left if there is not enough space.
+4. Adjusts vertical position to avoid overflowing the viewport.
+5. Uses a CSS custom property to align the caret with the button.
 
-### 5. **Close Mechanisms** (Multiple, Robust)
-- **Escape key:** Standard keyboard pattern
-- **Click outside:** Click on popover or page closes it
-- **Scroll:** Closing on scroll keeps UI consistent
-- **Animation first:** All closes trigger exit animation before onCancel callback
+**Code location:** `DestinationSelector.jsx` — `calculatePosition()`
 
----
+### 3. Directional caret
 
-## Implementation Details
+The popover uses CSS pseudo-elements for the caret instead of adding extra DOM nodes.
 
-### Component Structure
+This keeps the markup simpler while still making the popover feel visually attached to the trigger button.
 
-```
-App.jsx (state orchestration)
-  ↓
-Track.jsx (click handler passes button element)
-  ↓
-DestinationSelector.jsx (popover rendering + positioning)
-  ├─ calculatePosition() — smart viewport positioning
-  ├─ Escape handler
-  ├─ Click outside handler
-  └─ Scroll handler
-```
+### 4. Close behavior
 
-### State Management (App.jsx)
+The popover can close through:
 
-```javascript
-const [pendingTrackToAdd, setPendingTrackToAdd] = useState(null);
-const [isDestinationSelectorOpen, setIsDestinationSelectorOpen] = useState(false);
-const [selectorAnchorElement, setSelectorAnchorElement] = useState(null);
-```
+- `Escape`
+- outside click
+- scroll
 
-- `pendingTrackToAdd` — track awaiting destination choice
-- `isDestinationSelectorOpen` — visibility control (independent of pending track)
-- `selectorAnchorElement` — button element reference for positioning
+Closing on scroll prevents the popover from becoming visually disconnected from the button if the user moves the page or scrollable results panel.
 
-### Positioning Algorithm (Simplified View)
-
-1. Get anchor button rect: `anchorElement.getBoundingClientRect()`
-2. Calculate popover dimensions
-3. Try right: `left = anchorRect.right + 8px`
-4. Check overflow → if overflows, try left
-5. Check viewport bounds → clamp to safe zone
-6. Position vertically: align with button, adjust if bottom overflows
-7. Calculate caret Y: `caretTop = buttonCenterY - popoverTop`, clamp to [8px, height-8px]
-
-**Result:** `{ top, left, side, caretTop }` → applied via inline styles + CSS custom property
-
-### Animation System
-
-**Entry:** 160ms, scale(0.92→1) + fade(0→1), ease-out  
-**Exit:** 120ms, reverse, ease-in  
-**Mobile:** Respects `prefers-reduced-motion`
+Exit animation runs before the parent `onCancel` callback is called, so the UI feels smoother without moving animation logic into `App.jsx`.
 
 ---
 
-## Testing Checklist
+## Component Responsibilities
 
-- [ ] Click "+" without active playlist → popover appears at button location
-- [ ] Popover positioned correctly on right side (most common case)
-- [ ] Scroll page → popover closes smoothly
-- [ ] Scroll results list → popover closes (nested scroll captured)
-- [ ] Scroll near right edge → popover flips to left side correctly
-- [ ] Caret points to button center in all positions
-- [ ] Click "New playlist" → popover closes, new playlist editor opens
-- [ ] Click "My playlists" → popover closes, playlist browser shows
-- [ ] Escape key → popover closes
-- [ ] Click outside popover → closes
-- [ ] Rapid scrolling → no multiple close calls
-- [ ] Mobile viewport → popover stays in bounds, touch works
-- [ ] Keyboard navigation → focus management works
-- [ ] Reduced motion → no animations, instant close
+    App.jsx
+      owns pending track and selector state
+
+    Track.jsx
+      passes the clicked button element when the user tries to add a track
+
+    DestinationSelector.jsx
+      renders the popover, calculates position, and handles close behavior
+
+`App.jsx` decides whether the selector is open and what should happen after the user chooses an option. `DestinationSelector.jsx` owns only the popover UI behavior.
+
+---
+
+## State Managed by App
+
+    const [pendingTrackToAdd, setPendingTrackToAdd] = useState(null);
+    const [isDestinationSelectorOpen, setIsDestinationSelectorOpen] = useState(false);
+    const [selectorAnchorElement, setSelectorAnchorElement] = useState(null);
+
+- `pendingTrackToAdd` stores the track waiting for a destination.
+- `isDestinationSelectorOpen` controls visibility.
+- `selectorAnchorElement` stores the button used for positioning.
+
+Keeping this state in `App.jsx` makes sense because the selected destination affects the global playlist flow.
 
 ---
 
 ## Files Involved
 
-- `src/components/DestinationSelector/DestinationSelector.jsx` — Main component
-- `src/components/DestinationSelector/DestinationSelector.css` — Styling, animations, caret
-- `src/components/Track/Track.jsx` — Passes button element via `addTrack()` callback
-- `src/App.jsx` — State management, selector rendering
+- `src/components/DestinationSelector/DestinationSelector.jsx` — popover rendering, positioning, and close behavior
+- `src/components/DestinationSelector/DestinationSelector.css` — styling, animations, and caret
+- `src/components/Track/Track.jsx` — passes the clicked button element through the add action
+- `src/App.jsx` — owns destination selector state and handles the selected action
 
 ---
 
 ## Trade-offs
 
-| Aspect | Choice | Trade-off |
-|--------|--------|-----------|
-| **Positioning** | Smart algorithm | Slightly more complex logic, but handles all edge cases |
-| **Caret** | CSS pseudo-element | Limited styling vs. flexibility of SVG/separate element |
-| **Close on scroll** | Always close | Prevents user from scrolling while choosing, but maintains UI integrity |
-| **Fixed positioning** | `position: fixed` | Requires managing viewport offset calculations, but allows smooth animations |
+| Area | Decision | Trade-off |
+|---|---|---|
+| UI pattern | Popover instead of modal | More positioning logic, but a lighter and more contextual flow |
+| Positioning | `position: fixed` | Requires viewport calculations, but avoids parent overflow issues |
+| Caret | CSS pseudo-elements | Less flexible than SVG, but simpler markup |
+| Scroll behavior | Close on scroll | Prevents visual mismatch between the button and popover |
+| Animation | Local entry/exit animation | Slightly more state inside the component, but smoother UX |
 
 ---
 
-## Portfolio Notes
+## Why this component is separate
 
-This implementation demonstrates:
-- ✅ Smart positioning algorithms for UI components
-- ✅ Event listener management and cleanup (scroll, keyboard, click)
-- ✅ CSS animations and pseudo-element techniques
-- ✅ React state management for async UI patterns
-- ✅ Accessibility (keyboard, focus, aria attributes)
-- ✅ Mobile-first responsive design
-- ✅ Microinteraction polish (smooth transitions, feedback)
+`DestinationSelector` is separate because it has its own UI behavior: positioning, closing, animation, keyboard handling, and viewport edge cases.
+
+Keeping this inside `App.jsx` would add too much interaction-specific code to a file that already owns global app state. Extracting it keeps `App.jsx` focused on orchestration while the popover component owns its own presentation and interaction details.
